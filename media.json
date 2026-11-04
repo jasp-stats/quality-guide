@@ -27,6 +27,10 @@
     "correlation_rank": {
       "video": "correlation_rank-video",
       "jasp": "correlation_rank-jasp"
+    },
+    "contingency": {
+      "video": "contingency-video",
+      "jasp": "contingency-jasp"
     }
   },
   "assets": {
@@ -107,6 +111,19 @@
       "title": "Spearman rank correlation — annotated JASP file",
       "note": "Includes Roughness_um and Severity_score, Spearman settings, sample size, scatterplot and notes on ties, the Fisher-z interval and interpretation limits.",
       "filename": "correlation_rank.jasp"
+    },
+    "contingency-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/contingency.mp4",
+      "title": "Contingency tables for independent groups — video walkthrough",
+      "note": "Use aggregated inspection counts: assign the two categorical variables and frequency weight, inspect expected counts and row percentages, then interpret Pearson’s chi-squared test."
+    },
+    "contingency-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/contingency.jasp",
+      "title": "Contingency tables for independent groups — annotated JASP file",
+      "note": "Includes six Supplier × Result cells representing 300 synthetic inspections, expected counts, row percentages, the chi-squared test and interpretation notes. This dialog has no native association plot.",
+      "filename": "contingency.jasp"
     }
   },
   "videoPlaceholder": {
