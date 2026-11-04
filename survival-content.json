@@ -1,0 +1,722 @@
+{
+  "survival_km": {
+    "id": "survival_km",
+    "family": "survival",
+    "title": "Kaplan–Meier survival curves and group comparisons",
+    "summary": "Describe time to first failure, retain units still working at the end of follow-up, and compare unadjusted survival curves.",
+    "why": "Your outcome is a lifetime and some units may remain failure-free when observation ends. Kaplan–Meier uses the observed follow-up of those right-censored units without pretending that their true lifetimes are known.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Non-parametric"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "v0.96.0",
+      "status": "released",
+      "note": "Core menu and controls verified in released v0.96.0 source. The official catalogue lists stable module 0.96.6-release.803 as of 29 October 2026; later builds may reorganize controls."
+    },
+    "setup": [
+      {
+        "title": "Enable Survival and assign the outcome",
+        "text": "Open Non-parametric (Non-Parametric in recent builds). Put Time_h in Time to Event and Status in Event Status. Set Event Indicator to Failed. Do not discard Censored rows."
+      },
+      {
+        "title": "Choose whether to compare groups",
+        "text": "For an overall survival curve, leave Strata empty. To compare the two coatings, put Coating in Strata. These are unadjusted comparisons; use the semi-parametric analysis to adjust for measured predictors."
+      },
+      {
+        "title": "Show follow-up and uncertainty",
+        "text": "Select Censoring summary, Plot, Confidence interval, and Risk table with Number at risk. A Life table is also available for a tabular summary. Use the risk table when interpreting the sparse tail of a curve."
+      },
+      {
+        "title": "Select a planned comparison",
+        "text": "For a planned group comparison, select Tests > Log-rank (Mantel-Haenszel). Examine the whole curves as well as the test result. With crossing curves or strongly time-varying differences, a single log-rank result can be an incomplete summary."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Unit",
+        "type": "Nominal",
+        "description": "A distinct tested unit; one first-event record per unit. Keep as an identifier, not a predictor."
+      },
+      {
+        "name": "Time_h",
+        "type": "Scale",
+        "description": "Hours to the observed failure, or hours of follow-up when the unit was last known to be working."
+      },
+      {
+        "name": "Status",
+        "type": "Nominal",
+        "description": "Failed means the event occurred; Censored means the unit had not failed by Time_h. Explicitly choose Failed as the Event Indicator."
+      },
+      {
+        "name": "Coating",
+        "type": "Nominal",
+        "description": "Standard or Improved; assign to Strata to display separate curves."
+      },
+      {
+        "name": "Load_pct",
+        "type": "Scale",
+        "description": "Measured operating load, included in the example for the adjusted Cox follow-up; do not assign it as a continuous stratum."
+      }
+    ],
+    "checks": [
+      "Use one first-event record per independent unit. Repeated failures of a repaired system require a recurrent-event model.",
+      "Right censoring means the lifetime exceeds the recorded follow-up. If failure is only known to lie between two inspections, use the interval-censored parametric route.",
+      "Censoring should be independent of future failure risk within the comparison being made. Investigate withdrawals caused by suspected deterioration or other informative stopping.",
+      "A median is not estimable from the observed curve when it never reaches 50% survival. Do not extend the flat tail to claim a service life beyond observed follow-up.",
+      "The grouping factor may be associated with load or other operating conditions. A curve difference alone does not establish that changing the coating causes longer life."
+    ],
+    "report": [
+      "The event definition, time origin and units, censoring rule, number of units and observed failures in each group.",
+      "Survival estimates with uncertainty at relevant observed service times, curves with numbers at risk, and an estimable median when useful.",
+      "The planned group test and its limitations, including confounding, censoring patterns and sparse late follow-up."
+    ],
+    "example": {
+      "title": "Compare the first-failure lifetimes of two coatings",
+      "story": "Ninety-six independent components are tested under recorded operating loads. Some still work when their scheduled observation ends. The team first compares unadjusted survival curves for Standard and Improved coatings.",
+      "sample": "survival_lifetimes",
+      "instructions": [
+        "Assign Time_h to Time to Event, Status to Event Status, and select Failed as the Event Indicator.",
+        "Put Coating in Strata. Request the survival plot, confidence interval, number-at-risk table and censoring summary.",
+        "Add the planned log-rank comparison. Then use the Cox guide if the question requires adjustment for Load_pct."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Released Kaplan–Meier interface and life-table controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/qml/NonParametricSurvivalAnalysis.qml"
+      },
+      {
+        "title": "Released survival-plot and risk-table controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/qml/qml_components/SurvivalPlot.qml"
+      },
+      {
+        "title": "Released Survival menu",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/Description.qml"
+      },
+      {
+        "title": "Official stable Survival module package",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.96.6-release.803_R-4-5-2_Release"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_cox",
+        "label": "Adjust for load or other predictors"
+      },
+      {
+        "id": "survival_parametric",
+        "label": "Fit a lifetime distribution or use interval-censored data"
+      },
+      {
+        "id": "survival_recurrent",
+        "label": "The system can fail again after repair"
+      }
+    ]
+  },
+  "survival_cox": {
+    "id": "survival_cox",
+    "family": "survival",
+    "title": "Cox proportional hazards regression",
+    "summary": "Relate first-failure time to operating conditions or groups while retaining right-censored observations.",
+    "why": "You want an adjusted association between predictors and the instantaneous failure rate, while leaving the baseline hazard unspecified. The Cox model summarizes these associations as hazard ratios when its proportional-hazards assumption is suitable.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Semi-parametric"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "v0.96.0",
+      "status": "released",
+      "note": "Core menu and controls verified in released v0.96.0 source. The official catalogue lists stable module 0.96.6-release.803 as of 29 October 2026; later builds may reorganize controls."
+    },
+    "setup": [
+      {
+        "title": "Identify the event and follow-up",
+        "text": "Select Censoring Type > Right. Put Time_h in Time to Event and Status in Event Status; choose Failed as Event Indicator. The menu is shown as Semi-Parametric in recent builds."
+      },
+      {
+        "title": "Assign and specify predictors",
+        "text": "Put Load_pct in Covariates and Coating in Factors. In Model, include the intended main effects. Check which coating is the reference level before interpreting its contrast. A percentage-point increase in load is different from a ten-point increase."
+      },
+      {
+        "title": "Request interpretable output",
+        "text": "Under Statistics, request Model fit and coefficient Hazard ratio estimates with Confidence intervals. Report the factor comparison and the predictor increment represented by each ratio."
+      },
+      {
+        "title": "Assess proportional hazards",
+        "text": "Open Diagnostics > Proportional Hazards and request Table and Plot. Inspect residual diagnostics and whether effects plausibly remain proportional over the observed period; an insignificant diagnostic test alone does not prove the assumption."
+      },
+      {
+        "title": "Handle more complex follow-up deliberately",
+        "text": "Censoring Type > Counting uses Interval Start, Interval End and Event Status for start–stop records; the reviewed interface has no Id assignment. Strata allows separate baseline hazards, Cluster provides robust standard errors for grouped records, and Frailty models group-level variation. These roles are not interchangeable: choose them for the actual event-history structure, and do not count multiple rows from one unit as independent new lifetimes. Interval-censored failures are not a Cox option in this interface."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Unit",
+        "type": "Nominal",
+        "description": "A distinct tested unit; one first-event record per unit. Keep as an identifier, not a predictor."
+      },
+      {
+        "name": "Time_h",
+        "type": "Scale",
+        "description": "Hours to the observed failure, or hours of follow-up when the unit was last known to be working."
+      },
+      {
+        "name": "Status",
+        "type": "Nominal",
+        "description": "Failed means the event occurred; Censored means the unit had not failed by Time_h. Explicitly choose Failed as the Event Indicator."
+      },
+      {
+        "name": "Coating",
+        "type": "Nominal",
+        "description": "Standard or Improved; assign to Factors."
+      },
+      {
+        "name": "Load_pct",
+        "type": "Scale",
+        "description": "Operating load in percent; assign to Covariates. Its coefficient is per percentage point unless the variable is rescaled."
+      }
+    ],
+    "checks": [
+      "Check proportional hazards, the functional form of continuous predictors, influential records and dependence between units.",
+      "The event and censoring codes must be correct. Include operating units at their last known follow-up, rather than treating censoring as a failure.",
+      "A hazard ratio is a relative instantaneous rate among units still event-free. It is not a probability ratio or a multiplier for expected lifetime.",
+      "Use enough observed failures for the number and complexity of estimated effects. Many censored units do not replace event information.",
+      "For an interval-censored outcome, choose Parametric. For repairable-system growth from interval counts, choose Recurrent Events.",
+      "Observational adjustment does not remove unmeasured confounding or establish a causal intervention effect."
+    ],
+    "report": [
+      "Event, censoring and follow-up definitions; predictors, reference levels, units and number of observed failures.",
+      "Adjusted hazard ratios with confidence intervals and the exact contrasts they represent.",
+      "Proportional-hazards and residual checks, the treatment of clustered or start–stop records, and limits to causal interpretation."
+    ],
+    "example": {
+      "title": "Compare coatings after adjusting for operating load",
+      "story": "The coating study also records Load_pct. A Cox analysis examines whether the association between coating and first-failure hazard persists after accounting for measured load.",
+      "sample": "survival_lifetimes",
+      "instructions": [
+        "Select Right censoring, assign Time_h and Status, and choose Failed as the event.",
+        "Assign Coating to Factors and Load_pct to Covariates; include their main effects in Model.",
+        "Request hazard ratios with intervals and proportional-hazards diagnostics. Describe the coating comparison as an adjusted association."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Released Cox interface, roles and diagnostics",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/qml/SemiParametricSurvivalAnalysis.qml"
+      },
+      {
+        "title": "Current Cox interface and follow-up options",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/SemiParametricSurvivalAnalysis.qml"
+      },
+      {
+        "title": "Released Survival menu",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/Description.qml"
+      },
+      {
+        "title": "Official stable Survival module package",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.96.6-release.803_R-4-5-2_Release"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_km",
+        "label": "Start with unadjusted survival curves"
+      },
+      {
+        "id": "survival_parametric",
+        "label": "Estimate a lifetime distribution or use interval censoring"
+      },
+      {
+        "id": "survival_accelerated",
+        "label": "Model a stress–life relationship"
+      }
+    ]
+  },
+  "survival_parametric": {
+    "id": "survival_parametric",
+    "family": "survival",
+    "title": "Weibull and other parametric lifetime models",
+    "summary": "Estimate a lifetime distribution, reliability at a service time, or a lifetime percentile such as B10, with censoring represented explicitly.",
+    "why": "You need a distribution-based description of lifetime rather than a comparison of ordinary arithmetic means. JASP fits Weibull, log-normal, exponential and other parametric survival families, with appropriate inputs for right, interval or left censoring and delayed entry.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Parametric"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "v0.96.0",
+      "status": "released",
+      "note": "Core menu and controls verified in released v0.96.0 source. The official catalogue lists stable module 0.96.6-release.803 as of 29 October 2026; later builds may reorganize controls."
+    },
+    "setup": [
+      {
+        "title": "For exact or right-censored lifetimes",
+        "text": "Choose Censoring Type > Right. Put Time_h in Time to Event and Status in Event Status, with Event Indicator set to Failed. Fully observed lifetimes may all be marked Failed. Request Censoring summary."
+      },
+      {
+        "title": "For failures located between inspections",
+        "text": "Choose Interval and assign two scale columns to Interval Start and Interval End. Enter an interval-censored failure as (lower, upper), an exact failure as (t, t), a right-censored observation as (t, missing), and a left-censored observation as (missing, t). Configure NA or blank cells as missing in JASP; do not replace open bounds with zero. Interval mode derives censoring from the bounds and does not use Event Status."
+      },
+      {
+        "title": "Choose and compare plausible families",
+        "text": "Start with Distribution > Weibull when process knowledge supports it. Leave predictors empty for the homogeneous teaching sample. For comparisons, choose All and limit the selected families under Advanced to defensible alternatives such as Weibull and Log-normal. Inspect Model summary and coefficient uncertainty; the smallest AIC alone does not validate extrapolation."
+      },
+      {
+        "title": "Estimate the quantity the decision needs",
+        "text": "In the released 0.96 interface, Predictions > Survival Time > Table with Steps type > Custom and Steps = 0.1 requests B10, the time by which 10% are predicted to fail. In the 0.98 beta, select Outcome > Survival time, Lifetime > Percentiles, Grid > Custom, Values = 10, and Output > Table. The newer interface uses percentages rather than fractions."
+      },
+      {
+        "title": "Check fit and retain uncertainty",
+        "text": "Request prediction confidence intervals and Diagnostics residual plots. For right-censored data, compare the fitted survival plot with its Kaplan–Meier overlay: Add Kaplan-Meier in the 0.96 interface, or Kaplan-Meier under Predictions > Display in the recent beta. Counting mode is a separate start–stop/delayed-entry encoding, not a substitute for inspection intervals."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Unit",
+        "type": "Nominal",
+        "description": "A distinct tested unit; one first-event record per unit. Keep as an identifier, not a predictor."
+      },
+      {
+        "name": "Time_h",
+        "type": "Scale",
+        "description": "Hours to the observed failure, or hours of follow-up when the unit was last known to be working."
+      },
+      {
+        "name": "Status",
+        "type": "Nominal",
+        "description": "Failed means the event occurred; Censored means the unit had not failed by Time_h. Explicitly choose Failed as the Event Indicator."
+      }
+    ],
+    "checks": [
+      "Use the censoring pattern actually observed. Treating a final inspection date as an exact failure time biases the lifetime distribution.",
+      "The right-censored example uses positive lifetimes at one operating condition. For Interval mode, supply the two bounds described above; this example CSV does not manufacture inspection intervals.",
+      "Check plausible failure mechanisms and heterogeneity before fitting one population distribution. Known groups may need predictors or separate models.",
+      "B10 is the 10th percentile of the failure-time distribution, equivalent to 90% survival. It is not the time at which only 10% remain working.",
+      "A confidence interval for a fitted percentile describes estimation uncertainty. It is different from a prediction interval for one new unit.",
+      "Tail estimates and extrapolation can depend strongly on the family and censoring fraction. A fitted curve cannot supply evidence outside the observed operating range."
+    ],
+    "report": [
+      "Distribution family, model terms and parameterization; event and censoring definitions, time units and observed failure count.",
+      "The requested lifetime percentile or survival probability at a specified service time, with confidence intervals and a clear definition of B10 if used.",
+      "Fit comparisons, diagnostics, sensitivity to plausible families, and the extent of any extrapolation."
+    ],
+    "example": {
+      "title": "Estimate B10 life for a single component population",
+      "story": "One hundred and twenty independent components are tested at a fixed operating condition. The study ends before every unit fails. The team wants an estimated B10 service life with uncertainty.",
+      "sample": "survival_weibull",
+      "instructions": [
+        "Use Right censoring, Time_h, Status and event value Failed. Leave predictor roles empty and choose Weibull.",
+        "Request the B10 lifetime table: custom quantile 0.1 in the 0.96 interface, or percentile 10 in the 0.98 beta interface.",
+        "Show confidence intervals and compare the fitted survival curve with Kaplan–Meier. Repeat with a plausible alternative family to assess sensitivity."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Released parametric controls and censoring encodings",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/inst/qml/ParametricSurvivalAnalysis.qml"
+      },
+      {
+        "title": "Released prediction quantile implementation",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/69dc1db1b65e48c3068287fa8e365a1324b12fe7/R/parametricsurvivalanalysis.R"
+      },
+      {
+        "title": "Current percentile and prediction controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricPredictions.qml"
+      },
+      {
+        "title": "Current censoring interface",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricCensoring.qml"
+      },
+      {
+        "title": "Current censoring validation and survival response construction",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/R/commonsurvival-analysis.R"
+      },
+      {
+        "title": "Official stable Survival module package",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.96.6-release.803_R-4-5-2_Release"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_km",
+        "label": "Describe the data without a parametric family"
+      },
+      {
+        "id": "survival_accelerated",
+        "label": "Include a temperature or stress–life model"
+      },
+      {
+        "id": "survival_mixture",
+        "label": "Investigate a plausible latent mixture"
+      }
+    ]
+  },
+  "survival_accelerated": {
+    "id": "survival_accelerated",
+    "family": "survival",
+    "title": "Accelerated life and temperature models",
+    "summary": "Fit constant-stress lifetime data using the recent parametric model controls, including Arrhenius or Eyring temperature transformations.",
+    "why": "You have lifetime observations at controlled stress levels and want to describe how the lifetime distribution changes with stress. Recent Survival builds provide explicit temperature transformations, lifetime predictions, time ratios and acceleration factors within Parametric.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Parametric"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "0.98.2-beta.0",
+      "status": "beta",
+      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+    },
+    "setup": [
+      {
+        "title": "Confirm the recent controls are present",
+        "text": "Use Survival 0.98.2-beta.0 or a later compatible build. This workflow requires Model > Advanced specification and the temperature transformations. If they are absent, update the module before following these steps; the older Parametric form has different capabilities."
+      },
+      {
+        "title": "Assign constant-stress lifetimes",
+        "text": "Choose Censoring Type > Right. Assign Time_h to Time to Event, Status to Event Status and Failed as Event Indicator. Put Temperature_C in Covariates. Each row is one independent unit tested at a fixed temperature for its recorded follow-up."
+      },
+      {
+        "title": "Specify a temperature–life relationship",
+        "text": "Choose Distribution > Weibull and include Temperature_C in Model. Enable Advanced specification. For that covariate, choose Arrhenius (eV): 1/(k_B T), displayed with mathematical subscripts in JASP, and From > Celsius. The interface also offers Eyring: 1/T and ln(T); choose the relation from mechanism knowledge, not whichever yields the most attractive service-life prediction."
+      },
+      {
+        "title": "Inspect the model before forecasting",
+        "text": "Request Model summary, Coefficients with Confidence intervals, and Fitted model equation. Examine diagnostics across stress levels. Ancillary parameter regression can model additional parameters, such as Weibull shape; begin with a constant shape unless the question and data justify the extra parameters."
+      },
+      {
+        "title": "Predict at explicit conditions",
+        "text": "Under Predictions, choose Outcome > Survival time and Lifetime > Median or Percentiles. For a B10 example choose percentile 10. Select Predict for > Manual input and enter temperatures such as 45, 60, 75 and 90 Celsius, then request Table and Plot with Confidence intervals. Time ratio and Acceleration factor are available; identify the reference values and selected lifetime measure before interpreting either."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Unit",
+        "type": "Nominal",
+        "description": "A distinct tested unit; one first-event record per unit. Keep as an identifier, not a predictor."
+      },
+      {
+        "name": "Temperature_C",
+        "type": "Scale",
+        "description": "Constant test temperature in degrees Celsius. Set the transformation input unit to Celsius."
+      },
+      {
+        "name": "Time_h",
+        "type": "Scale",
+        "description": "Hours to the observed failure, or hours of follow-up when the unit was last known to be working."
+      },
+      {
+        "name": "Status",
+        "type": "Nominal",
+        "description": "Failed means the event occurred; Censored means the unit had not failed by Time_h. Explicitly choose Failed as the Event Indicator."
+      }
+    ],
+    "checks": [
+      "An accelerated test must preserve the failure mechanism relevant to use conditions. A mathematical temperature transformation cannot establish that assumption.",
+      "Temperature units matter: Arrhenius and Eyring operate on absolute temperature internally. Set From correctly; never feed Celsius values as Kelvin.",
+      "This example is a constant-stress study. Do not treat step-stress histories or repeated degradation measurements as independent constant-stress lifetimes.",
+      "Using ancillary parameter regression can change how lifetime ratios vary across percentiles. Do not assume one common acceleration factor when the fitted distribution shape changes with stress.",
+      "The interface defines time ratio as current/reference lifetime and acceleration factor as reference/current lifetime. State both conditions and the lifetime measure; a value above one means opposite directions for these two quantities.",
+      "Predict first within the observed stress range. A use-condition forecast outside that range needs explicit physical justification, sensitivity analysis and uncertainty reporting."
+    ],
+    "report": [
+      "The test design, constant stress levels and units, failure definition, censoring rule, distribution and temperature transformation.",
+      "Fitted equation and coefficient uncertainty, with any ancillary parameter models stated explicitly.",
+      "Predicted median or B10 at named conditions, intervals, reference conditions for ratios, and the physical assumptions behind any use-condition extrapolation."
+    ],
+    "example": {
+      "title": "Relate component life to constant test temperature",
+      "story": "Thirty independent units are tested at each of 45, 60, 75 and 90 °C. Synthetic lifetimes follow one temperature-dependent Weibull mechanism, and scheduled study endings create right censoring. This is a teaching design, not evidence that a real component obeys an Arrhenius relation.",
+      "sample": "survival_stress",
+      "instructions": [
+        "Assign the time, status and temperature roles. Choose Weibull and include Temperature_C in the model.",
+        "Under Advanced specification, select the Arrhenius transformation and Celsius input units.",
+        "Request B10 or median predictions at the four tested temperatures using Manual input. Explain why a forecast at an untested use temperature would need additional justification."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Current parametric model and ancillary-parameter controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricModel.qml"
+      },
+      {
+        "title": "Current predictor transformation choices",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricTermTransformation.qml"
+      },
+      {
+        "title": "Current temperature-unit and model-modifier controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricModelModifiers.qml"
+      },
+      {
+        "title": "Current lifetime, ratio and prediction controls",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricPredictions.qml"
+      },
+      {
+        "title": "Current temperature-model implementation",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/R/parametricsurvival-temperature.R"
+      },
+      {
+        "title": "Official Survival 0.98.2 beta packages",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.98.2-beta.0_R-4-5-2_Beta"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_parametric",
+        "label": "Fit a distribution at one operating condition"
+      },
+      {
+        "id": "survival_cox",
+        "label": "Model adjusted failure hazards"
+      },
+      {
+        "id": "survival_mixture",
+        "label": "Consider more than one latent population"
+      }
+    ]
+  },
+  "survival_mixture": {
+    "id": "survival_mixture",
+    "family": "survival",
+    "title": "Finite mixtures of lifetime distributions",
+    "summary": "Investigate a defensible latent mixture of lifetime populations using the Parametric Mixture analysis in a recent Survival build.",
+    "why": "Process knowledge suggests unobserved subpopulations with different lifetime patterns, and one distribution may not describe them adequately. JASP can fit several components from the same chosen parametric family; mixture fitting is a distinct analysis, not an automatic fix for a poor single-distribution fit.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Parametric Mixture"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "0.98.2-beta.0",
+      "status": "beta",
+      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+    },
+    "setup": [
+      {
+        "title": "Confirm the menu is available",
+        "text": "Open Survival > Classical > Parametric Mixture in the recent beta. The stable 0.96 route does not include this menu entry."
+      },
+      {
+        "title": "Assign the lifetime and censoring roles",
+        "text": "For the example, choose Right censoring, assign Time_h to Time to Event and Status to Event Status, and select Failed as Event Indicator. Leave Covariates, Factors and Subgroup empty for this introductory latent-mixture example."
+      },
+      {
+        "title": "Compare a small, justified set of models",
+        "text": "Choose Distribution > Weibull and Components > 2 for the teaching model. Fit Components > 1 as a baseline comparison. The interface also offers 3, 4, All, Best AIC and Best BIC; do not use the number of components as an unrestricted search for a favorable fit."
+      },
+      {
+        "title": "Inspect identifiability and estimation",
+        "text": "Request Model summary, Coefficients and Estimation diagnostics. Check convergence, the Hessian, component sizes and events, and whether repeated starts agree. A tiny component or near-degenerate fit can make apparently precise component interpretations unreliable."
+      },
+      {
+        "title": "Inspect component and combined behavior",
+        "text": "Use Component plot with Density or Survival probability and compare the fitted mixture with the observed survival pattern. Classification output describes posterior assignments under the fitted model. Label any inferred group as a model component until independent process evidence identifies its meaning."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Unit",
+        "type": "Nominal",
+        "description": "A distinct tested unit; one first-event record per unit. Keep as an identifier, not a predictor."
+      },
+      {
+        "name": "Time_h",
+        "type": "Scale",
+        "description": "Hours to the observed failure, or hours of follow-up when the unit was last known to be working."
+      },
+      {
+        "name": "Status",
+        "type": "Nominal",
+        "description": "Failed means the event occurred; Censored means the unit had not failed by Time_h. Explicitly choose Failed as the Event Indicator."
+      }
+    ],
+    "checks": [
+      "Finite mixture components share the selected family but have distinct parameters. This route is not an arbitrary combination such as one Weibull plus one log-normal component.",
+      "Measured group membership belongs in Factors or Subgroup when it answers the question. Do not hide a known process split inside an unexplained latent mixture.",
+      "Latent components are not automatically distinct failure causes. Competing-risk or cause-specific lifetime data require a design and analysis that handles those causes explicitly.",
+      "Mixture likelihoods can have local optima, weak identification and very small components, especially with substantial censoring. Agreement between starting values does not prove a global optimum.",
+      "Use substantive justification, fit diagnostics and stability together. Selecting the smallest AIC or BIC does not establish that the inferred subpopulations exist.",
+      "Treat posterior membership probabilities as uncertain model outputs, not verified manufacturing labels or individual diagnoses."
+    ],
+    "report": [
+      "Why a latent mixture is plausible, the family and component counts compared, and the censoring structure.",
+      "Component weights and parameter uncertainty, overall survival predictions, convergence and starting-value diagnostics.",
+      "Sensitivity to component count and model choices, plus the evidence supporting any physical interpretation of a component."
+    ],
+    "example": {
+      "title": "Explore a synthetic weak-component subpopulation",
+      "story": "Two hundred units are simulated from an early-failure and a longer-lived Weibull population, with 35% assigned to the early-failure mechanism during data generation. Those hidden labels are deliberately absent from the analysis file. The exercise is to compare fitted models, not to prove that any real process has two populations.",
+      "sample": "survival_mixture",
+      "instructions": [
+        "Choose Weibull, Components = 2, Right censoring and Failed as the event.",
+        "Inspect Estimation diagnostics, the component plots and the combined fit; compare with Components = 1.",
+        "If inspecting classifications, describe them as posterior probabilities under the model. Do not treat the known simulation design as a numerical result computed by this guide."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Current mixture menu",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/Description.qml"
+      },
+      {
+        "title": "Current mixture interface and diagnostics",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/ParametricMixtureSurvivalAnalysis.qml"
+      },
+      {
+        "title": "Current mixture roles",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricVariables.qml"
+      },
+      {
+        "title": "Current shared distribution-family selector",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/ParametricDistributionSelector.qml"
+      },
+      {
+        "title": "Survival feature history",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/NEWS.md"
+      },
+      {
+        "title": "Official Survival 0.98.2 beta packages",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.98.2-beta.0_R-4-5-2_Beta"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_parametric",
+        "label": "Start with one lifetime distribution"
+      },
+      {
+        "id": "survival_accelerated",
+        "label": "Use measured stress to explain lifetime differences"
+      },
+      {
+        "id": "survival_km",
+        "label": "Inspect the observed survival pattern"
+      }
+    ]
+  },
+  "survival_recurrent": {
+    "id": "survival_recurrent",
+    "family": "survival",
+    "title": "Recurrent failures and reliability growth",
+    "summary": "Model repairable-system event counts across successive observation intervals using the recent Recurrent Events analysis.",
+    "why": "The same repairable system can fail repeatedly, and you want to examine how its event intensity changes with accumulated test time. This is a different observation structure from one first-failure lifetime per independent unit.",
+    "path": [
+      "Survival",
+      "Classical",
+      "Recurrent Events"
+    ],
+    "availability": {
+      "module": "Survival",
+      "sourceVersion": "0.98.2-beta.0",
+      "status": "beta",
+      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+    },
+    "setup": [
+      {
+        "title": "Confirm the analysis and data structure",
+        "text": "Use a recent build that contains Recurrent Events. Supply at least three complete observation intervals per analysed system or group, in chronological order. The current implementation requires a positive integer event count in every interval; if an interval has zero events, do not delete it or invent an event to make this route run."
+      },
+      {
+        "title": "Assign interval time and event count",
+        "text": "Put IntervalEnd_h in Time and EventCount in Event Count (optional). Choose Time input > Cumulative interval endpoints. Counts must be the number of events within each interval, not cumulative counts. Each sequence starts at time zero. Interval durations is an alternative input convention."
+      },
+      {
+        "title": "Choose a model and estimation method",
+        "text": "For the teaching example choose Model > Crow–AMSAA (power-law NHPP) and Estimation > Maximum likelihood. This implementation fits interval counts. Other verified choices are Duane, Log-linear NHPP and Piecewise power-law NHPP; their available estimators differ."
+      },
+      {
+        "title": "Inspect growth and uncertainty",
+        "text": "Request Model summary, Data summary, Coefficients and Confidence intervals. Under Predictions, request Cumulative events and Event intensity with Table and Plot, and add Observed data where applicable. Check whether the modeled trend is credible over the observation period."
+      },
+      {
+        "title": "Use system and mission quantities carefully",
+        "text": "For independently tested systems, Subgroup fits each subgroup as a separate observation sequence; it does not estimate one pooled random-effects model. Mission reliability predicts the probability of no events over a stated duration beginning at a selected time, under the model assumptions. Report the mission start and duration explicitly."
+      }
+    ],
+    "columns": [
+      {
+        "name": "IntervalEnd_h",
+        "type": "Scale",
+        "description": "Cumulative endpoint of each successive observation interval in hours. Positive and strictly increasing; the first interval begins at zero."
+      },
+      {
+        "name": "EventCount",
+        "type": "Scale",
+        "description": "Positive integer count of events inside that interval. These are not cumulative totals. The example retains every planned interval."
+      }
+    ],
+    "checks": [
+      "At least three complete observation intervals are required for each analysed system or subgroup. Every interval must have a positive integer event count, and cumulative endpoints must increase strictly within its sequence.",
+      "Preserve every exposure interval, including intervals with no events in real data. Survival 0.98.2 currently rejects zero-count intervals, so a dataset containing them needs a supported alternative or an updated implementation.",
+      "The current maximum-likelihood option uses interval-count likelihood, even if a row happens to contain one event. Do not describe it as an exact-event-time likelihood.",
+      "Time must represent meaningful accumulated operating exposure. Review downtime, changes in duty and test conditions before interpreting a trend as reliability growth.",
+      "Use Subgroup only for independent complete sequences. Splitting one continuing sequence at every change of operating condition resets its origin and changes the model.",
+      "NHPP mission probabilities rely on the specified event-process assumptions. They are not ordinary first-failure Kaplan–Meier estimates and do not add individual censoring support.",
+      "Confidence intervals for modeled curves are not prediction intervals for future counts. The reciprocal of instantaneous event intensity is a local rate-based quantity, not generally the expected waiting time to the next event."
+    ],
+    "report": [
+      "The system, event and repair definitions, time origin and exposure units, complete interval counts and observation horizon.",
+      "Model and estimator, fitted growth or rate parameters with uncertainty, and diagnostics or limitations of the event-process assumptions.",
+      "Predicted event intensity or cumulative events at named times; for mission reliability, the start time, duration and event-free probability definition."
+    ],
+    "example": {
+      "title": "Track recurrent failures during a reliability-growth test",
+      "story": "A synthetic repairable-system test is observed for 24 successive 100-hour intervals. All intervals have recorded positive event counts. The generating process has a declining event intensity; the app supplies the data and setup, not a fitted conclusion.",
+      "sample": "survival_recurrent",
+      "instructions": [
+        "Keep row order. Assign IntervalEnd_h to Time and EventCount to Event Count (optional), with Cumulative interval endpoints.",
+        "Choose Crow–AMSAA (power-law NHPP), Maximum likelihood, and request the data and model summaries.",
+        "Plot modeled cumulative events with observed data and event intensity. Explain why deleting a zero-event interval from another study would remove exposure information."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Current recurrent-event menu",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/Description.qml"
+      },
+      {
+        "title": "Current recurrent-event roles and model choices",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/RecurrentEventAnalysis.qml"
+      },
+      {
+        "title": "Current interval validation and estimation implementation",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/R/recurrentevents-analysis.R"
+      },
+      {
+        "title": "Current mission-reliability and event-process predictions",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/inst/qml/qml_components/RecurrentEventPredictions.qml"
+      },
+      {
+        "title": "Survival feature history",
+        "url": "https://github.com/jasp-stats/jaspSurvival/blob/d3550d881f302762b35050a4c86e037378ab9179/NEWS.md"
+      },
+      {
+        "title": "Official Survival 0.98.2 beta packages",
+        "url": "https://github.com/jasp-stats-modules/jaspSurvival/releases/tag/0.98.2-beta.0_R-4-5-2_Beta"
+      }
+    ],
+    "related": [
+      {
+        "id": "survival_km",
+        "label": "Each unit contributes only its first failure"
+      },
+      {
+        "id": "survival_parametric",
+        "label": "Estimate a non-repairable component lifetime"
+      },
+      {
+        "id": "survival_accelerated",
+        "label": "Analyze independent units tested at fixed stress"
+      }
+    ]
+  }
+}

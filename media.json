@@ -1,0 +1,12 @@
+{
+  "defaults": {
+    "video": null,
+    "jasp": null
+  },
+  "analyses": {},
+  "assets": {},
+  "videoPlaceholder": {
+    "file": "assets-source/video-coming-soon.png",
+    "alt": "Coming soon: a quick video guide for this feature."
+  }
+}

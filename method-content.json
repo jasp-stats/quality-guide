@@ -1,0 +1,1332 @@
+{
+  "one_t": {
+    "id": "one_t",
+    "family": "compare",
+    "title": "One-sample t-test",
+    "summary": "Estimate how far a process mean is from a specified target.",
+    "why": "You have one set of independent numerical measurements and want to compare its population mean with a fixed reference value.",
+    "path": [
+      "T-Tests",
+      "Classical",
+      "One Sample T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Assign the measurement",
+        "text": "Move your numerical measurement to Variables. Each row should represent one independent sampled unit; do not enter only the sample mean."
+      },
+      {
+        "title": "Enter the target",
+        "text": "Set Test value to the specified target. Retain Student under Tests. Choose a one-sided alternative only when the direction was chosen before examining the results."
+      },
+      {
+        "title": "Request useful output",
+        "text": "Select Location estimate and its Confidence interval, Descriptives, and a raincloud or Q-Q plot. Report the difference in the original measurement units."
+      },
+      {
+        "title": "Optional Bayesian analysis",
+        "text": "T-Tests > Bayesian > One Sample T-Test provides Bayes factors and posterior estimates. Specify and examine the prior; a Bayes factor for a point null addresses a different question from practical equivalence."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "One identifier per independently sampled package."
+      },
+      {
+        "name": "FillWeight",
+        "type": "Scale",
+        "description": "Measured package mass in grams; the example target is 500 g."
+      }
+    ],
+    "checks": [
+      "Check how the sample was collected. Consecutive, autocorrelated readings or many measurements from the same batch may require a model that represents that dependence.",
+      "Inspect the measurement distribution and unusual values, especially with a small sample. A normality-test p-value alone should not choose the analysis.",
+      "The target is an external reference, not a second sample mean estimated with uncertainty.",
+      "A test of the mean does not establish that individual items meet specification limits. A nonsignificant result does not establish equivalence."
+    ],
+    "report": [
+      "Sample size, mean, standard deviation, target and estimated mean difference with a confidence interval.",
+      "The test, alternative hypothesis and p-value; interpret the magnitude in the context of an engineering tolerance.",
+      "How units were sampled and any evidence of dependence, drift or influential measurements."
+    ],
+    "example": {
+      "title": "Is the average fill on target?",
+      "story": "A packaging line has a nominal fill of 500 g. Independent sampled packages are weighed to estimate the difference between the process mean and that target.",
+      "sample": "compare_single",
+      "instructions": [
+        "Move FillWeight to Variables and enter 500 as Test value.",
+        "Request the location estimate, its confidence interval and Descriptives.",
+        "For the question 'close enough to 500 g', use the equivalence route and a prespecified acceptable deviation."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP one-sample t-test interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspTTests/blob/v0.96.0/inst/qml/TTestOneSample.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "eq_one",
+        "label": "Show the mean is close enough to the target"
+      }
+    ]
+  },
+  "ind_t": {
+    "id": "ind_t",
+    "family": "compare",
+    "title": "Independent-samples t-test · Welch",
+    "summary": "Compare the means of two groups of independently sampled units.",
+    "why": "Each unit belongs to one group, the outcome is numerical, and your question concerns a difference in population means. Welch's test allows the group variances to differ.",
+    "path": [
+      "T-Tests",
+      "Classical",
+      "Independent Samples T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Use one measurement column",
+        "text": "Move Measurement to Dependent Variables and Group to Grouping Variable. Group must contain exactly two levels."
+      },
+      {
+        "title": "Select Welch",
+        "text": "Select Welch under Tests. Deselect Student if you want a single primary test. You do not need a preliminary variance test to justify using Welch."
+      },
+      {
+        "title": "Show the size of the difference",
+        "text": "Request Location parameter and its Confidence interval, Descriptives, and raincloud plots. Check which group is subtracted from which."
+      },
+      {
+        "title": "Optional Bayesian analysis",
+        "text": "The Bayesian section of T-Tests includes an independent-samples test. Its standard model is not simply Welch's test with a Bayes factor; examine the model assumptions and prior before using it."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "One identifier per independently sampled part."
+      },
+      {
+        "name": "Group",
+        "type": "Nominal",
+        "description": "Two process labels, A and B."
+      },
+      {
+        "name": "Measurement",
+        "type": "Scale",
+        "description": "Measured dimension in millimetres."
+      }
+    ],
+    "checks": [
+      "These are different units in the two groups. If the same parts were measured twice, choose the paired route.",
+      "Repeated readings from the same part, batch or machine are not automatically independent replicates.",
+      "Inspect outliers and each group's distribution. Welch addresses unequal variances, not severe dependence or all small-sample distribution problems.",
+      "An ordinary difference test cannot establish that two processes are practically equivalent."
+    ],
+    "report": [
+      "Group sample sizes, means and standard deviations; the mean difference and its confidence interval in millimetres.",
+      "Welch's t statistic, degrees of freedom, p-value and the prespecified alternative.",
+      "Whether the difference is large enough to matter for the process, separate from statistical significance."
+    ],
+    "example": {
+      "title": "Do two suppliers produce different dimensions?",
+      "story": "Independent parts from suppliers A and B are measured. The engineering question concerns their average dimension, not whether their variances or individual defect rates are equal.",
+      "sample": "compare_ind",
+      "instructions": [
+        "Set Group to Nominal and Measurement to Scale.",
+        "Assign Measurement and Group, then select Welch.",
+        "Inspect the confidence interval for the mean difference and compare it with a meaningful engineering difference."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP independent-samples t-test interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspTTests/blob/v0.96.0/inst/qml/TTestIndependentSamples.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "eq_ind",
+        "label": "Demonstrate practical equivalence"
+      },
+      {
+        "id": "paired_t",
+        "label": "The same units were measured twice"
+      }
+    ]
+  },
+  "paired_t": {
+    "id": "paired_t",
+    "family": "compare",
+    "title": "Paired-samples t-test",
+    "summary": "Estimate the mean change within matched units.",
+    "why": "Each before measurement has a meaningful after measurement from the same unit or a prespecified matched partner. The analysis uses the differences within those pairs.",
+    "path": [
+      "T-Tests",
+      "Classical",
+      "Paired Samples T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Keep each pair on one row",
+        "text": "Arrange Before and After in separate numerical columns. Each row represents one matched pair. Keep Part as an identifier."
+      },
+      {
+        "title": "Define the pair",
+        "text": "Move Before and After into one row in Variable Pairs and retain Student under Tests. The column order defines the sign of the difference."
+      },
+      {
+        "title": "Inspect differences",
+        "text": "Request Location parameter, its Confidence interval and Descriptives. Use Raincloud difference plots or the Q-Q plot to inspect the within-pair differences."
+      },
+      {
+        "title": "Optional Bayesian analysis",
+        "text": "T-Tests > Bayesian > Paired Samples T-Test provides a Bayes factor and posterior estimates for the standardized within-pair effect. Examine the prior and distinguish evidence about zero change from practical equivalence."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Identifies the work item or matched pair."
+      },
+      {
+        "name": "Before",
+        "type": "Scale",
+        "description": "Cycle time before a workflow change, in seconds."
+      },
+      {
+        "name": "After",
+        "type": "Scale",
+        "description": "Cycle time after the change for the matching work item, in seconds."
+      }
+    ],
+    "checks": [
+      "The matching must reflect the design; similar row numbers or equal sample sizes do not create genuine pairs.",
+      "Independent pairs are required. Additional repeats within a part or batch need a model that represents that structure.",
+      "For a small sample, inspect the distribution of the differences. Separate normality tests on Before and After do not assess the paired-test assumption.",
+      "Before–after data can be affected by time trends, learning or other simultaneous changes. Pairing alone does not establish a causal effect."
+    ],
+    "report": [
+      "Number of complete pairs and the mean difference with a confidence interval in seconds.",
+      "State the subtraction order, such as Before minus After, and the selected alternative.",
+      "Describe matching, missing pairs and any factors that could explain the change."
+    ],
+    "example": {
+      "title": "Did a workflow change reduce cycle time?",
+      "story": "Each work item has a cycle-time measurement before and after a change. Matching removes much of the variation caused by some items inherently taking longer.",
+      "sample": "compare_paired",
+      "instructions": [
+        "Create the pair Before–After in Variable Pairs.",
+        "Inspect the differences and their confidence interval.",
+        "A positive Before minus After estimate means the after measurements were faster."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP paired-samples t-test interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspTTests/blob/v0.96.0/inst/qml/TTestPairedSamples.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "eq_paired",
+        "label": "Show the average change is acceptably small"
+      },
+      {
+        "id": "rm_anova",
+        "label": "The same units have three or more measurements"
+      }
+    ]
+  },
+  "one_anova": {
+    "id": "one_anova",
+    "family": "compare",
+    "title": "One-way ANOVA · Welch option",
+    "summary": "Compare a numerical outcome across three or more independent groups.",
+    "why": "You have one grouping factor and independent units in its groups. An ANOVA assesses whether all population means are equal; follow-up comparisons identify the differences of interest.",
+    "path": [
+      "ANOVA",
+      "Classical",
+      "ANOVA"
+    ],
+    "setup": [
+      {
+        "title": "Assign the outcome and group",
+        "text": "Move Measurement to Dependent Variable and Group to Fixed Factors. For this route, use one grouping factor."
+      },
+      {
+        "title": "Choose the variance assumption",
+        "text": "Under Assumption Checks > Homogeneity corrections, select Welch for a one-way comparison that allows unequal variances. The standard ANOVA is appropriate when a common residual variance is defensible."
+      },
+      {
+        "title": "Plan the follow-up comparisons",
+        "text": "In Post Hoc Tests, assign Group. Games-Howell accommodates unequal group variances. For the standard equal-variance model, Tukey compares all pairs and Dunnett compares groups with a reference."
+      },
+      {
+        "title": "Inspect the data and report uncertainty",
+        "text": "Request descriptives, plots and suitable intervals. Avoid reporting only the overall p-value. A Bayesian ANOVA is also available in ANOVA > Bayesian, with its own model and prior assumptions."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Independent sampled part."
+      },
+      {
+        "name": "Group",
+        "type": "Nominal",
+        "description": "Process or machine labels A, B and C."
+      },
+      {
+        "name": "Measurement",
+        "type": "Scale",
+        "description": "Part dimension in millimetres."
+      }
+    ],
+    "checks": [
+      "The same part must not contribute measurements to multiple groups in this independent-groups route.",
+      "Welch's correction here is for a one-way design. Multiple experimental factors and their interactions require the appropriate factorial model.",
+      "Inspect residuals, group distributions and influential values; do not let a single normality or variance test mechanically choose the method.",
+      "Use planned contrasts or adjust for multiple comparisons. Separate unadjusted t-tests inflate false-positive risk."
+    ],
+    "report": [
+      "Group sample sizes, means and spreads, and the overall test with its variance assumption.",
+      "The comparisons that matter operationally, with effect estimates, intervals and the multiplicity adjustment.",
+      "Whether observed differences exceed a prespecified practically relevant amount."
+    ],
+    "example": {
+      "title": "Compare three production machines",
+      "story": "Different parts are sampled from machines A, B and C. The goal is to locate differences in average part dimension while allowing the machines to have different variability.",
+      "sample": "compare_three",
+      "instructions": [
+        "Assign Measurement as Dependent Variable and Group as Fixed Factors.",
+        "Select Welch under Homogeneity corrections.",
+        "If comparing all pairs, request Games-Howell and interpret the differences in millimetres."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP ANOVA interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspAnova/blob/v0.96.0/inst/qml/Anova.qml"
+      },
+      {
+        "title": "JASP homogeneity corrections",
+        "url": "https://github.com/jasp-stats/jaspAnova/blob/v0.96.0/inst/qml/common/classical/AssumptionChecks.qml"
+      },
+      {
+        "title": "JASP post-hoc comparisons",
+        "url": "https://github.com/jasp-stats/jaspAnova/blob/v0.96.0/inst/qml/common/classical/PostHoc.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "rm_anova",
+        "label": "Measurements are repeated on the same units"
+      },
+      {
+        "id": "doe_analyze",
+        "label": "Analyse a designed experiment"
+      }
+    ]
+  },
+  "rm_anova": {
+    "id": "rm_anova",
+    "family": "compare",
+    "title": "Repeated-measures ANOVA",
+    "summary": "Compare three or more conditions measured on the same units.",
+    "why": "The same units are observed under several conditions. The analysis represents their shared identity instead of treating every measurement as independent.",
+    "path": [
+      "ANOVA",
+      "Classical",
+      "Repeated Measures ANOVA"
+    ],
+    "setup": [
+      {
+        "title": "Use one row per unit",
+        "text": "Place the measurements from each condition in separate columns, such as Setting_A, Setting_B and Setting_C. Keep Part as an identifier."
+      },
+      {
+        "title": "Define the repeated factor",
+        "text": "Create a repeated-measures factor named Setting with three levels. Assign the three measurement columns to their matching Repeated Measures Cells."
+      },
+      {
+        "title": "Assess the repeated-measures assumptions",
+        "text": "Request the sphericity test and sphericity corrections. With more than two levels, report an appropriate correction, such as Greenhouse–Geisser, when the uncorrected assumption is not defensible."
+      },
+      {
+        "title": "Compare the relevant conditions",
+        "text": "Request descriptive plots and planned or adjusted follow-up comparisons. A Bayesian repeated-measures analysis is also available under ANOVA > Bayesian; check its model and prior assumptions."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "The same physical unit across all three conditions."
+      },
+      {
+        "name": "Setting_A",
+        "type": "Scale",
+        "description": "Measurement under setting A, in millimetres."
+      },
+      {
+        "name": "Setting_B",
+        "type": "Scale",
+        "description": "Measurement under setting B, in millimetres."
+      },
+      {
+        "name": "Setting_C",
+        "type": "Scale",
+        "description": "Measurement under setting C, in millimetres."
+      }
+    ],
+    "checks": [
+      "Units should be independent of one another even though measurements within a unit are related.",
+      "Randomize or counterbalance condition order when possible; setting effects can otherwise be confounded with time or carry-over.",
+      "Unbalanced repeats, many missing measurements, nested batches or complex time dependence may require a mixed model instead.",
+      "A significant overall test says some mean differs. It does not identify which conditions or whether the differences matter in practice."
+    ],
+    "report": [
+      "The number of complete units, condition means and planned or adjusted comparisons.",
+      "The repeated factor, sphericity correction and associated test results.",
+      "Measurement order, missing-data handling and the practical magnitude of differences."
+    ],
+    "example": {
+      "title": "Compare three settings on the same parts",
+      "story": "Each part is measured under settings A, B and C. A row contains all three measurements from the same part.",
+      "sample": "repeated_three",
+      "instructions": [
+        "Create Setting with three levels and assign Setting_A, Setting_B and Setting_C to the matching cells.",
+        "Inspect sphericity corrections and a plot of the condition means.",
+        "Use adjusted pairwise comparisons when several setting comparisons are of interest."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP repeated-measures ANOVA interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspAnova/blob/v0.96.0/inst/qml/AnovaRepeatedMeasures.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "paired_t",
+        "label": "Only two repeated conditions"
+      }
+    ]
+  },
+  "eq_one": {
+    "id": "eq_one",
+    "family": "compare",
+    "title": "One-sample equivalence test",
+    "summary": "Assess whether a process mean is close enough to its target.",
+    "why": "Your claim concerns a practically acceptable deviation from a target. An equivalence test directly evaluates whether the mean difference lies inside prespecified bounds.",
+    "path": [
+      "Equivalence T-Tests",
+      "Classical",
+      "One Sample T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Activate the module",
+        "text": "Enable Equivalence T-Tests in JASP's module selector if it is not already visible. Choose its Classical One Sample T-Test."
+      },
+      {
+        "title": "Specify the measurement and target",
+        "text": "Assign FillWeight to Variables and enter the reference target in Test value, for example 500 g."
+      },
+      {
+        "title": "Set meaningful bounds",
+        "text": "Under Equivalence Region, choose Bounds specification in: Raw. Enter bounds for the deviation from the target, for example −1 to +1 g. Choose these bounds before inspecting the data."
+      },
+      {
+        "title": "Read both one-sided tests",
+        "text": "At alpha 0.05, equivalence requires both bound tests to reject non-equivalence; equivalently, the relevant 90% confidence interval must lie entirely within the bounds. Request the Equivalence bounds plot."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "Independent sampled package."
+      },
+      {
+        "name": "FillWeight",
+        "type": "Scale",
+        "description": "Package mass in grams."
+      }
+    ],
+    "checks": [
+      "Bounds describe an acceptable difference in the process mean. They are not the specification limits for individual products.",
+      "Use raw engineering units when those define acceptability. Do not leave the software's default equivalence bounds without justification.",
+      "The independent-measurement and distribution requirements of a one-sample mean analysis still apply.",
+      "Failure to establish equivalence can reflect an imprecise sample; it does not by itself establish a practically important difference."
+    ],
+    "report": [
+      "The target, equivalence bounds, units and engineering justification selected before analysis.",
+      "The estimated deviation, relevant confidence interval, alpha level and both one-sided test results.",
+      "State whether equivalence was established, with separate assessment of process spread and individual conformance."
+    ],
+    "example": {
+      "title": "Is mean fill within 1 g of the target?",
+      "story": "Suppose engineering requirements define an acceptable mean deviation of at most 1 g from a 500 g target. This is a question about the mean; the allowable range for individual packages is a separate requirement.",
+      "sample": "compare_single",
+      "instructions": [
+        "Assign FillWeight and set Test value to 500.",
+        "Select Raw bounds from −1 to +1 and request the equivalence plot.",
+        "Treat ±1 g as an illustrative prechosen tolerance, not as a universal quality standard."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP one-sample equivalence interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspEquivalenceTTests/blob/v0.96.0/inst/qml/EquivalenceOneSampleTTest.qml"
+      },
+      {
+        "title": "JASP introduction to equivalence testing",
+        "url": "https://jasp-stats.org/2020/06/02/frequentist-and-bayesian-equivalence-testing-in-jasp/"
+      }
+    ],
+    "related": [
+      {
+        "id": "one_t",
+        "label": "Test for a difference from the target"
+      }
+    ]
+  },
+  "eq_ind": {
+    "id": "eq_ind",
+    "family": "compare",
+    "title": "Equivalence test for independent groups",
+    "summary": "Assess whether two independent process means are close enough for a defined purpose.",
+    "why": "You want positive evidence that the difference in two population means lies within an engineering tolerance, rather than relying on a nonsignificant ordinary t-test.",
+    "path": [
+      "Equivalence T-Tests",
+      "Classical",
+      "Independent Samples T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Assign the outcome and group",
+        "text": "Enable Equivalence T-Tests if needed. Move Measurement to Dependent Variables and Group to Grouping Variable."
+      },
+      {
+        "title": "Choose Welch",
+        "text": "Select Welch under Tests when using a model that allows unequal group variances. Confirm the group order used for the mean difference."
+      },
+      {
+        "title": "Enter the acceptance region",
+        "text": "Set Bounds specification in to Raw and enter the prespecified acceptable mean difference, for example −0.05 to +0.05 mm."
+      },
+      {
+        "title": "Inspect the equivalence interval",
+        "text": "Request Descriptives and the Equivalence bounds plot. With alpha 0.05, both one-sided tests must reject, which corresponds to the 90% interval lying entirely within the two bounds."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Independent sampled part."
+      },
+      {
+        "name": "Group",
+        "type": "Nominal",
+        "description": "Process A or B; exactly two groups."
+      },
+      {
+        "name": "Measurement",
+        "type": "Scale",
+        "description": "Part dimension in millimetres."
+      }
+    ],
+    "checks": [
+      "Choose bounds from the application before inspecting the estimated difference. The example's ±0.05 mm is an illustrative tolerance.",
+      "Equality of means does not ensure equality of variances, tail risks or overall process capability.",
+      "Independent samples are required. Use the paired equivalence route for the same units measured twice.",
+      "A result may be statistically different from zero and practically equivalent at the same time. An inconclusive result may establish neither."
+    ],
+    "report": [
+      "Both group sample sizes and the estimated mean difference with its equivalence confidence interval.",
+      "The bounds in raw units, justification, alpha level and both one-sided test results.",
+      "Whether equivalence of the means was established, and what additional process characteristics still require assessment."
+    ],
+    "example": {
+      "title": "Can a replacement supplier match the mean dimension?",
+      "story": "Before the study, engineering specifies that a replacement supplier's mean dimension may differ by at most 0.05 mm from the existing supplier. Different parts are sampled from the two suppliers.",
+      "sample": "compare_ind",
+      "instructions": [
+        "Assign Measurement and Group, select Welch and set Raw bounds to −0.05 and +0.05.",
+        "Read the equivalence interval and both bound tests.",
+        "Assess variation and defect rates separately before making a broader interchangeability claim."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP independent-samples equivalence interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspEquivalenceTTests/blob/v0.96.0/inst/qml/EquivalenceIndependentSamplesTTest.qml"
+      },
+      {
+        "title": "JASP introduction to equivalence testing",
+        "url": "https://jasp-stats.org/2020/06/02/frequentist-and-bayesian-equivalence-testing-in-jasp/"
+      }
+    ],
+    "related": [
+      {
+        "id": "ind_t",
+        "label": "Test for a mean difference"
+      },
+      {
+        "id": "eq_paired",
+        "label": "The same units were measured twice"
+      }
+    ]
+  },
+  "eq_paired": {
+    "id": "eq_paired",
+    "family": "compare",
+    "title": "Paired equivalence test",
+    "summary": "Assess whether the average within-pair difference is acceptably small.",
+    "why": "Two measurements are genuinely paired and you have a prespecified acceptable range for their population mean difference.",
+    "path": [
+      "Equivalence T-Tests",
+      "Classical",
+      "Paired Samples T-Test"
+    ],
+    "setup": [
+      {
+        "title": "Keep matching measurements together",
+        "text": "Use one row per pair and separate Before and After columns. Enable Equivalence T-Tests if needed."
+      },
+      {
+        "title": "Assign the pair",
+        "text": "Move Before and After into Variable Pairs. Check the subtraction order, especially for asymmetric acceptance bounds."
+      },
+      {
+        "title": "Specify the allowable difference",
+        "text": "Set Bounds specification in to Raw and enter the prespecified interval for the mean difference, for example −1 to +1 second."
+      },
+      {
+        "title": "Request the equivalence plot",
+        "text": "At alpha 0.05, equivalence requires the relevant 90% interval to lie wholly within the bounds and both one-sided tests to reject non-equivalence."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Matched work item or pair."
+      },
+      {
+        "name": "Before",
+        "type": "Scale",
+        "description": "First cycle-time measurement in seconds."
+      },
+      {
+        "name": "After",
+        "type": "Scale",
+        "description": "Matching second cycle-time measurement in seconds."
+      }
+    ],
+    "checks": [
+      "Matching must come from the study design, and different pairs should be independent.",
+      "Inspect within-pair differences and their outliers; do not assess the paired model solely from the two separate marginal distributions.",
+      "Equivalence of average measurement bias does not establish agreement for individual measurements. A measurement-system study may be needed for interchangeability.",
+      "Specify bounds before examining the data and distinguish an inconclusive result from established equivalence."
+    ],
+    "report": [
+      "Number of complete pairs, subtraction order, mean difference and equivalence confidence interval.",
+      "Prespecified bounds in seconds, alpha level and both one-sided test results.",
+      "The exact scope of the conclusion: the average paired difference, not every individual difference."
+    ],
+    "example": {
+      "title": "Does the change preserve mean cycle time?",
+      "story": "Suppose a workflow change is acceptable only if its average cycle-time change remains within ±1 second. The same work items are measured before and after.",
+      "sample": "compare_paired",
+      "instructions": [
+        "Assign Before–After as a pair and choose Raw bounds from −1 to +1.",
+        "Read the equivalence plot; the paired differences, not the two separate means, determine precision.",
+        "The example tolerance illustrates setup and should be replaced by a justified requirement in a real study."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP paired equivalence interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspEquivalenceTTests/blob/v0.96.0/inst/qml/EquivalencePairedSamplesTTest.qml"
+      },
+      {
+        "title": "JASP introduction to equivalence testing",
+        "url": "https://jasp-stats.org/2020/06/02/frequentist-and-bayesian-equivalence-testing-in-jasp/"
+      }
+    ],
+    "related": [
+      {
+        "id": "paired_t",
+        "label": "Test for average change"
+      }
+    ]
+  },
+  "binomial": {
+    "id": "binomial",
+    "family": "compare",
+    "title": "Binomial test",
+    "summary": "Compare one pass/fail probability with a specified benchmark.",
+    "why": "Each independent item has a binary outcome, and you want to estimate or test the probability of one defined event such as failure.",
+    "path": [
+      "Frequencies",
+      "Classical",
+      "Binomial Test"
+    ],
+    "setup": [
+      {
+        "title": "Use item-level outcomes",
+        "text": "Use one row per inspected item with a nominal Result column containing Pass or Fail. Move Result to Variables. Do not enter the lot percentages as binary observations."
+      },
+      {
+        "title": "Enter the benchmark probability",
+        "text": "Set Test value to the probability benchmark for the event you will interpret, for example 0.05 for a 5% failure rate. Read the output row for Fail."
+      },
+      {
+        "title": "Choose direction and uncertainty",
+        "text": "Choose the prespecified alternative and request a confidence interval. A claim that failure probability is below a maximum needs evidence in that direction; failure to reject equality is insufficient."
+      },
+      {
+        "title": "Optional Bayesian analysis",
+        "text": "Frequencies > Bayesian > Binomial Test provides evidence and estimation under a specified prior. Select the event and prior deliberately; do not confuse the pass probability with the failure probability."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "One inspected item."
+      },
+      {
+        "name": "Result",
+        "type": "Nominal",
+        "description": "Exactly one of Pass or Fail for each item."
+      }
+    ],
+    "checks": [
+      "Each item contributes one binary classification. Multiple defects on the same item are a different kind of count.",
+      "The total number inspected is needed. A count of failures alone does not determine a failure proportion.",
+      "The simple binomial model assumes independent items with a common probability. Clustering by lot or changes over time may require a different analysis.",
+      "Choose the event, benchmark and direction before looking at the observed rate. For ongoing monitoring, use an appropriate attribute control chart."
+    ],
+    "report": [
+      "Number of failures and total inspected, observed failure proportion and its uncertainty interval.",
+      "The benchmark probability, event definition, alternative and selected test result.",
+      "Whether the evidence supports the operational claim and whether the inspection sample represents the intended process."
+    ],
+    "example": {
+      "title": "Assess a failure-rate benchmark",
+      "story": "Each inspected component is recorded as Pass or Fail. The team wants to assess its failure probability against a 5% benchmark.",
+      "sample": "passfail_units",
+      "instructions": [
+        "Move Result to Variables and enter 0.05 as Test value.",
+        "Request a confidence interval and interpret the Fail row.",
+        "Use a prespecified lower alternative only if the intended claim is that the failure probability is below 5%."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP binomial-test interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspFrequencies/blob/v0.96.0/inst/qml/BinomialTest.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "contingency",
+        "label": "Compare pass/fail rates between independent groups"
+      }
+    ]
+  },
+  "contingency": {
+    "id": "contingency",
+    "family": "compare",
+    "title": "Contingency tables · independent groups",
+    "summary": "Compare categorical outcomes between independent groups.",
+    "why": "You want to determine whether the distribution of outcomes, such as Pass and Fail, is associated with a grouping variable such as supplier.",
+    "path": [
+      "Frequencies",
+      "Classical",
+      "Contingency Tables"
+    ],
+    "setup": [
+      {
+        "title": "Choose the data layout",
+        "text": "For individual records, use one row per item with Supplier and Result. For summarized records, use one row per Supplier × Result combination and a Count column."
+      },
+      {
+        "title": "Assign rows, columns and counts",
+        "text": "Move Supplier to Rows and Result to Columns. For summarized data only, move Count to Counts; leave Counts empty for individual records."
+      },
+      {
+        "title": "Inspect proportions and expected counts",
+        "text": "Request row percentages and expected cell counts. Pearson's chi-squared test is the standard association test when the approximation is adequate."
+      },
+      {
+        "title": "Handle a sparse 2 × 2 table",
+        "text": "For two groups and two outcomes, request Odds ratio (2x2 only) to obtain Fisher's exact test and an effect interval. The interface also offers a log-odds display; label whichever scale you report."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Supplier",
+        "type": "Nominal",
+        "description": "Independent groups; suppliers A, B and C in the example."
+      },
+      {
+        "name": "Result",
+        "type": "Nominal",
+        "description": "Outcome category; Pass/Fail in the example."
+      },
+      {
+        "name": "Count",
+        "type": "Scale",
+        "description": "Nonnegative integer number of items in this Supplier × Result combination; use only for summarized records."
+      }
+    ],
+    "checks": [
+      "Different groups must contain independent items. Paired pass/fail measurements require a paired categorical analysis, not the ordinary independence test.",
+      "Enter counts, not rounded percentages. Keep the denominators and all outcome categories.",
+      "For sparse larger tables, Pearson's approximation may be poor. A 2 × 2 Fisher test is not a general solution for every larger design.",
+      "An association need not be causal: suppliers may differ in product mix, inspection or other factors. Logistic regression can incorporate measured predictors."
+    ],
+    "report": [
+      "The category counts and within-group proportions, with the relevant denominators.",
+      "The chosen test and effect estimate with an interval; specify event coding and reference group.",
+      "The practical difference in quality and any confounding or sampling limitations."
+    ],
+    "example": {
+      "title": "Compare three suppliers’ nonconforming proportions",
+      "story": "Independent deliveries from suppliers A, B and C are inspected. Counts are summarized into six supplier-by-result rows.",
+      "sample": "contingency",
+      "instructions": [
+        "Assign Supplier to Rows, Result to Columns and Count to Counts.",
+        "Request row percentages and expected counts.",
+        "This is a 3 × 2 table. Examine expected counts before interpreting Pearson’s chi-squared test; the 2 × 2 Fisher option does not apply to the full table."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP contingency-table interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspFrequencies/blob/v0.96.0/inst/qml/ContingencyTables.qml"
+      },
+      {
+        "title": "JASP Fisher-test implementation (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspFrequencies/blob/v0.96.0/R/contingencytables.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "binomial",
+        "label": "Compare one failure rate with a benchmark"
+      },
+      {
+        "id": "logistic_regression",
+        "label": "Account for several predictors"
+      }
+    ]
+  },
+  "doe_factorial": {
+    "id": "doe_factorial",
+    "family": "doe",
+    "title": "Create a factorial design",
+    "summary": "Plan runs to study several factors and their interactions.",
+    "why": "You want to learn which controllable factors affect a response. A factorial design varies factors together so their main effects and interactions can be studied.",
+    "path": [
+      "Quality Control",
+      "Design of Experiments",
+      "Create Factorial Worksheet"
+    ],
+    "setup": [
+      {
+        "title": "Define the experiment",
+        "text": "Specify the response, experimental unit, feasible factor ranges and minimum relevant effects before selecting a design. Worksheet creation does not require an existing dataset."
+      },
+      {
+        "title": "Choose factors and design type",
+        "text": "Enter Number of factors, names and levels. Choose a 2-level factorial design for low/high factors or General full factorial when factors need more levels."
+      },
+      {
+        "title": "Select a design row",
+        "text": "Click a suitable candidate in the Design Table and enable Display design. Without selecting a candidate, an empty result can look like the analysis is not working."
+      },
+      {
+        "title": "Plan replication and restrictions",
+        "text": "Set replications, blocks and center points as justified by the study. Inspect Alias structure for fractional designs. Use a reproducible seed and the randomized run order."
+      },
+      {
+        "title": "Export and collect responses",
+        "text": "Choose the CSV destination and Export design. Run the experiment in its planned order, record the response alongside factor settings, then use Analyse Design."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Run",
+        "type": "Nominal",
+        "description": "Actual execution order; keep the completed dataset in this order."
+      },
+      {
+        "name": "Temperature",
+        "type": "Scale",
+        "description": "Controlled temperature in degrees Celsius, with two planned levels."
+      },
+      {
+        "name": "Pressure",
+        "type": "Scale",
+        "description": "Controlled pressure in bar, with two planned levels."
+      },
+      {
+        "name": "Speed",
+        "type": "Scale",
+        "description": "Controlled speed in rpm, with two planned levels."
+      },
+      {
+        "name": "Strength",
+        "type": "Scale",
+        "description": "Measured response in MPa, entered after each experimental run."
+      }
+    ],
+    "checks": [
+      "A fractional design can confound effects. Check its resolution and alias structure against the interactions that matter.",
+      "Repeated measurements of one experimental run are not independent run replications.",
+      "For continuous factors, center points can help reveal curvature, but a two-level design with centers does not separately estimate every quadratic effect.",
+      "Hard-to-change factors require restricted randomization and an analysis with the correct error structure. JASP offers split-plot worksheet creation, but the ordinary factorial analysis should not be assumed to solve every split-plot design.",
+      "Blocks represent planned nuisance variation such as day or raw-material batch. Decide how blocking and randomization will work before collecting data."
+    ],
+    "report": [
+      "Factor definitions, natural levels, response, run order, independent replications and blocking.",
+      "Full or fractional design, alias structure, center points and design-selection rationale.",
+      "Execution deviations and the planned model and follow-up confirmation runs."
+    ],
+    "example": {
+      "title": "Find the drivers of bond strength",
+      "story": "A process team varies temperature (160/180 °C), pressure (2/4 bar) and speed (40/60 rpm) in two independent replicates of a 2³ factorial experiment to study bond strength. The example CSV contains 16 randomized runs with synthetic responses.",
+      "sample": "factorial",
+      "instructions": [
+        "To create a new design, specify three factors and their feasible low/high settings, select a candidate row, and show the design.",
+        "For practice with completed results, open the supplied CSV and choose Analyse Design > Factorial design.",
+        "Assign Strength as the response and the three controlled variables as continuous factors."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP factorial worksheet documentation (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/doeFactorial.md"
+      },
+      {
+        "title": "JASP factorial worksheet interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/doeFactorial.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "doe_analyze",
+        "label": "Analyse completed experimental runs"
+      },
+      {
+        "id": "doe_surface",
+        "label": "Model curvature and optimize settings"
+      }
+    ]
+  },
+  "doe_surface": {
+    "id": "doe_surface",
+    "family": "doe",
+    "title": "Create a response-surface design",
+    "summary": "Plan an experiment that can model curvature and locate useful operating settings.",
+    "why": "The important continuous factors are sufficiently well understood to investigate curvature and optimize a response within a chosen operating region.",
+    "path": [
+      "Quality Control",
+      "Design of Experiments",
+      "Create Response Surface Worksheet"
+    ],
+    "setup": [
+      {
+        "title": "Define a feasible operating region",
+        "text": "Choose continuous factors, their practical ranges and the response goal. No existing dataset is required to create the worksheet."
+      },
+      {
+        "title": "Choose the design",
+        "text": "Select Central composite design or Box-Behnken design. In the verified interface, central composite designs support two or more continuous factors; Box-Behnken starts at three."
+      },
+      {
+        "title": "Select a candidate row",
+        "text": "Click a candidate in the Design Table and enable Display design. Define factor names and low/high levels, then inspect all proposed runs."
+      },
+      {
+        "title": "Check axial points and centers",
+        "text": "For a central composite design, Alpha controls axial distances in coded units. Face centred uses axial points at the low/high limits; other choices can extend beyond the factorial low/high settings. Set center points, replicates and seed deliberately."
+      },
+      {
+        "title": "Export, collect and analyse",
+        "text": "Export the design CSV, follow the planned execution order and record responses. Then choose Analyse Design > Response surface design, fit an appropriate quadratic model and inspect contour plots and residuals."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Run",
+        "type": "Nominal",
+        "description": "Actual randomized execution order."
+      },
+      {
+        "name": "Temperature",
+        "type": "Scale",
+        "description": "Controlled temperature in degrees Celsius."
+      },
+      {
+        "name": "Time",
+        "type": "Scale",
+        "description": "Controlled processing time in minutes."
+      },
+      {
+        "name": "Yield",
+        "type": "Scale",
+        "description": "Measured continuous yield response in percent, away from its bounds in this example."
+      }
+    ],
+    "checks": [
+      "Verify every proposed setting is feasible. In a central composite design, axial points can lie outside the factorial cube.",
+      "Center-point repetitions should be genuine independent experimental runs. They help assess pure error and curvature.",
+      "Keep the intended factorial low/high settings for analysis. Automatic low/high detection can mistake axial values for factorial levels; specify the original levels manually when necessary.",
+      "A fitted optimum is a prediction within a model. Check residuals, keep optimization within justified bounds and confirm promising settings in new runs.",
+      "For hard-to-change factors, constraints or noncontinuous responses, review whether the design and analysis represent the experiment correctly."
+    ],
+    "report": [
+      "Design type, factor ranges, axial distance, center points, replication, blocks and run order.",
+      "The fitted model, residual checks and response surface within the investigated region.",
+      "Proposed settings and the results of independent confirmation runs."
+    ],
+    "example": {
+      "title": "Find a useful temperature and processing time",
+      "story": "A team explores curvature in yield across temperatures of 160–180 °C and processing times of 20–40 minutes. The synthetic two-factor face-centred central composite design has 13 randomized runs: four corners, four axial points and five independent center runs at 170 °C and 30 minutes.",
+      "sample": "surface",
+      "instructions": [
+        "For a new design, choose Central composite design, two continuous factors and Face centred Alpha; select a design row and Display design.",
+        "For the example CSV, use Analyse Design > Response surface design with Yield as the response and Temperature and Time as continuous factors.",
+        "Select a Full quadratic model, inspect residuals, and request a contour or surface plot."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP response-surface worksheet documentation (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/doeResponseSurfaceMethodology.md"
+      },
+      {
+        "title": "JASP response-surface interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/doeResponseSurfaceMethodology.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "doe_analyze",
+        "label": "Analyse completed experimental runs"
+      },
+      {
+        "id": "doe_factorial",
+        "label": "Start with factor screening"
+      }
+    ]
+  },
+  "doe_analyze": {
+    "id": "doe_analyze",
+    "family": "doe",
+    "title": "Analyse a designed experiment",
+    "summary": "Fit the model corresponding to your factorial or response-surface experiment.",
+    "why": "You have completed experimental runs with controlled factor settings and measured responses. The analysis must preserve the design's factors, interactions, coding and blocking.",
+    "path": [
+      "Quality Control",
+      "Design of Experiments",
+      "Analyse Design"
+    ],
+    "setup": [
+      {
+        "title": "Select the design type",
+        "text": "Open the completed dataset and choose Factorial design or Response surface design, matching the experiment that was actually run."
+      },
+      {
+        "title": "Assign response and factors",
+        "text": "Place outcomes in Responses, quantitative factors in Continuous factors and categorical factors in Discrete factors. Assign a planned blocking variable to Blocks where appropriate."
+      },
+      {
+        "title": "Verify levels and model terms",
+        "text": "Check Factor levels, particularly low/high settings in a response-surface design. Specify the model from the design and scientific question. Include interactions when estimable; Full quadratic is available for response-surface designs."
+      },
+      {
+        "title": "Inspect the model",
+        "text": "Request the regression equation, relevant effect plots and Residuals four-in-one plot. Keep rows in actual execution order for residuals versus run order. Choose coded or natural units deliberately."
+      },
+      {
+        "title": "Optimize after checking fit",
+        "text": "For optimization, include responses in Response optimizer, set Maximize, Minimize or Target goals and appropriate bounds, then request Show optimal solution. Validate promising settings with new experimental runs."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Run",
+        "type": "Nominal",
+        "description": "Execution order; keep rows in this order when assessing drift."
+      },
+      {
+        "name": "Temperature",
+        "type": "Scale",
+        "description": "Controlled temperature in degrees Celsius."
+      },
+      {
+        "name": "Pressure",
+        "type": "Scale",
+        "description": "Controlled pressure in bar."
+      },
+      {
+        "name": "Speed",
+        "type": "Scale",
+        "description": "Controlled speed in rpm."
+      },
+      {
+        "name": "Strength",
+        "type": "Scale",
+        "description": "Response in MPa for the factorial example."
+      }
+    ],
+    "checks": [
+      "Respect aliasing and estimability. A saturated or unreplicated design may leave no independent residual-error estimate for ordinary tests.",
+      "An interaction means one factor's effect depends on another factor. Retain a coherent model hierarchy when interpreting it.",
+      "Restricted randomization, split plots and nested experimental units can require multiple error terms. Do not assume the ordinary model is valid for every such design.",
+      "For two-level coded factors, an effect and a regression coefficient can differ by a scaling factor. Check output definitions before interpreting apparent inconsistencies.",
+      "Automatic model selection and optimization can overstate performance. Evaluate residuals and confirm predictions with new runs."
+    ],
+    "report": [
+      "Experimental design, response, factor coding, block structure and fitted model terms.",
+      "Effects with uncertainty, interactions, residual diagnostics and limits from aliasing or sample size.",
+      "Any proposed settings, the region over which predictions are supported and confirmation-run results."
+    ],
+    "example": {
+      "title": "Analyse a replicated bond-strength experiment",
+      "story": "The synthetic dataset contains 16 randomized runs: two independent replicates of a 2³ experiment using temperature 160/180 °C, pressure 2/4 bar and speed 40/60 rpm. The response is bond strength in MPa.",
+      "sample": "factorial",
+      "instructions": [
+        "Choose Factorial design and assign Strength to Responses.",
+        "Assign Temperature, Pressure and Speed to Continuous factors; inspect main effects and estimable interactions.",
+        "Request the residual four-in-one plot and compare the fitted conclusions with the physical process question."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP Analyse Design documentation (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/doeAnalysis.md"
+      },
+      {
+        "title": "JASP Analyse Design interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/doeAnalysis.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "doe_factorial",
+        "label": "Plan a factorial design"
+      },
+      {
+        "id": "doe_surface",
+        "label": "Plan a response-surface design"
+      },
+      {
+        "id": "linear_regression",
+        "label": "Model observational measurements"
+      }
+    ]
+  },
+  "linear_regression": {
+    "id": "linear_regression",
+    "family": "model",
+    "title": "Linear regression",
+    "summary": "Model a continuous response using one or more measured predictors.",
+    "why": "You want to estimate how a numerical outcome varies with predictors or make conditional predictions. A regression provides a model for the response mean given those predictors.",
+    "path": [
+      "Regression",
+      "Classical",
+      "Linear Regression"
+    ],
+    "setup": [
+      {
+        "title": "Assign outcome and predictors",
+        "text": "Put Yield in Dependent Variable and quantitative predictors such as Temperature and Pressure in Covariates. Put categorical predictors in Factors when present."
+      },
+      {
+        "title": "Specify a meaningful model",
+        "text": "Choose model terms from process knowledge and the question. Interpret additive linear effects only over the observed range; a designed experiment may need the dedicated DOE analysis for its terms and coding."
+      },
+      {
+        "title": "Request coefficients and diagnostics",
+        "text": "Request coefficient estimates and confidence intervals, model fit and residual plots. Inspect residuals versus fitted values, unusual cases and collinearity diagnostics."
+      },
+      {
+        "title": "Evaluate intended use",
+        "text": "For prediction, evaluate performance on data not used to fit or select the model. A Bayesian Linear Regression is also available under Regression > Bayesian, with explicit prior and model choices."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Run",
+        "type": "Nominal",
+        "description": "One independent process run or sampled unit."
+      },
+      {
+        "name": "Temperature",
+        "type": "Scale",
+        "description": "Measured temperature in degrees Celsius."
+      },
+      {
+        "name": "Pressure",
+        "type": "Scale",
+        "description": "Measured pressure in bar."
+      },
+      {
+        "name": "Yield",
+        "type": "Scale",
+        "description": "Continuous yield percentage; the example stays away from 0% and 100%."
+      }
+    ],
+    "checks": [
+      "Check the conditional mean pattern and residual variability. The predictors themselves do not have to be normally distributed.",
+      "Consecutive or repeated observations can have dependent errors. Use a model appropriate to their time or clustering structure.",
+      "Observational associations do not establish what will happen when a factor is deliberately changed; uncontrolled variables can confound effects.",
+      "Avoid extrapolation outside the measured operating region. A bounded percentage near 0 or 100, a binary outcome or a count may need another response model.",
+      "Generalized Linear Model does not mean arbitrary nonlinear regression. A nonlinear mechanistic equation requires a method that actually fits that equation."
+    ],
+    "report": [
+      "The response, predictors, units, fitted equation and coefficient intervals.",
+      "Residual diagnostics, influential cases and dependence or sampling limitations.",
+      "For prediction, validation performance on new data and the operating range where the model is intended to be used."
+    ],
+    "example": {
+      "title": "Explain variation in process yield",
+      "story": "Temperature and pressure are recorded across independent process runs. The team models how expected yield varies with those predictors over the observed operating range.",
+      "sample": "drivers",
+      "instructions": [
+        "Assign Yield to Dependent Variable and Temperature and Pressure to Covariates.",
+        "Request coefficients with intervals and residual plots.",
+        "Describe the results as conditional associations unless the study design supports a causal interpretation."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP linear-regression interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/qml/RegressionLinear.qml"
+      },
+      {
+        "title": "JASP regression analysis menu (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/Description.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "logistic_regression",
+        "label": "The outcome is pass/fail"
+      },
+      {
+        "id": "doe_analyze",
+        "label": "These measurements come from a designed experiment"
+      }
+    ]
+  },
+  "logistic_regression": {
+    "id": "logistic_regression",
+    "family": "model",
+    "title": "Logistic regression",
+    "summary": "Model the probability of a binary outcome using process predictors.",
+    "why": "Your response is one of two outcomes, such as defective or not defective, and you want to account for one or more explanatory variables.",
+    "path": [
+      "Regression",
+      "Classical",
+      "Logistic Regression"
+    ],
+    "setup": [
+      {
+        "title": "Use one row per item",
+        "text": "Put Defective in Dependent Variable and set it to a nominal variable with two levels. This example records 0 for nondefective and 1 for defective."
+      },
+      {
+        "title": "Assign predictors",
+        "text": "Move Temperature and Pressure to Covariates. Add categorical variables to Factors when relevant. Confirm which outcome level is modeled as the event."
+      },
+      {
+        "title": "Interpret probabilities and odds",
+        "text": "Request coefficient estimates, odds ratios and confidence intervals. State the event and predictor units so an odds ratio has a clear interpretation."
+      },
+      {
+        "title": "Assess fit and validation",
+        "text": "Inspect model diagnostics and predictive performance, especially calibration and errors relevant to the process. A Bayesian Logistic Regression is also available in Regression > Bayesian with its own prior specification."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "One independently inspected item."
+      },
+      {
+        "name": "Temperature",
+        "type": "Scale",
+        "description": "Measured process temperature in degrees Celsius."
+      },
+      {
+        "name": "Pressure",
+        "type": "Scale",
+        "description": "Measured process pressure in bar."
+      },
+      {
+        "name": "Defective",
+        "type": "Nominal",
+        "description": "Binary outcome: 0 = nondefective, 1 = defective."
+      }
+    ],
+    "checks": [
+      "Do not apply ordinary linear regression to a binary outcome when a probability model is required.",
+      "There must be enough events and non-events for the proposed model. Sparse outcomes and complete separation can make ordinary estimates unstable or infinite.",
+      "The numerical predictors enter the log-odds model in the form you specify. Inspect whether a simple linear term is adequate.",
+      "Items from the same lot can share a failure propensity. Independence must come from the design or be represented in the model.",
+      "For aggregated failed/inspected data, use an appropriate binomial model with denominators. Do not feed percentages to the item-level binary analysis."
+    ],
+    "report": [
+      "Event definition, number of events and non-events, predictors and their units.",
+      "Odds ratios with confidence intervals and predicted probabilities at relevant operating settings.",
+      "Model diagnostics, validation on new data, and limitations from rare events, clustering or confounding."
+    ],
+    "example": {
+      "title": "Which operating conditions predict defects?",
+      "story": "Each component is classified as defective or nondefective, with its production temperature and pressure recorded. The model estimates how defect probability changes with those conditions.",
+      "sample": "binary_drivers",
+      "instructions": [
+        "Set Defective to Nominal and assign it to Dependent Variable.",
+        "Assign Temperature and Pressure as Covariates and verify that the modeled event is Defective = 1.",
+        "Inspect odds ratios and model diagnostics; use new data to assess prediction quality."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP logistic-regression interface (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/qml/RegressionLogistic.qml"
+      },
+      {
+        "title": "JASP regression analysis menu (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/Description.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "contingency",
+        "label": "Compare unadjusted rates across groups"
+      },
+      {
+        "id": "linear_regression",
+        "label": "The outcome is continuous"
+      }
+    ]
+  }
+}

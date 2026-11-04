@@ -1,0 +1,1332 @@
+{
+  "imr": {
+    "id": "imr",
+    "family": "monitor",
+    "title": "Individuals and moving range chart",
+    "summary": "Monitor one numerical measurement at each sampling occasion.",
+    "why": "An X-mR chart tracks individual measurements and their successive differences when there are no rational subgroups.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Variables Charts for Individuals"
+    ],
+    "setup": [
+      {
+        "title": "Assign the measurements",
+        "text": "Place the numerical column in Measurement. Place the sequence or time label in Timestamp (optional). Keep the rows in their actual collection order."
+      },
+      {
+        "title": "Select the chart",
+        "text": "Select X-mR chart. A moving range length of 2 uses successive pairs."
+      },
+      {
+        "title": "Check stability and dependence",
+        "text": "Inspect both charts and select Autocorrelation. Investigate signals before treating the observed period as stable; this interface estimates its center and limits from the plotted data."
+      }
+    ],
+    "columns": [
+      {
+        "name": "sequence",
+        "type": "Nominal",
+        "description": "Ordered sampling occasion; rows remain in time order."
+      },
+      {
+        "name": "fill_ml",
+        "type": "Scale",
+        "description": "One fill-volume measurement per occasion, in mL."
+      }
+    ],
+    "checks": [
+      "Measurements must represent comparable conditions. Use Stage for documented changes when separate phases are appropriate; each stage is estimated separately, rather than monitored against a frozen earlier baseline.",
+      "Strong serial dependence, severe skewness, or changing measurement resolution can make conventional limits misleading.",
+      "Control limits describe process behaviour. They are different from customer specification limits.",
+      "A chart with no signal does not establish that the process meets specifications."
+    ],
+    "report": [
+      "Report the period used to estimate the limits, measurement units, chart rules, and how control limits were obtained.",
+      "Describe signals and their investigation; absence of a signal is not proof of permanent stability."
+    ],
+    "example": {
+      "title": "One bottle every few minutes",
+      "story": "A filling line records one bottle volume at each sampling occasion. Check whether its behaviour changes over time.",
+      "sample": "individuals",
+      "instructions": [
+        "Assign fill_ml to Measurement and sequence to Timestamp (optional).",
+        "Inspect the individuals chart together with the moving range chart."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/variablesChartsIndividuals.qml"
+      },
+      {
+        "title": "NIST: control charts",
+        "url": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc31.htm"
+      }
+    ],
+    "related": [
+      {
+        "id": "xbar_r",
+        "label": "Several units at each occasion"
+      },
+      {
+        "id": "cap_normal",
+        "label": "Compare a stable process with specifications"
+      }
+    ]
+  },
+  "xbar_r": {
+    "id": "xbar_r",
+    "family": "monitor",
+    "title": "X-bar and R charts",
+    "summary": "Monitor subgroup averages and within-subgroup ranges.",
+    "why": "You measure several units under similar conditions at each occasion. The range chart is a conventional choice for small subgroups, commonly 2–9 units.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Variables Charts for Subgroups"
+    ],
+    "setup": [
+      {
+        "title": "Use the subgroup structure",
+        "text": "Select Single column. Put the numerical values in Measurement and the subgroup identifier in Subgroups."
+      },
+      {
+        "title": "Define the grouping",
+        "text": "Select Through grouping variable. Use unique subgroup labels and Same subgroup value, or retain consecutive groups with Subgroup value change."
+      },
+      {
+        "title": "Choose the charts",
+        "text": "Under Control charts select X-bar & R. Use actual sizes if subgroup sizes differ."
+      },
+      {
+        "title": "Read variation first",
+        "text": "Inspect the R chart before interpreting the X-bar chart. Investigate special causes and keep an audit trail of any exclusions."
+      }
+    ],
+    "columns": [
+      {
+        "name": "subgroup",
+        "type": "Nominal",
+        "description": "Sampling occasion; the example has five measurements per subgroup."
+      },
+      {
+        "name": "diameter_mm",
+        "type": "Scale",
+        "description": "Measured shaft diameter in mm."
+      }
+    ],
+    "checks": [
+      "Form rational subgroups: units measured close together under comparable conditions.",
+      "Do not make arbitrary groups from a time series simply to obtain a smaller standard error.",
+      "Independence within and between subgroups matters; substantial dependence needs a different monitoring model.",
+      "Control limits are not acceptance or specification limits."
+    ],
+    "report": [
+      "Describe subgroup size, sampling interval, chart rules, and the baseline period.",
+      "Report mean and variation signals separately, with their process explanations."
+    ],
+    "example": {
+      "title": "Five shafts per sample",
+      "story": "Five successive shafts are measured at each scheduled sample. The charts separate changes in average diameter from changes in short-term spread.",
+      "sample": "subgroups",
+      "instructions": [
+        "Assign diameter_mm to Measurement and subgroup to Subgroups.",
+        "Choose Through grouping variable and X-bar & R."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/variablesChartsSubgroups.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/variablesChartsSubgroups.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "xbar_s",
+        "label": "Larger subgroups"
+      },
+      {
+        "id": "imr",
+        "label": "One observation per occasion"
+      }
+    ]
+  },
+  "xbar_s": {
+    "id": "xbar_s",
+    "family": "monitor",
+    "title": "X-bar and s charts",
+    "summary": "Monitor subgroup averages and standard deviations.",
+    "why": "Each occasion has a rational subgroup of numerical observations. Standard deviations use more information than ranges and are usually preferred for larger subgroups, commonly 10 or more.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Variables Charts for Subgroups"
+    ],
+    "setup": [
+      {
+        "title": "Assign long-format data",
+        "text": "Select Single column. Assign the outcome to Measurement and the sample identifier to Subgroups."
+      },
+      {
+        "title": "Specify the subgroups",
+        "text": "Choose Through grouping variable. With unique labels, Same subgroup value combines the rows from each sampling occasion."
+      },
+      {
+        "title": "Select X-bar & s",
+        "text": "Under Control charts select X-bar & s. Retain Use actual sizes when sample sizes differ."
+      },
+      {
+        "title": "Review both charts",
+        "text": "Inspect the s chart for unstable spread before interpreting subgroup averages."
+      }
+    ],
+    "columns": [
+      {
+        "name": "subgroup",
+        "type": "Nominal",
+        "description": "Sampling occasion; the example has ten measurements per subgroup."
+      },
+      {
+        "name": "diameter_mm",
+        "type": "Scale",
+        "description": "One measured shaft diameter per row, in mm."
+      }
+    ],
+    "checks": [
+      "Subgroups should capture short-term common-cause variation, with comparable operating conditions inside each subgroup.",
+      "The size threshold is a practical convention, not a mathematical boundary between valid and invalid charts.",
+      "Highly skewed data, extreme observations, or dependence warrant closer distributional and process checks.",
+      "When the process changes, consider documented phases instead of pooling incompatible operating periods."
+    ],
+    "report": [
+      "Report subgroup construction, sample sizes, baseline, and the chart rules used.",
+      "Describe signals in the average and dispersion charts and any investigated causes."
+    ],
+    "example": {
+      "title": "Ten shafts per sample",
+      "story": "The same process is sampled in groups of ten, making the standard deviation a useful measure of within-sample spread.",
+      "sample": "subgroups_large",
+      "instructions": [
+        "Assign diameter_mm to Measurement and subgroup to Subgroups.",
+        "Choose Through grouping variable and X-bar & s."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/variablesChartsSubgroups.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/variablesChartsSubgroups.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "xbar_r",
+        "label": "Smaller subgroups"
+      },
+      {
+        "id": "cap_normal",
+        "label": "Assess capability after stability"
+      }
+    ]
+  },
+  "p_chart": {
+    "id": "p_chart",
+    "family": "monitor",
+    "title": "p chart",
+    "summary": "Monitor the fraction of units classified as nonconforming.",
+    "why": "Each inspected unit has one binary classification. A p chart accommodates differing numbers inspected at successive occasions.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Control Charts for Attributes"
+    ],
+    "setup": [
+      {
+        "title": "Supply counts and denominators",
+        "text": "Assign the count of nonconforming units to Defectives/Defects and the number inspected to Total. Assign batch to Timestamp (optional)."
+      },
+      {
+        "title": "Select the binomial chart",
+        "text": "Under Charts for Attributes select Defectives, then p chart."
+      },
+      {
+        "title": "Review the limits",
+        "text": "With varying denominators, limits may vary by occasion. The reviewed interface estimates the reference fraction from the plotted data, rather than a fixed earlier baseline. Investigate signals using production and inspection records."
+      }
+    ],
+    "columns": [
+      {
+        "name": "batch",
+        "type": "Nominal",
+        "description": "Inspection occasion in chronological order."
+      },
+      {
+        "name": "rejected",
+        "type": "Scale",
+        "description": "Integer count of nonconforming units."
+      },
+      {
+        "name": "inspected",
+        "type": "Scale",
+        "description": "Positive integer count of all inspected units."
+      }
+    ],
+    "checks": [
+      "Count each unit once, even if it has several defects. The rejected count cannot exceed the inspected count.",
+      "The binomial model assumes comparable classification probabilities within each sample and approximately independent units.",
+      "Changing product mix, clustering, or inspection practice can create extra variation. Investigate these before considering the available Laney p-prime option.",
+      "Very rare outcomes and small denominators may need more specialised chart design."
+    ],
+    "report": [
+      "Report the overall fraction, sample denominators, baseline, and any signal investigation.",
+      "State that limits describe expected process variation, not an allowable rejection threshold."
+    ],
+    "example": {
+      "title": "Reject fraction across batches",
+      "story": "Inspect different numbers of units in each batch and ask whether the rejection fraction has changed.",
+      "sample": "passfail_varying",
+      "instructions": [
+        "Assign rejected to Defectives/Defects and inspected to Total.",
+        "Select Defectives and p chart; keep batch order."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/attributesCharts.qml"
+      },
+      {
+        "title": "NIST: attributes control charts",
+        "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc33.htm"
+      }
+    ],
+    "related": [
+      {
+        "id": "np_chart",
+        "label": "Fixed sample sizes and counts"
+      },
+      {
+        "id": "u_chart",
+        "label": "Several defects can occur on one unit"
+      }
+    ]
+  },
+  "np_chart": {
+    "id": "np_chart",
+    "family": "monitor",
+    "title": "np chart",
+    "summary": "Monitor the number of nonconforming units in equally sized samples.",
+    "why": "Each unit is classified once and the number inspected is constant. The chart displays counts in the original inspection units.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Control Charts for Attributes"
+    ],
+    "setup": [
+      {
+        "title": "Assign inspection counts",
+        "text": "Put rejected in Defectives/Defects, inspected in Total, and batch in Timestamp (optional)."
+      },
+      {
+        "title": "Select the count chart",
+        "text": "Choose Defectives, then np chart."
+      },
+      {
+        "title": "Review time-ordered behaviour",
+        "text": "Inspect the count series and its control limits, estimated from the plotted data rather than a fixed earlier baseline. Link signals to operational records and inspection changes."
+      }
+    ],
+    "columns": [
+      {
+        "name": "batch",
+        "type": "Nominal",
+        "description": "Inspection occasion in actual collection order."
+      },
+      {
+        "name": "rejected",
+        "type": "Scale",
+        "description": "Number of nonconforming units in the sample."
+      },
+      {
+        "name": "inspected",
+        "type": "Scale",
+        "description": "The same positive sample size for every row."
+      }
+    ],
+    "checks": [
+      "The denominator must be constant; use a p chart when the number inspected varies.",
+      "A unit is counted only once, regardless of how many defects it contains.",
+      "Binomial assumptions can fail with clustering, changing mix, or inconsistent inspection.",
+      "A low rejection count does not by itself show that a customer acceptance criterion has been met."
+    ],
+    "report": [
+      "Report the fixed sample size, average count, monitoring rules, and baseline period.",
+      "Describe any signals and follow-up investigation without treating every signal as a confirmed cause."
+    ],
+    "example": {
+      "title": "Inspect 100 units per batch",
+      "story": "An inspector checks exactly 100 units in each batch and records how many fail the specified inspection.",
+      "sample": "passfail",
+      "instructions": [
+        "Assign rejected to Defectives/Defects and inspected to Total.",
+        "Select Defectives and np chart."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/attributesCharts.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/attributesCharts.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "p_chart",
+        "label": "The number inspected varies"
+      },
+      {
+        "id": "c_chart",
+        "label": "Count defects rather than defective units"
+      }
+    ]
+  },
+  "c_chart": {
+    "id": "c_chart",
+    "family": "monitor",
+    "title": "c chart",
+    "summary": "Monitor defect counts with a constant inspection opportunity.",
+    "why": "You count occurrences, and one unit can contain more than one defect. The inspected area, quantity, or exposure stays constant.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Control Charts for Attributes"
+    ],
+    "setup": [
+      {
+        "title": "Assign defect counts",
+        "text": "Put the defect count in Defectives/Defects. Put the constant number of inspected units in Total and batch in Timestamp (optional)."
+      },
+      {
+        "title": "Choose the Poisson count chart",
+        "text": "Select Defects, then c chart."
+      },
+      {
+        "title": "Check the operational context",
+        "text": "The reviewed interface estimates the reference count from the plotted data, rather than a fixed earlier baseline. Interpret changes alongside inspection coverage, product mix, and changes in how defects are detected."
+      }
+    ],
+    "columns": [
+      {
+        "name": "batch",
+        "type": "Nominal",
+        "description": "Inspection occasion in chronological order."
+      },
+      {
+        "name": "defects",
+        "type": "Scale",
+        "description": "Non-negative integer count; multiple defects on one unit are allowed."
+      },
+      {
+        "name": "units_inspected",
+        "type": "Scale",
+        "description": "Constant inspection exposure; ten comparable units per example sample."
+      }
+    ],
+    "checks": [
+      "Inspection opportunities must be comparable. Equal unit counts are insufficient if unit size or inspection coverage changes.",
+      "A c chart uses Poisson variation; clusters of defects or different underlying rates may violate this model.",
+      "Use a u chart for variable inspection exposure.",
+      "These are defect counts, not counts of units with at least one defect."
+    ],
+    "report": [
+      "Report the count per fixed inspection sample and define the sample size or area.",
+      "Describe signals, the baseline, and any evidence of clustering or overdispersion."
+    ],
+    "example": {
+      "title": "Surface flaws in ten panels",
+      "story": "Each inspection sample contains ten equally sized panels. Count every surface flaw, including multiple flaws on a panel.",
+      "sample": "defects",
+      "instructions": [
+        "Assign defects to Defectives/Defects and units_inspected to Total.",
+        "Select Defects and c chart. The plotted quantity is defects per ten-panel sample."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/attributesCharts.qml"
+      },
+      {
+        "title": "NIST: attributes control charts",
+        "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc33.htm"
+      }
+    ],
+    "related": [
+      {
+        "id": "u_chart",
+        "label": "The inspected exposure varies"
+      },
+      {
+        "id": "np_chart",
+        "label": "Each unit is only pass or fail"
+      }
+    ]
+  },
+  "u_chart": {
+    "id": "u_chart",
+    "family": "monitor",
+    "title": "u chart",
+    "summary": "Monitor defects per unit when inspection exposure varies.",
+    "why": "One unit can have multiple defects and the inspected quantity changes. A u chart divides counts by their exposure and adjusts limits accordingly.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Control Charts for Attributes"
+    ],
+    "setup": [
+      {
+        "title": "Define a consistent exposure unit",
+        "text": "Use the number of comparable units, area, or other justified inspection exposure as the denominator."
+      },
+      {
+        "title": "Assign the variables",
+        "text": "Put defects in Defectives/Defects, units_inspected in Total, and batch in Timestamp (optional)."
+      },
+      {
+        "title": "Select the rate chart",
+        "text": "Choose Defects, then u chart. Review the varying control limits together with the denominators; the reference rate is estimated from the plotted data rather than a fixed earlier baseline."
+      }
+    ],
+    "columns": [
+      {
+        "name": "batch",
+        "type": "Nominal",
+        "description": "Inspection occasion in chronological order."
+      },
+      {
+        "name": "defects",
+        "type": "Scale",
+        "description": "Non-negative integer count of defect occurrences."
+      },
+      {
+        "name": "units_inspected",
+        "type": "Scale",
+        "description": "Positive inspection exposure in a consistent unit."
+      }
+    ],
+    "checks": [
+      "A Poisson rate model requires comparable opportunity per exposure unit and approximately independent occurrences.",
+      "Defect counts can exceed the number of units; a u value is a rate, not a probability.",
+      "Investigate clustering, mix changes, and overdispersion before considering the available Laney u-prime chart.",
+      "A denominator of zero is invalid and should be resolved before analysis."
+    ],
+    "report": [
+      "Report the rate with its exposure unit, baseline, and sample denominators.",
+      "Describe signals and assess whether changing inspection opportunity explains them."
+    ],
+    "example": {
+      "title": "Flaws per panel",
+      "story": "Inspect varying numbers of comparable panels each shift and count all surface flaws.",
+      "sample": "defects_varying",
+      "instructions": [
+        "Assign defects to Defectives/Defects and units_inspected to Total.",
+        "Select Defects and u chart. Interpret the vertical axis as defects per panel."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/attributesCharts.qml"
+      },
+      {
+        "title": "NIST: attributes control charts",
+        "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc33.htm"
+      }
+    ],
+    "related": [
+      {
+        "id": "c_chart",
+        "label": "Constant inspection exposure"
+      },
+      {
+        "id": "p_chart",
+        "label": "Fraction of units that fail"
+      }
+    ]
+  },
+  "ewma": {
+    "id": "ewma",
+    "family": "monitor",
+    "title": "Exponentially weighted moving average chart",
+    "summary": "Look for small, sustained changes in a numerical process.",
+    "why": "An EWMA combines current and previous measurements, giving more weight to recent observations. It can reveal persistent changes that individual-point charts may miss.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Time Weighted Charts"
+    ],
+    "setup": [
+      {
+        "title": "Assign the observations",
+        "text": "Select Single column. Assign the numerical outcome to Measurement and the sequence label to Timestamp (optional)."
+      },
+      {
+        "title": "Specify the sampling design",
+        "text": "Select No subgroups (n = 1) for individual observations. For rational subgroups, supply their actual grouping structure."
+      },
+      {
+        "title": "Select EWMA",
+        "text": "Select Exponentially weighted moving average chart. Specify Lambda (smoothing parameter), control-limit settings, and the in-control standard deviation source."
+      },
+      {
+        "title": "Understand the reference used",
+        "text": "Use a justified estimate of in-control SD, or enter an independently established historical SD. The reviewed implementation still uses the current stage’s mean for the center and initial EWMA value; historical SD does not fix a historical mean."
+      }
+    ],
+    "columns": [
+      {
+        "name": "sequence",
+        "type": "Nominal",
+        "description": "Sampling occasion, ordered in time."
+      },
+      {
+        "name": "fill_ml",
+        "type": "Scale",
+        "description": "One numerical fill-volume measurement per occasion."
+      }
+    ],
+    "checks": [
+      "Small lambda values retain a longer memory; sensitivity and false-alarm behaviour depend jointly on lambda and limit settings.",
+      "Serial dependence can create spurious signals; an EWMA does not automatically correct autocorrelation.",
+      "This implementation supports retrospective assessment, not monitoring against a frozen historical mean. Stage estimates separate means; adding later observations can change earlier EWMA values. Do not treat a period containing a known change as an established in-control baseline.",
+      "Use a standard individuals or subgroup chart to understand gross instability and variation first."
+    ],
+    "report": [
+      "Report lambda, limit settings, the period used to estimate the center, the SD source and value, and the sampling interval.",
+      "State the timing and persistence of any signals and the operational follow-up."
+    ],
+    "example": {
+      "title": "Gradual change in filling",
+      "story": "Use the fill-volume series to inspect a possible sustained small shift retrospectively. The center is estimated from the plotted period; this example is not a calibrated prospective alarm design.",
+      "sample": "individuals",
+      "instructions": [
+        "Select No subgroups (n = 1), then Exponentially weighted moving average chart.",
+        "Compare the view with an individuals chart and document the settings used."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/timeWeightedCharts.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/timeWeightedCharts.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "cusum",
+        "label": "Accumulate deviations from a target"
+      },
+      {
+        "id": "imr",
+        "label": "Inspect individual observations first"
+      }
+    ]
+  },
+  "cusum": {
+    "id": "cusum",
+    "family": "monitor",
+    "title": "Cumulative sum chart",
+    "summary": "Detect persistent departures from a specified process target.",
+    "why": "A CUSUM accumulates evidence of a sustained shift. Its target, shift setting, and limits should reflect the change that matters in the process.",
+    "path": [
+      "Quality Control",
+      "Control Charts",
+      "Time Weighted Charts"
+    ],
+    "setup": [
+      {
+        "title": "Assign time-ordered measurements",
+        "text": "Select Single column and assign the outcome to Measurement. Set No subgroups (n = 1) for one observation per occasion."
+      },
+      {
+        "title": "Choose CUSUM and enter the target",
+        "text": "Select Cumulative sum chart. Enter Target in the outcome units; the default zero is not the correct target for every process."
+      },
+      {
+        "title": "Specify sensitivity and variation",
+        "text": "Review Shift size, Number of std. dev. for control limits, and Std. dev. source. Use a stable baseline or justified historical variation."
+      },
+      {
+        "title": "Investigate sustained signals",
+        "text": "Review the accumulation against operational changes. Preserve the baseline and chosen settings in the report."
+      }
+    ],
+    "columns": [
+      {
+        "name": "sequence",
+        "type": "Nominal",
+        "description": "Sampling occasion in actual time order."
+      },
+      {
+        "name": "fill_ml",
+        "type": "Scale",
+        "description": "Numerical fill volume; the example target is 500 mL."
+      }
+    ],
+    "checks": [
+      "The target and sensitivity settings must be chosen for the operational question, not tuned until a preferred signal appears.",
+      "Conventional CUSUM calculations assume suitable independence and a stable in-control distribution.",
+      "The shift and limit settings jointly affect detection delay and false alarms.",
+      "A CUSUM signal is a reason to investigate, not proof that a particular process cause is responsible."
+    ],
+    "report": [
+      "Report the target, shift and limit settings, variation estimate, baseline period, and sampling frequency.",
+      "Explain the process interpretation of sustained upward or downward accumulation."
+    ],
+    "example": {
+      "title": "Filling around a 500 mL target",
+      "story": "A filling line aims for 500 mL. Ask whether deviations accumulate persistently on either side of the target.",
+      "sample": "individuals",
+      "instructions": [
+        "Select Cumulative sum chart and enter Target = 500.",
+        "Document the displayed shift and limit settings; use the example to learn the workflow."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/timeWeightedCharts.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/timeWeightedCharts.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "ewma",
+        "label": "Smooth observations to detect shifts"
+      },
+      {
+        "id": "imr",
+        "label": "Inspect individual observations first"
+      }
+    ]
+  },
+  "cap_normal": {
+    "id": "cap_normal",
+    "family": "capability",
+    "title": "Normal process capability study",
+    "summary": "Compare a stable numerical process with engineering specifications.",
+    "why": "A normal model is plausible, specifications are defined independently of the data, and the sampling design supports a meaningful estimate of process variation.",
+    "path": [
+      "Quality Control",
+      "Capability Analysis",
+      "Process Capability Study"
+    ],
+    "setup": [
+      {
+        "title": "Assign data and subgrouping",
+        "text": "Select Single column and assign the outcome to Measurement. Set Subgroup size = 1 for individual time-ordered observations; otherwise enter the real subgroup structure."
+      },
+      {
+        "title": "Specify the model and requirements",
+        "text": "Under Process capability options choose Normal distribution. Enter the applicable Lower specification limit, Upper specification limit, and optional Target value."
+      },
+      {
+        "title": "Request the relevant output",
+        "text": "Select Process capability tables and Confidence intervals. Review the Process capability plot and Probability table and plot."
+      },
+      {
+        "title": "Check stability before the indices",
+        "text": "Review Stability of the process, including its variation chart. Treat capability from an unstable or mixed process as an inadequate forecast of future production."
+      }
+    ],
+    "columns": [
+      {
+        "name": "sequence",
+        "type": "Nominal",
+        "description": "Collection order; retain chronological row order."
+      },
+      {
+        "name": "fill_ml",
+        "type": "Scale",
+        "description": "Measured fill volume in mL."
+      }
+    ],
+    "checks": [
+      "Specification limits come from requirements; control limits are estimated from process behaviour.",
+      "Check stability, measurement adequacy, representativeness, and the distribution, especially the tails.",
+      "Do not accept normality merely because a normality test is nonsignificant.",
+      "For a single specification limit, use the corresponding one-sided index; a two-sided Cp needs both limits."
+    ],
+    "report": [
+      "Report the specifications, data period, subgroup structure, distribution, and variation estimator.",
+      "Distinguish Cp/Cpk based on within-process variation from Pp/Ppk based on overall variation; include uncertainty.",
+      "Compare estimates with the agreed customer requirement, and interpret centring separately from spread."
+    ],
+    "example": {
+      "title": "A centred process with too much variation",
+      "story": "A filling process targets 500 mL with limits of 490 and 510 mL. Explore why good centring alone cannot ensure capability.",
+      "sample": "cap_spread",
+      "instructions": [
+        "Set Subgroup size = 1, LSL = 490, USL = 510, Target = 500.",
+        "Review stability and the probability plot before interpreting capability."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/processCapabilityStudies.qml"
+      },
+      {
+        "title": "NIST: process stability",
+        "url": "https://itl.nist.gov/div898/handbook/ppc/section4/ppc45.htm"
+      }
+    ],
+    "related": [
+      {
+        "id": "cap_nonnormal",
+        "label": "A normal model is unsuitable"
+      },
+      {
+        "id": "imr",
+        "label": "Assess stability first"
+      }
+    ]
+  },
+  "cap_nonnormal": {
+    "id": "cap_nonnormal",
+    "family": "capability",
+    "title": "Non-normal process capability study",
+    "summary": "Assess specification performance using a justified non-normal distribution.",
+    "why": "The outcome is numerical and stable, but its shape is not adequately represented by a normal distribution. Model choice should reflect the process and tail behaviour.",
+    "path": [
+      "Quality Control",
+      "Capability Analysis",
+      "Process Capability Study"
+    ],
+    "setup": [
+      {
+        "title": "Assign measurements and grouping",
+        "text": "Use Single column and Measurement. Set Subgroup size = 1 for individual observations, or enter the real rational subgroups."
+      },
+      {
+        "title": "Choose a distribution",
+        "text": "Under Process capability options select Non-normal distribution and Specify a distribution. Options include Log-normal, Weibull, Gamma, Exponential, Logistic, and Log-logistic."
+      },
+      {
+        "title": "Enter specifications and inspect fit",
+        "text": "Enter only the applicable specification limits. Inspect the histogram, Probability table and plot, and process stability."
+      },
+      {
+        "title": "Choose the index convention",
+        "text": "Review Non-normal capability statistics: Percentile or Non-conformance. Document the chosen convention and fitted distribution."
+      }
+    ],
+    "columns": [
+      {
+        "name": "sequence",
+        "type": "Nominal",
+        "description": "Collection order for the uncensored process measurements."
+      },
+      {
+        "name": "cycle_seconds",
+        "type": "Scale",
+        "description": "Positive, fully observed cycle duration in seconds."
+      }
+    ],
+    "checks": [
+      "Choose a plausible model; searching for the largest capability index is not model validation.",
+      "Check the domain and tails. For example, standard log-normal and Weibull models require positive measurements.",
+      "Separate mixtures or unstable operating regimes before fitting a single capability distribution.",
+      "Censored lifetimes require a survival-analysis workflow; do not treat unfinished runs as observed failure times.",
+      "Normal-model confidence intervals are not offered for this non-normal option in the verified baseline."
+    ],
+    "report": [
+      "Report the model, fitting choices, specification limits, index convention, and data period.",
+      "Discuss sensitivity of tail performance to plausible distributions and the amount of tail data available."
+    ],
+    "example": {
+      "title": "Right-skewed cycle times",
+      "story": "Cycle times are positive and right-skewed. The operational requirement is completion within 60 seconds.",
+      "sample": "cap_skew",
+      "instructions": [
+        "Select Log-normal as an illustrative candidate and enter only USL = 60.",
+        "Inspect the probability plot before interpreting estimated nonconformance."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/processCapabilityStudies.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/processCapabilityStudies.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "cap_normal",
+        "label": "A normal model is plausible"
+      },
+      {
+        "id": "imr",
+        "label": "Check the time-ordered process"
+      }
+    ]
+  },
+  "gage_crossed": {
+    "id": "gage_crossed",
+    "family": "measurement",
+    "title": "Crossed gauge repeatability and reproducibility",
+    "summary": "Separate measurement repeatability, operator differences, and part variation.",
+    "why": "Every operator measures the same set of parts repeatedly. This crossed design allows operator-by-part behaviour to be examined.",
+    "path": [
+      "Quality Control",
+      "Measurement Systems Analysis",
+      "Type 2 and 3 Gauge r&R Study"
+    ],
+    "setup": [
+      {
+        "title": "Set up the study data",
+        "text": "Use Single column. Assign the numerical value to Measurement, operator identifier to Operator, and part identifier to Part."
+      },
+      {
+        "title": "Specify the comparison basis",
+        "text": "Review Std. dev. source. Enter Tolerance width when comparison with engineering tolerance is needed; this is USL minus LSL."
+      },
+      {
+        "title": "Inspect components and plots",
+        "text": "Request the r&R ANOVA table, variation components, and relevant range and operator-by-part plots."
+      },
+      {
+        "title": "Review modelling choices",
+        "text": "Document the operator model, study-variation multiplier, and interaction-removal setting. Type 3 study (automatic equipment) is available when there is no operator factor."
+      }
+    ],
+    "columns": [
+      {
+        "name": "part",
+        "type": "Nominal",
+        "description": "The same physical parts are measured by each operator."
+      },
+      {
+        "name": "operator",
+        "type": "Nominal",
+        "description": "Operator identifier."
+      },
+      {
+        "name": "trial",
+        "type": "Nominal",
+        "description": "Repeat number; retain for study records."
+      },
+      {
+        "name": "diameter_mm",
+        "type": "Scale",
+        "description": "Repeated diameter measurement in mm."
+      }
+    ],
+    "checks": [
+      "Use representative parts spanning the operating range; randomise measurement order and conceal previous readings.",
+      "Include genuine repeated measurements for every operator–part combination.",
+      "Percent contribution uses variances; percent study variation uses standard deviations. Their numerical thresholds differ.",
+      "Agreement of measurements does not establish calibration accuracy without reference values."
+    ],
+    "report": [
+      "Report repeatability, reproducibility, and total gauge variation with their comparison basis.",
+      "Describe the design, tolerance, operator-by-part patterns, and agreed acceptance criteria."
+    ],
+    "example": {
+      "title": "Three operators, ten parts, two repeats",
+      "story": "Each operator measures each of ten shafts twice. Explore whether variation is mainly repeatability, operator differences, or their interaction.",
+      "sample": "gage",
+      "instructions": [
+        "Assign diameter_mm to Measurement, operator to Operator, and part to Part.",
+        "Keep trial for auditability; it is not a separate required analysis role."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/msaGaugeRR.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/msaGaugeRR.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "gage_nested",
+        "label": "Operators cannot measure the same parts"
+      },
+      {
+        "id": "gage_type1",
+        "label": "One reference artefact"
+      },
+      {
+        "id": "attribute_agreement",
+        "label": "Ratings are categorical"
+      }
+    ]
+  },
+  "gage_nested": {
+    "id": "gage_nested",
+    "family": "measurement",
+    "title": "Nested gauge r&R for non-replicable measurements",
+    "summary": "Assess measurement variation when each operator receives different parts or homogeneous specimen groups.",
+    "why": "Parts are nested within operators. For destructive testing, replicate specimens must plausibly represent the same homogeneous material group.",
+    "path": [
+      "Quality Control",
+      "Measurement Systems Analysis",
+      "Gauge r&R Study (Non-replicable Measurements)"
+    ],
+    "setup": [
+      {
+        "title": "Confirm the design",
+        "text": "Each part/group identifier belongs to one operator. Include balanced replicate measurements or equivalent homogeneous specimens within each operator–part group."
+      },
+      {
+        "title": "Assign the columns",
+        "text": "Select Single column. Put strength_mpa in Measurements, operator in Operators, and part in Parts."
+      },
+      {
+        "title": "Set the comparison basis",
+        "text": "Review Std. dev. source and optionally enter Tolerance width. Request the r&R ANOVA table and Graph variation components."
+      },
+      {
+        "title": "Examine the nested components",
+        "text": "Read the nested ANOVA and gauge evaluation alongside the measurements-by-part and operator plots."
+      }
+    ],
+    "columns": [
+      {
+        "name": "operator",
+        "type": "Nominal",
+        "description": "Operator assigned to a distinct set of part groups."
+      },
+      {
+        "name": "part",
+        "type": "Nominal",
+        "description": "Unique part/group identifier nested within one operator."
+      },
+      {
+        "name": "replicate",
+        "type": "Nominal",
+        "description": "Repeat or homogeneous specimen within a part group."
+      },
+      {
+        "name": "strength_mpa",
+        "type": "Scale",
+        "description": "Observed destructive-test strength in MPa."
+      }
+    ],
+    "checks": [
+      "A destructive test does not automatically justify this design: the assumed within-group specimen homogeneity must be defensible.",
+      "One observation per operator–part group cannot identify a separate repeatability component.",
+      "Use the same number of replicates per part group and the same number of part groups per operator for this baseline implementation.",
+      "Residual specimen differences can be confounded with repeatability; document that practical limitation."
+    ],
+    "report": [
+      "Report the nesting, replicate construction, homogeneity assumption, and variance comparison basis.",
+      "Interpret operator and repeatability components in light of the available replication and specimen variation."
+    ],
+    "example": {
+      "title": "Destructive strength testing",
+      "story": "Three operators test their own sets of material groups. Two nominally homogeneous specimens from each group supply the within-group replication.",
+      "sample": "gage_nested",
+      "instructions": [
+        "Assign strength_mpa to Measurements, operator to Operators, and part to Parts.",
+        "Keep part IDs unique across operators; explain why paired specimens are comparable."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/msaGaugeRRnonrep.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/msaGaugeRRnonrep.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "gage_crossed",
+        "label": "All operators can remeasure the same parts"
+      }
+    ]
+  },
+  "gage_type1": {
+    "id": "gage_type1",
+    "family": "measurement",
+    "title": "Type 1 instrument capability study",
+    "summary": "Evaluate repeatability and bias at one known reference value.",
+    "why": "One instrument repeatedly measures a reference artefact. The reference value and tolerance width let you assess instrument variation and bias at that point.",
+    "path": [
+      "Quality Control",
+      "Measurement Systems Analysis",
+      "Type 1 Instrument Capability Study"
+    ],
+    "setup": [
+      {
+        "title": "Assign repeated measurements",
+        "text": "Put the measurement column in Measurement. Preserve collection order for the run chart."
+      },
+      {
+        "title": "Enter calibration information",
+        "text": "Set Reference/master value and Tolerance range. Review Percent of tolerance for Cg and Number of std. dev. for instrument variation."
+      },
+      {
+        "title": "Review bias and capability",
+        "text": "Request Bias and instrument capability table and One sample t-test with Confidence interval for bias."
+      },
+      {
+        "title": "Inspect the sequence",
+        "text": "Use the Run chart and Histogram to identify drift, unusual readings, or inadequate resolution."
+      }
+    ],
+    "columns": [
+      {
+        "name": "repeat",
+        "type": "Nominal",
+        "description": "Sequential measurement number."
+      },
+      {
+        "name": "length_mm",
+        "type": "Scale",
+        "description": "Repeated measurement of the same reference artefact in mm."
+      }
+    ],
+    "checks": [
+      "The reference value should be traceable and sufficiently precise for the intended assessment.",
+      "Use a stable instrument and consistent procedure; repeated readings must reflect real measurement repetitions.",
+      "A result at one reference value does not establish acceptable bias over the full operating range.",
+      "Small statistical bias may be operationally negligible; assess its interval against practical requirements."
+    ],
+    "report": [
+      "Report the reference value, tolerance range, Cg/Cgk settings, bias estimate, and bias interval.",
+      "Explain whether the instrument meets the agreed requirements at this reference point."
+    ],
+    "example": {
+      "title": "Repeatedly measuring a 25 mm standard",
+      "story": "Measure a 25.000 mm reference artefact repeatedly to assess short-term precision and bias.",
+      "sample": "gage_type1",
+      "instructions": [
+        "Set Reference/master value = 25.000 and Tolerance range = 0.100 mm.",
+        "Assign length_mm to Measurement and inspect the run chart as well as the capability table."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/msaType1Gauge.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/msaType1Gauge.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "gage_linearity",
+        "label": "Bias across the operating range"
+      },
+      {
+        "id": "gage_crossed",
+        "label": "Include operators and production parts"
+      }
+    ]
+  },
+  "gage_linearity": {
+    "id": "gage_linearity",
+    "family": "measurement",
+    "title": "Type 4 linearity study",
+    "summary": "Check whether measurement bias changes across the operating range.",
+    "why": "You have several reference parts spanning the measurement range and repeated readings for each. The analysis relates measurement bias to the reference value.",
+    "path": [
+      "Quality Control",
+      "Measurement Systems Analysis",
+      "Type 4 Linearity Study"
+    ],
+    "setup": [
+      {
+        "title": "Prepare reference measurements",
+        "text": "Use one row per reading, with a part identifier, its reference value, and the measured value."
+      },
+      {
+        "title": "Assign the analysis roles",
+        "text": "Put part in Parts, measured_mm in Measurements, and reference_mm in Standard."
+      },
+      {
+        "title": "Inspect bias and linearity",
+        "text": "Request Linearity table, Bias table, and Linearity and bias graph."
+      },
+      {
+        "title": "Optional process comparison",
+        "text": "Enter Process variation only when you have a justified value and need the corresponding percent process variation graph."
+      }
+    ],
+    "columns": [
+      {
+        "name": "part",
+        "type": "Nominal",
+        "description": "Reference artefact identifier."
+      },
+      {
+        "name": "reference_mm",
+        "type": "Scale",
+        "description": "Known reference value for that part, in mm."
+      },
+      {
+        "name": "measured_mm",
+        "type": "Scale",
+        "description": "Observed repeated reading, in mm."
+      }
+    ],
+    "checks": [
+      "Reference values should span the intended operating range and have appropriate traceability.",
+      "Use multiple genuine repeats at each reference; do not substitute repeated copies of the same result.",
+      "A nonsignificant slope does not demonstrate negligible bias or adequate precision.",
+      "Assess the size and uncertainty of bias throughout the range, including any constant offset."
+    ],
+    "report": [
+      "Report reference coverage, repeats per part, the bias estimates, and the linearity result.",
+      "Explain whether the observed bias pattern is acceptable across the intended range and whether recalibration is needed."
+    ],
+    "example": {
+      "title": "Five reference sizes",
+      "story": "An instrument is checked with reference artefacts of several sizes. Repeated measurements reveal whether larger items are increasingly overestimated.",
+      "sample": "linearity",
+      "instructions": [
+        "Assign part to Parts, measured_mm to Measurements, and reference_mm to Standard.",
+        "Read the bias table together with the Linearity and bias graph."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/msaGaugeLinearity.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "gage_type1",
+        "label": "Assess one reference value"
+      },
+      {
+        "id": "gage_crossed",
+        "label": "Assess operators and part variation"
+      }
+    ]
+  },
+  "attribute_agreement": {
+    "id": "attribute_agreement",
+    "family": "measurement",
+    "title": "Attributes agreement analysis",
+    "summary": "Assess consistency of categorical inspection decisions.",
+    "why": "Operators repeatedly classify the same parts. With a trusted reference classification you can also assess agreement with the standard.",
+    "path": [
+      "Quality Control",
+      "Measurement Systems Analysis",
+      "Attributes Agreement Analysis"
+    ],
+    "setup": [
+      {
+        "title": "Use repeated categorical ratings",
+        "text": "Select Single column. Assign rating to Results, operator to Operator, and part to Part."
+      },
+      {
+        "title": "Add the standard if available",
+        "text": "Assign the trusted reference classification to Standard. Without it, agreement among operators cannot establish accuracy."
+      },
+      {
+        "title": "Choose the binary study",
+        "text": "For the pass/fail example use Kappa study. Enter Pass as Positive reference: this setting uses the acceptable category, such as Pass or Good. Review Cohen’s and Fleiss’ kappa options."
+      },
+      {
+        "title": "Inspect agreement components",
+        "text": "Review within-appraiser, between-appraiser, and standard-comparison output. With Pass as Positive reference, the miss rate is the fraction of reference-Fail ratings called Pass; the false-alarm rate is the fraction of reference-Pass ratings called Fail."
+      }
+    ],
+    "columns": [
+      {
+        "name": "part",
+        "type": "Nominal",
+        "description": "Same inspected items across operators."
+      },
+      {
+        "name": "operator",
+        "type": "Nominal",
+        "description": "Inspector identifier."
+      },
+      {
+        "name": "trial",
+        "type": "Nominal",
+        "description": "Blind repeated inspection number."
+      },
+      {
+        "name": "rating",
+        "type": "Nominal",
+        "description": "Binary classification: Pass or Fail."
+      },
+      {
+        "name": "standard",
+        "type": "Nominal",
+        "description": "Trusted Pass/Fail reference for the part, if available."
+      }
+    ],
+    "checks": [
+      "Use blind, randomised repeats and representative cases, including difficult or borderline examples.",
+      "Kappa depends on category prevalence and marginal rating frequencies; inspect raw agreement and error patterns too.",
+      "Kendall’s tau is available for ordered ratings, but association is not the same as exact agreement.",
+      "This worked path uses binary labels. More complex category structures need the appropriate agreement model and coding."
+    ],
+    "report": [
+      "Report study design, the acceptable category used as Positive reference, reference construction, agreement percentages, and kappa with available uncertainty.",
+      "Separate repeatability of the same operator, reproducibility between operators, and accuracy against a standard."
+    ],
+    "example": {
+      "title": "Pass/fail visual inspection",
+      "story": "Several inspectors classify the same parts twice. A reference decision allows consistent mistakes to be distinguished from correct agreement.",
+      "sample": "agreement",
+      "instructions": [
+        "Assign rating, operator, part, and standard to their corresponding roles.",
+        "Enter Pass as Positive reference. Inspect agreement and distinguish missed failures (Fail rated Pass) from false alarms (Pass rated Fail)."
+      ]
+    },
+    "sources": [
+      {
+        "title": "JASP analysis options (v0.96.0)",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/qml/msaAttribute.qml"
+      },
+      {
+        "title": "JASP built-in analysis help",
+        "url": "https://github.com/jasp-stats/jaspQualityControl/blob/v0.96.0/inst/help/msaAttribute.md"
+      }
+    ],
+    "related": [
+      {
+        "id": "gage_crossed",
+        "label": "The outcome is a numerical measurement"
+      }
+    ]
+  }
+}

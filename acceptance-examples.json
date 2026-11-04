@@ -1,0 +1,193 @@
+{
+  "acceptance_measurements": {
+    "id": "acceptance_measurements",
+    "family": "acceptance",
+    "title": "One lot of machined shafts",
+    "description": "Synthetic teaching data: twenty-four diameter measurements from a single illustrative inspection lot.",
+    "columns": [
+      "Diameter_mm"
+    ],
+    "rows": [
+      [
+        9.97
+      ],
+      [
+        10.0
+      ],
+      [
+        10.025
+      ],
+      [
+        10.04
+      ],
+      [
+        10.03
+      ],
+      [
+        10.065
+      ],
+      [
+        10.015
+      ],
+      [
+        9.99
+      ],
+      [
+        10.055
+      ],
+      [
+        10.02
+      ],
+      [
+        10.01
+      ],
+      [
+        10.045
+      ],
+      [
+        10.005
+      ],
+      [
+        10.035
+      ],
+      [
+        9.985
+      ],
+      [
+        10.05
+      ],
+      [
+        10.01
+      ],
+      [
+        10.025
+      ],
+      [
+        10.0
+      ],
+      [
+        10.06
+      ],
+      [
+        10.02
+      ],
+      [
+        9.995
+      ],
+      [
+        10.03
+      ],
+      [
+        10.005
+      ]
+    ],
+    "notes": [
+      "Invented deterministic teaching measurements; not actual inspection data.",
+      "Each row represents a different randomly sampled item from one lot.",
+      "For the guide example use k = 1.309, LSL = 9.95 mm, historical SD = 0.04 mm, and no USL.",
+      "The teaching comparison changes LSL to 9.98 mm. Real inspection limits and rules must be fixed before inspecting the sample."
+    ],
+    "units": {
+      "Diameter_mm": "mm"
+    }
+  },
+  "acceptance_lot_sequence": {
+    "id": "acceptance_lot_sequence",
+    "family": "acceptance",
+    "title": "A sequence of twelve inspected lots",
+    "description": "Synthetic teaching data: twelve ordered component lots, each with 100 inspected items and a total lot size of 1,000.",
+    "columns": [
+      "LotOrder",
+      "Nonconforming",
+      "Tested",
+      "LotSize"
+    ],
+    "rows": [
+      [
+        1,
+        2,
+        100,
+        1000
+      ],
+      [
+        2,
+        3,
+        100,
+        1000
+      ],
+      [
+        3,
+        1,
+        100,
+        1000
+      ],
+      [
+        4,
+        4,
+        100,
+        1000
+      ],
+      [
+        5,
+        2,
+        100,
+        1000
+      ],
+      [
+        6,
+        3,
+        100,
+        1000
+      ],
+      [
+        7,
+        4,
+        100,
+        1000
+      ],
+      [
+        8,
+        3,
+        100,
+        1000
+      ],
+      [
+        9,
+        5,
+        100,
+        1000
+      ],
+      [
+        10,
+        7,
+        100,
+        1000
+      ],
+      [
+        11,
+        8,
+        100,
+        1000
+      ],
+      [
+        12,
+        9,
+        100,
+        1000
+      ]
+    ],
+    "notes": [
+      "Invented deterministic teaching counts; not actual lot inspection records.",
+      "Nonconforming counts sampled items that fail at least one agreed criterion, counting each item once.",
+      "Assign all four columns and use Model Type = Without predictor.",
+      "Requires the Acceptance Sampling beta with Bayesian State-Space Sampling.",
+      "The final counts were chosen to illustrate changing quality. No model result or decision has been calculated by this guide."
+    ],
+    "units": {
+      "LotOrder": "chronological lot order",
+      "Nonconforming": "items",
+      "Tested": "items",
+      "LotSize": "items"
+    }
+  }
+}

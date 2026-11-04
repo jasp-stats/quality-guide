@@ -1,0 +1,299 @@
+{
+  "correlation_pearson": {
+    "id": "correlation_pearson",
+    "family": "model",
+    "title": "Pearson correlation",
+    "summary": "Explore the strength and direction of a linear relationship between numerical measurements.",
+    "why": "You have paired numerical measurements from independent items and want a symmetric measure of association, without choosing one variable as the response.",
+    "path": [
+      "Regression",
+      "Classical",
+      "Correlation"
+    ],
+    "availability": {
+      "module": "Regression",
+      "sourceVersion": "0.96.5-release.803",
+      "status": "released",
+      "note": "Stable module listed on 29 October 2026. Correlation controls checked against the released v0.96.0 interface; the examples have not been run in desktop JASP."
+    },
+    "setup": [
+      {
+        "title": "Assign the measurements",
+        "text": "Move Roughness_um and Bond_strength_N to Variables. Each row must pair measurements from the same component. Leave Part out of the analysis."
+      },
+      {
+        "title": "Choose the coefficient and uncertainty",
+        "text": "Select Pearson's r. Under Additional Options, select Confidence intervals and Sample size. Keep Correlated for a two-sided hypothesis unless a directional question was prespecified. These intervals describe the correlation coefficient; the separate interval option under Scatter plots draws a band around a regression line."
+      },
+      {
+        "title": "Inspect the relationship",
+        "text": "Select Scatter plots; inspect curvature, unusual points, and distinct subgroups. When exploring many measurements, the Heatmap is an overview, and the pairwise plots are needed to assess what the coefficients describe."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Identifier of the independently sampled component; do not assign it as a measured variable."
+      },
+      {
+        "name": "Roughness_um",
+        "type": "Scale",
+        "description": "Measured surface roughness in micrometres."
+      },
+      {
+        "name": "Bond_strength_N",
+        "type": "Scale",
+        "description": "Measured pull strength on the same component, in newtons."
+      },
+      {
+        "name": "Coating_um",
+        "type": "Scale",
+        "description": "Coating thickness, available for a separate partial-correlation question."
+      }
+    ],
+    "checks": [
+      "Retain the row-level pairing and check independence between components. Repeated readings of one component need a design-specific analysis.",
+      "Pearson's r summarizes linear association. A value near zero does not rule out a curved relationship; a high value does not establish measurement agreement.",
+      "Standard Pearson inference assumes an appropriate sampling model, usually independent pairs from a bivariate-normal population. Inspect influential points and the joint pattern; a normality-test p-value alone is not a decision rule.",
+      "Check missing-value handling. Exclude cases pairwise can use different items for different correlations; report the sample size for each pair. Many exploratory tests create a multiplicity issue.",
+      "Association does not show that changing roughness would cause strength to change. Process mixtures and other common causes can produce a correlation."
+    ],
+    "report": [
+      "The pair of measurements, Pearson's r, its confidence interval, the number of complete pairs, and the scatter plot.",
+      "The sampling unit, any excluded observations or missingness, and the limits of an observational interpretation."
+    ],
+    "example": {
+      "title": "Are roughness and bond strength related?",
+      "story": "Eighty synthetic components each have a roughness, pull-strength, and coating-thickness measurement. Start with the roughness–strength scatter plot.",
+      "sample": "correlation_pairs",
+      "instructions": [
+        "Import the CSV; set the three measured quantities to Scale and Part to Nominal.",
+        "Assign Roughness_um and Bond_strength_N to Variables. Select Pearson's r, Additional Options > Confidence intervals, Sample size, and Scatter plots.",
+        "Then add Coating_um to Variables to see all three pairwise relationships. This is a different question from partialling it out."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Released Regression menu",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/Description.qml"
+      },
+      {
+        "title": "Correlation interface and assumptions",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/qml/Correlation.qml"
+      },
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      }
+    ],
+    "related": [
+      {
+        "id": "correlation_rank",
+        "label": "Explore an ordered or monotonic association"
+      },
+      {
+        "id": "correlation_partial",
+        "label": "Adjust for a measured continuous covariate"
+      },
+      {
+        "id": "linear_regression",
+        "label": "Model an outcome using one or more predictors"
+      },
+      {
+        "id": "gage_crossed",
+        "label": "Assess a measurement system"
+      }
+    ]
+  },
+  "correlation_rank": {
+    "id": "correlation_rank",
+    "family": "model",
+    "title": "Spearman or Kendall rank correlation",
+    "summary": "Explore a monotonic association using the order of numerical or ordered measurements.",
+    "why": "Your question concerns whether larger values of one measurement tend to go with larger or smaller values of another. An ordered rating or a curved monotonic pattern can be described using ranks.",
+    "path": [
+      "Regression",
+      "Classical",
+      "Correlation"
+    ],
+    "availability": {
+      "module": "Regression",
+      "sourceVersion": "0.96.5-release.803",
+      "status": "released",
+      "note": "Stable module listed on 29 October 2026. Spearman and Kendall controls checked against released v0.96.0 source; the examples have not been run in desktop JASP."
+    },
+    "setup": [
+      {
+        "title": "Preserve meaningful numerical ordering",
+        "text": "Use numeric codes in the intended order for Severity_score: 1 through 5. The verified Correlation dialog accepts numeric Scale columns; set the numeric coded column to Scale for assignment, while interpreting it as ordered and selecting a rank coefficient."
+      },
+      {
+        "title": "Select a rank coefficient",
+        "text": "Move Roughness_um and Severity_score to Variables. Clear Pearson's r and select Spearman's rho. Kendall's tau-b is a useful alternative based on concordant and discordant pairs, with an adjustment for ties; choose and report the coefficient deliberately."
+      },
+      {
+        "title": "Examine the pattern",
+        "text": "Under Additional Options, request Confidence intervals and Sample size; also select Scatter plots. The released calculation code provides intervals for the selected Spearman or Kendall coefficient. Points align at the five score levels; inspect monotonicity and possible product or batch mixtures."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "A different sampled item in each row."
+      },
+      {
+        "name": "Roughness_um",
+        "type": "Scale",
+        "description": "Measured roughness on that item, in micrometres."
+      },
+      {
+        "name": "Severity_score",
+        "type": "Scale",
+        "description": "Numeric codes for an ordered 1–5 rating. Assign as numeric in the Correlation dialog; interpret using a rank coefficient."
+      }
+    ],
+    "checks": [
+      "Ranking does not repair dependence, a poorly sampled population, or a mixture of incompatible processes.",
+      "A monotonic relationship can be curved but should have a consistent direction. A U-shaped relationship may have a small rank correlation despite a strong association.",
+      "Ties are expected for a short rating scale. Kendall's tau-b accounts for ties; Spearman and Kendall coefficients have different interpretations and are not numerically interchangeable.",
+      "Rank confidence intervals are approximate. Additional Options > Confidence intervals refers to the coefficient; the interval option under Scatter plots instead describes a regression line. Optional From … bootstraps requests a percentile bootstrap interval; report the method and number of resamples when using it.",
+      "A rank association is not rater agreement or a causal effect. For agreement between inspectors, use the measurement-systems route."
+    ],
+    "report": [
+      "The rating scale and ordering, selected coefficient (Spearman's rho or Kendall's tau-b), estimate with its confidence interval, number of complete pairs, and the observed pattern.",
+      "Any hypothesis-test method or interval actually produced by the installed JASP analysis, and the exploratory or confirmatory purpose."
+    ],
+    "example": {
+      "title": "Do rougher parts receive worse visual ratings?",
+      "story": "Seventy-two synthetic parts have roughness measurements and ordered visual-severity ratings. The rating has five levels, so many values are tied.",
+      "sample": "correlation_ranks",
+      "instructions": [
+        "Import the CSV and assign the numeric Roughness_um and Severity_score columns to Variables.",
+        "Select Spearman's rho and clear Pearson's r. Request Additional Options > Confidence intervals, Sample size, and Scatter plots.",
+        "Optionally inspect Kendall's tau-b as a second description. Explain why its numerical value need not equal Spearman's rho."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Correlation interface: Spearman and Kendall options",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/qml/Correlation.qml"
+      },
+      {
+        "title": "Correlation calculation implementation",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/R/correlation.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "correlation_pearson",
+        "label": "Describe a linear association with Pearson's r"
+      },
+      {
+        "id": "attribute_agreement",
+        "label": "Assess agreement between inspectors"
+      }
+    ]
+  },
+  "correlation_partial": {
+    "id": "correlation_partial",
+    "family": "model",
+    "title": "Partial Pearson correlation",
+    "summary": "Describe the linear association between two measurements after adjusting each for specified continuous covariates.",
+    "why": "You want a symmetric adjusted association between two numerical variables, and a linear adjustment for the selected covariates is meaningful for your study.",
+    "path": [
+      "Regression",
+      "Classical",
+      "Correlation"
+    ],
+    "availability": {
+      "module": "Regression",
+      "sourceVersion": "0.96.5-release.803",
+      "status": "released",
+      "note": "Stable module listed on 29 October 2026. Partial out controls checked against released v0.96.0 source; the examples have not been run in desktop JASP."
+    },
+    "setup": [
+      {
+        "title": "Separate the pair from the adjustment variables",
+        "text": "Move Roughness_um and Bond_strength_N to Variables. Move Coating_um to Partial out. Select Pearson's r. The partial correlation relates the residuals after linearly regressing each measured variable on the adjustment variable."
+      },
+      {
+        "title": "Request estimates and plots",
+        "text": "Under Additional Options, select Confidence intervals and also tick From … bootstraps; for example, use 5000 resamples. The verified released interface requires bootstrapping for partial-correlation intervals; ticking Confidence intervals alone does not produce an analytic interval. Request Sample size and Scatter plots. The partial scatter-plot axes represent adjusted residuals."
+      },
+      {
+        "title": "Make the adjustment explicit",
+        "text": "Compare with the unadjusted Pearson correlation and report the chosen covariates. Choose covariates from the process question and study design rather than selecting those that produce a preferred result."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Part",
+        "type": "Nominal",
+        "description": "Independent component identifier; exclude from the variable and adjustment boxes."
+      },
+      {
+        "name": "Roughness_um",
+        "type": "Scale",
+        "description": "First measurement in the adjusted association."
+      },
+      {
+        "name": "Bond_strength_N",
+        "type": "Scale",
+        "description": "Second measurement, paired on the same component."
+      },
+      {
+        "name": "Coating_um",
+        "type": "Scale",
+        "description": "Continuous covariate for the linear adjustment; assign to Partial out."
+      }
+    ],
+    "checks": [
+      "Independent sampling, meaningful numerical scales, suitable linear adjustments, and appropriate residual behaviour are still needed.",
+      "Partialling out a variable does not guarantee control of confounding. Adjusting for a consequence of the variables, a collider, or a poorly measured covariate can change the interpretation adversely.",
+      "A categorical group should not be assigned arbitrary numeric codes and treated as a continuous adjustment. Use an appropriately coded regression model when factors, interactions, or nonlinear adjustments are needed.",
+      "Document missingness and the complete observations used by the partial analysis. Extra covariates reduce the information available for inference.",
+      "This method estimates an adjusted association. Causal effects require additional assumptions or a suitable experiment.",
+      "The bootstrap resamples rows and relies on independent sampled components. Report the percentile-bootstrap method and number of resamples, and check any warnings or unstable intervals; bootstrapping does not fix dependent observations or an ill-conditioned adjustment model."
+    ],
+    "report": [
+      "The unadjusted and partial Pearson coefficients, their intervals and interval methods, the number of observations, and every adjustment variable. For the partial interval, report the number of bootstrap resamples.",
+      "The rationale for adjustment, plots of the residual relationship, and the limits of a causal interpretation."
+    ],
+    "example": {
+      "title": "Does the relationship persist after allowing for coating?",
+      "story": "In the same 80-component synthetic example, coating thickness relates to both roughness and strength. Examine the association remaining after linear adjustment for thickness.",
+      "sample": "correlation_pairs",
+      "instructions": [
+        "Move Roughness_um and Bond_strength_N to Variables; move Coating_um to Partial out.",
+        "Select Pearson's r. Under Additional Options, select Confidence intervals and From … bootstraps (for example, 5000 resamples); also request Sample size and Scatter plots.",
+        "Compare with the unadjusted coefficient. The generating model is known for this teaching example; in real observations, adjustment requires substantive justification."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Correlation interface: Partial out and residual plots",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/qml/Correlation.qml"
+      },
+      {
+        "title": "Released Regression menu",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/inst/Description.qml"
+      },
+      {
+        "title": "Released partial-correlation and bootstrap interval implementation",
+        "url": "https://github.com/jasp-stats/jaspRegression/blob/v0.96.0/R/correlation.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "correlation_pearson",
+        "label": "Start with the unadjusted association"
+      },
+      {
+        "id": "linear_regression",
+        "label": "Model an outcome, factors, and interactions"
+      }
+    ]
+  }
+}

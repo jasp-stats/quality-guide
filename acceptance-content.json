@@ -1,0 +1,608 @@
+{
+  "accept_create_attribute": {
+    "id": "accept_create_attribute",
+    "family": "acceptance",
+    "title": "Create an attribute acceptance plan",
+    "summary": "Choose a sample size and acceptance number for pass/fail inspection of a lot.",
+    "why": "You need an inspection rule before sampling: inspect n items, then accept the lot if at most c sampled items are nonconforming. JASP designs a single-stage rule from quality levels and agreed risks.",
+    "path": [
+      "Acceptance Sampling",
+      "Attribute Sampling",
+      "Create Attribute Plan"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.95.5-release.803",
+      "status": "released",
+      "note": "Stable module listed in the official catalogue on 29 October 2026. Menu and options checked against official tagged source; not executed in the desktop application."
+    },
+    "setup": [
+      {
+        "title": "Enter the quality agreement",
+        "text": "Enter Lot size (N), Acceptable Quality Level (AQL), Rejectable Quality Level (RQL / LTPD), Producer's risk (α), and Consumer's risk (β). Enter proportions: 0.01 means 1%. AQL is the acceptable reference quality; RQL is the poor-quality reference. Require AQL < RQL."
+      },
+      {
+        "title": "Choose the inspection model",
+        "text": "Use Binomial for independent pass/fail outcomes with an approximately constant nonconforming probability. Use Hypergeometric for sampling without replacement from a finite lot: enter N and ensure N multiplied by every quality level, including the plot grid, is an integer. Poisson is an available count model/rare-event approximation; keep the definition and exposure of a defect consistent."
+      },
+      {
+        "title": "Inspect the proposed rule",
+        "text": "Select Summary table and OC curve. Read the generated n and c, and verify acceptance probabilities at AQL and RQL. AOQ curve and ATI curve assume rectification of rejected lots by full inspection and replacement of nonconforming items."
+      }
+    ],
+    "columns": [],
+    "checks": [
+      "No dataset is required. This analysis designs a rule; it does not inspect a lot or import observed pass/fail results.",
+      "Producer's risk is P(reject at AQL); consumer's risk is P(accept at RQL). Neither is a posterior probability that this particular lot is bad.",
+      "Count nonconforming items once in a pass/fail plan. Do not silently replace that count with the number of separate flaws on the items.",
+      "Agree the plan and random sampling procedure before inspection. A plan does not guarantee every accepted item conforms."
+    ],
+    "report": [
+      "N, distribution, AQL, RQL, α, β, and the generated n and c.",
+      "The OC curve and actual achieved risks; any rectification assumptions."
+    ],
+    "example": {
+      "title": "Plan an incoming seal inspection",
+      "story": "A synthetic planning exercise for a lot of 1,000 seals: 1% nonconforming is the acceptable reference; 6% is the rejectable reference.",
+      "sample": null,
+      "instructions": [
+        "Enter N = 1000, AQL = 0.01, RQL = 0.06, α = 0.05, β = 0.10.",
+        "Select Hypergeometric. Set the proportion range From 0, To 0.10, Step size 0.001.",
+        "Request Summary table and OC curve. Record JASP's n and c before collecting inspection results."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Create Attribute Plan interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/CreateAttributePlan.qml"
+      },
+      {
+        "title": "Create Attribute Plan help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/help/CreateAttributePlan.md"
+      },
+      {
+        "title": "Available attribute distributions",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/common/Distribution.qml"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_analyze_attribute",
+        "label": "Evaluate a single-stage or multistage attribute plan"
+      },
+      {
+        "id": "accept_create_variable",
+        "label": "Use continuous measurements for a variable plan"
+      }
+    ]
+  },
+  "accept_analyze_attribute": {
+    "id": "accept_analyze_attribute",
+    "family": "acceptance",
+    "title": "Evaluate an attribute acceptance plan",
+    "summary": "Examine the risks and inspection effort of an existing single-stage or multistage rule.",
+    "why": "You already know the sample sizes and acceptance/rejection thresholds. JASP evaluates their operating characteristics and checks them against your quality agreement.",
+    "path": [
+      "Acceptance Sampling",
+      "Attribute Sampling",
+      "Analyze Attribute Plan"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.95.5-release.803",
+      "status": "released",
+      "note": "Stable module listed in the official catalogue on 29 October 2026. Menu and options checked against official tagged source; not executed in the desktop application."
+    },
+    "setup": [
+      {
+        "title": "Describe the existing rule",
+        "text": "For Single Sampling Plan, enter Lot size (N), Sample size (n), and Acceptance number (c); Rejection number (r) is c + 1. For Multiple Sampling Plan, enter Number of stages and each stage's n, c, and r. The n values are additional samples at each stage; c and r apply to cumulative nonconforming counts."
+      },
+      {
+        "title": "Check performance",
+        "text": "Choose Binomial, Hypergeometric, or Poisson to match the sampling model. Enable Assess attribute plan, or Assess sampling plan in the multistage section, and enter AQL, RQL / LTPD, and the two risks. Select OC curve and Summary table; the ASN curve shows average sample number for multistage sampling."
+      },
+      {
+        "title": "Separate evaluating a rule from using it",
+        "text": "This screen takes plan settings, not observed inspection rows. Apply an agreed single-stage rule manually: accept if observed nonconforming count d ≤ c, reject if d ≥ r. At an intermediate stage, continue when c < cumulative d < r. Do not change the plan after seeing d."
+      }
+    ],
+    "columns": [],
+    "checks": [
+      "Multistage acceptance/rejection numbers must be nondecreasing; the last r must equal the last c + 1. Total planned sample size cannot exceed the lot size.",
+      "Hypergeometric quality-grid values must correspond to whole numbers of nonconforming items in the lot.",
+      "AOQ and ATI require rejected-lot rectification. ASN describes sampling to a decision and does not include all rectification work.",
+      "Analyze Attribute Plan evaluates supplied multistage plans; Create Attribute Plan designs a single-stage plan."
+    ],
+    "report": [
+      "All stage sizes and cumulative decision thresholds, sampling distribution, lot size, and intended risks.",
+      "Acceptance probabilities at AQL and RQL, OC curve, and ASN when comparing staged plans."
+    ],
+    "example": {
+      "title": "Compare one inspection with a two-stage rule",
+      "story": "Synthetic candidate plans for 1,000 connectors illustrate how a staged rule can stop early. These settings are teaching candidates, not a certified inspection standard.",
+      "sample": null,
+      "instructions": [
+        "Single Sampling Plan: N = 1000, n = 100, c = 4; choose Binomial.",
+        "Multiple Sampling Plan: N = 1000; 2 stages; stage 1: n = 50, c = 1, r = 4; stage 2: n = 50, c = 4, r = 5.",
+        "Use AQL = 0.01, RQL = 0.10, α = 0.05, β = 0.10 to assess both; request OC curves and the multistage ASN curve.",
+        "If the first sample has 2 nonconforming connectors, the staged rule continues. If the second adds 2, the cumulative count is 4 and the rule accepts. This comparison is manual, not an output calculated from inspection rows in JASP."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Analyze Attribute Plan interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/AnalyzeAttributePlan.qml"
+      },
+      {
+        "title": "Single and multistage attribute plan help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/help/AnalyzeAttributePlan.md"
+      },
+      {
+        "title": "Stage input validation and operating-characteristic calculations",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/R/commonFunctionsAcceptSampling.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_create_attribute",
+        "label": "Design a new single-stage attribute plan"
+      },
+      {
+        "id": "accept_analyze_variable",
+        "label": "Evaluate a plan based on measurements"
+      }
+    ]
+  },
+  "accept_create_variable": {
+    "id": "accept_create_variable",
+    "family": "acceptance",
+    "title": "Create a variable acceptance plan",
+    "summary": "Design a sampling rule that uses continuous measurements and a critical distance k.",
+    "why": "You measure a quality characteristic such as diameter or strength, and want to select n and k before inspecting a lot. The plan uses a normal-distribution model and distinguishes known from estimated standard deviation.",
+    "path": [
+      "Acceptance Sampling",
+      "Variable Sampling",
+      "Create Variable Plan"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.95.5-release.803",
+      "status": "released",
+      "note": "Stable module listed in the official catalogue on 29 October 2026. Menu and options checked against official tagged source; not executed in the desktop application."
+    },
+    "setup": [
+      {
+        "title": "Set the planning requirements",
+        "text": "Enter Lot size (N), AQL, RQL / LTPD, Producer's risk (α), and Consumer's risk (β). These quality levels are proportions nonconforming, not measurement limits such as 9.95 mm. The planning screen requires settings, not a measurement dataset."
+      },
+      {
+        "title": "Choose how variability will be treated",
+        "text": "Select Standard Deviation (Historical) known only when a defensible external standard deviation will be used for lot decisions. Otherwise clear it: the unknown-SD plan uses variability estimated from the inspection sample. The choice changes n and k."
+      },
+      {
+        "title": "Review and carry the plan forward",
+        "text": "Request Summary table and OC curve, and record the generated n and Critical Distance (k). Use Accept/Reject Lots to apply the selected rule to measurements and specification limits. AQL/RQL and α/β define the planning performance; LSL/USL define item conformance."
+      }
+    ],
+    "columns": [],
+    "checks": [
+      "The normal measurement model, independent random sampling, and the chosen treatment of SD must be credible. A few passing normality-test results do not establish these assumptions.",
+      "The planning screen has no specification-limit or two-sided-plan switch. Do not assume its OC curve proves a particular two-sided rule has the requested combined-tail risks; review that rule before operational use.",
+      "A historical SD should represent the same measurement process and conditions; estimating it from the very sample being inspected is an unknown-SD analysis.",
+      "AOQ and ATI curves assume rectification of rejected lots; use them only if that matches the inspection policy."
+    ],
+    "report": [
+      "N, quality/risk requirements, known or unknown SD, generated n and k, and the OC curve.",
+      "The measurement model, specification scheme, and sampling/rectification assumptions."
+    ],
+    "example": {
+      "title": "Plan a strength inspection",
+      "story": "A synthetic supplier qualification exercise uses tensile strength measurements and a prespecified lower strength limit.",
+      "sample": null,
+      "instructions": [
+        "Enter N = 1000, AQL = 0.05, RQL = 0.15, α = 0.05, β = 0.10.",
+        "Select Standard Deviation (Historical) known and request OC curve and Summary table.",
+        "Record n and k, then clear the known-SD option and compare the required plan. Do not substitute the known-SD k into an unknown-SD inspection."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Create Variable Plan interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/CreateVariablePlan.qml"
+      },
+      {
+        "title": "Variable plan help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/help/CreateVariablePlan.md"
+      },
+      {
+        "title": "Normal-model n and k calculation",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/R/createVariablePlan.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_decide_variable",
+        "label": "Apply n and k to an inspected lot"
+      },
+      {
+        "id": "accept_analyze_variable",
+        "label": "Evaluate specified n and k"
+      }
+    ]
+  },
+  "accept_analyze_variable": {
+    "id": "accept_analyze_variable",
+    "family": "acceptance",
+    "title": "Evaluate a variable acceptance plan",
+    "summary": "Check the operating characteristics of an existing n-and-k inspection rule.",
+    "why": "A contract, previous design, or candidate plan already specifies n and k. You need to assess its acceptance probabilities and check the planned producer and consumer protection.",
+    "path": [
+      "Acceptance Sampling",
+      "Variable Sampling",
+      "Analyze Variable Plan"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.95.5-release.803",
+      "status": "released",
+      "note": "Stable module listed in the official catalogue on 29 October 2026. Menu and options checked against official tagged source; not executed in the desktop application."
+    },
+    "setup": [
+      {
+        "title": "Enter the rule",
+        "text": "Enter Lot size (N), Sample size (n), and k. Set Standard deviation (historical) known to match the actual inspection rule. The same numerical n and k can have different operating characteristics when SD is estimated rather than known."
+      },
+      {
+        "title": "Assess the required risks",
+        "text": "Enable Assess variable plan. Enter Acceptable Quality Level (AQL), Rejectable Quality Level (RQL / LTPD), Producer's risk (α), and Consumer's risk (β). Use proportions and keep AQL below RQL. Inspect the assessment table instead of presuming a familiar n and k meet the agreement."
+      },
+      {
+        "title": "Examine the range of lot qualities",
+        "text": "Set the Proportion non-conforming items range; request Summary table and OC curve. Add AOQ curve or ATI curve only for a rectifying inspection policy. To decide about an observed lot, use Accept/Reject Lots with its measurements or summary statistics."
+      }
+    ],
+    "columns": [],
+    "checks": [
+      "This analysis assesses a single-stage normal-model plan. It takes no observed measurement column and makes no decision for a particular lot.",
+      "The quality proportion on the OC horizontal axis is different from a measurement specification limit.",
+      "The screen does not calibrate the combined risks of arbitrary two-sided specifications. Match the evaluated plan to the intended specification and decision rule.",
+      "Check random sampling and the justification for known SD; a favorable OC curve relies on its statistical model."
+    ],
+    "report": [
+      "N, n, k, known/unknown SD, AQL, RQL, and target and achieved producer/consumer risks.",
+      "OC curve and any AOQ/ATI assumptions; the inspection rule selected before data collection."
+    ],
+    "example": {
+      "title": "Review a proposed 24-item measurement plan",
+      "story": "Synthetic settings illustrate how the variability assumption affects a supplied inspection rule.",
+      "sample": null,
+      "instructions": [
+        "Enter N = 1000, n = 24, k = 1.309 and select Standard deviation (historical) known.",
+        "Enable Assess variable plan; enter AQL = 0.05, RQL = 0.15, α = 0.05, β = 0.10.",
+        "Request Summary table and OC curve. Then clear the known-SD option and inspect how the assessment changes.",
+        "Use Create Variable Plan to obtain a newly calibrated rule when the assumptions change."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Analyze Variable Plan interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/AnalyzeVariablePlan.qml"
+      },
+      {
+        "title": "Variable-plan assessment help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/help/AnalyzeVariablePlan.md"
+      },
+      {
+        "title": "Variable-plan OC calculations and risk assessment",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/R/commonFunctionsAcceptSampling.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_create_variable",
+        "label": "Design n and k from the desired risks"
+      },
+      {
+        "id": "accept_decide_variable",
+        "label": "Apply the chosen rule to a lot"
+      }
+    ]
+  },
+  "accept_decide_variable": {
+    "id": "accept_decide_variable",
+    "family": "acceptance",
+    "title": "Accept or reject a lot from measurements",
+    "summary": "Apply a prespecified variable sampling rule to one lot using the k-method.",
+    "why": "You have inspected a random sample from one lot and already have the relevant n, k, specification limits, and SD assumption. JASP provides a lot decision from the measurements or their summary statistics.",
+    "path": [
+      "Acceptance Sampling",
+      "Variable Sampling",
+      "Accept/Reject Lots"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.95.5-release.803",
+      "status": "released",
+      "note": "Stable module listed in the official catalogue on 29 October 2026. Menu and options checked against official tagged source; not executed in the desktop application."
+    },
+    "setup": [
+      {
+        "title": "Supply one lot's evidence",
+        "text": "Assign one Scale column to Measurement. Each row is one sampled item from the lot. Alternatively leave Measurement empty and enter Sample size (n), Sample mean, and Sample standard deviation in Specify sample statistics directly (used if dataset is not available)."
+      },
+      {
+        "title": "Enter the agreed decision rule",
+        "text": "Enter k from the chosen plan. Select Lower Specification Limit (LSL), Upper Specification Limit (USL), or both, and enter the limits. Select Standard deviation (historical) and enter its value only for a known-SD rule; otherwise JASP uses sample SD."
+      },
+      {
+        "title": "Read the decision in its context",
+        "text": "Inspect the sample statistics, standardized distance(s), and decision. For a one-sided rule, accept when the mean's distance from the limit, divided by the applicable SD, is at least k. Two-sided rules depend on the SD assumption and both tail areas; when both limits and historical SD are selected, enter AQL and RQL as requested."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Diameter_mm",
+        "type": "Scale",
+        "description": "One diameter per randomly sampled component from a single lot; assign to Measurement."
+      }
+    ],
+    "checks": [
+      "Use the planned sample size. This screen applies the supplied k; it does not verify that the sample size and k satisfy your target risks.",
+      "Keep lots separate: there is no lot-grouping assignment box. Filter or prepare one lot at a time.",
+      "Check measurement quality, normal-model plausibility, and positive sample SD. Prespecify the rule and limits before seeing the sample.",
+      "Acceptance is a sampling-policy decision; it does not establish zero nonconforming items or process stability."
+    ],
+    "report": [
+      "Lot identity, actual n, mean, SD, historical SD if used, limits, and k.",
+      "The decision, sampling method, plan justification, and any departures from the inspection protocol."
+    ],
+    "example": {
+      "title": "Inspect a lot of machined shafts",
+      "story": "Twenty-four synthetic diameter measurements from one lot demonstrate a lower-limit decision; the settings are for teaching.",
+      "sample": "acceptance_measurements",
+      "instructions": [
+        "Assign Diameter_mm to Measurement. Set k = 1.309 and select LSL = 9.95 mm; leave USL off.",
+        "Select Standard deviation (historical) and enter 0.04 mm.",
+        "Inspect the decision and standardized lower-limit distance. As a teaching comparison, change LSL to 9.98 mm and observe the result; in real inspection the limit must be fixed beforehand."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Accept/Reject Lots input fields",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/qml/DecideVariableLots.qml"
+      },
+      {
+        "title": "Accept/Reject Lots help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/inst/help/DecideVariableLots.md"
+      },
+      {
+        "title": "One-sided and two-sided k-method decisions",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/v0.96.0/R/decideVariableLots.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_create_variable",
+        "label": "Create the plan before inspecting"
+      },
+      {
+        "id": "accept_analyze_variable",
+        "label": "Verify the plan's operating characteristics"
+      }
+    ]
+  },
+  "accept_bayesian_single": {
+    "id": "accept_bayesian_single",
+    "family": "acceptance",
+    "title": "Bayesian acceptance sampling for one lot",
+    "summary": "Plan for Bayes-factor evidence and update beliefs from a lot's inspection counts.",
+    "why": "You want explicit prior-to-posterior learning about the nonconforming proportion, evidence relative to RQL, and predictions for the remaining lot. This route requires the Acceptance Sampling beta with Bayesian Sampling available.",
+    "path": [
+      "Acceptance Sampling",
+      "Bayesian Sampling",
+      "Bayesian Sampling"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.96.4 beta",
+      "status": "beta",
+      "note": "The official catalogue offers 0.96.4 beta builds; build numbers vary by platform. Requires the Bayesian Sampling menu in your installed module. These teaching examples have not been executed inside desktop JASP."
+    },
+    "setup": [
+      {
+        "title": "Choose quality thresholds and a prior",
+        "text": "In 1. Planning, enter AQL and RQL. Under Prior Distribution (Beta), choose Impartial (Around the RQL), Uniform, Custom, or Impartial (Three-region). Custom α and β here are Beta shape parameters; they are not producer's and consumer's error risks."
+      },
+      {
+        "title": "Design an evidence-based plan",
+        "text": "Set (Max) Sample size (n) and Bayes factor (min), then select Plans table and Prior plot. Candidate n,c pairs target evidence for a defect proportion below RQL versus above RQL. Three-hypothesis BF table adds comparisons among the good, middle, and bad quality regions defined by AQL and RQL."
+      },
+      {
+        "title": "Update using inspected items",
+        "text": "In 2. Inference, select Use data to create posterior distribution. Enter Sample size (n), Observed number of defects (d), and Lot size (N). Select Inference decision table, Posterior plot, and Posterior predictive distribution plot. Counts are typed directly; no CSV assignment is needed."
+      }
+    ],
+    "columns": [],
+    "checks": [
+      "The Beta-Binomial model counts nonconforming items: use 0 ≤ d ≤ n ≤ N. Do not enter multiple flaws per item as d.",
+      "With prior Beta(a,b), the posterior is Beta(a+d,b+n−d). The prediction for total lot defects includes those already observed and uncertainty about the uninspected items.",
+      "A Bayes-factor threshold is an evidence requirement, not the α/β protection of a classical plan. Report prior choices and check sensitivity.",
+      "The standard planning target is below versus above RQL; AQL influences region summaries and some prior specifications. Read the selected hypothesis definitions."
+    ],
+    "report": [
+      "Module beta version, AQL/RQL, prior, planning limit and Bayes-factor target.",
+      "n, d, N, posterior summary, Bayes-factor direction, predictive lot-quality probabilities, and decision policy."
+    ],
+    "example": {
+      "title": "Learn from a sample with no nonconforming seals",
+      "story": "A synthetic example illustrates that observing zero nonconforming items still leaves uncertainty about the rest of the lot.",
+      "sample": null,
+      "instructions": [
+        "Set AQL = 0.05, RQL = 0.15, prior Uniform, maximum n = 40, and minimum Bayes factor = 30.",
+        "Select Plans table and Prior plot.",
+        "Enable inference; enter n = 30, d = 0, N = 100. Request the inference table, posterior, and posterior predictive plot.",
+        "The chosen prior and counts imply Beta(1,31) for the posterior defect proportion. Compare with Impartial (Around the RQL) to see the effect of the prior."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Official Bayesian menu registration",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/Description.qml"
+      },
+      {
+        "title": "Bayesian Sampling interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/qml/BayesianSampling.qml"
+      },
+      {
+        "title": "Bayesian Sampling help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/help/BayesianSampling.md"
+      },
+      {
+        "title": "Beta-Binomial planning and posterior prediction",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/R/bayesianSampling.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_create_attribute",
+        "label": "Use classical producer/consumer risk requirements"
+      },
+      {
+        "id": "accept_bayesian_sequence",
+        "label": "Borrow information across an ordered sequence of lots"
+      }
+    ]
+  },
+  "accept_bayesian_sequence": {
+    "id": "accept_bayesian_sequence",
+    "family": "acceptance",
+    "title": "Bayesian acceptance sampling across lots",
+    "summary": "Model a changing nonconforming rate and support a decision for the latest lot.",
+    "why": "You inspect an ordered series of related lots and want to carry information forward while allowing quality to change. Bayesian State-Space Sampling is available in the Acceptance Sampling beta.",
+    "path": [
+      "Acceptance Sampling",
+      "Bayesian Sampling",
+      "Bayesian State-Space Sampling"
+    ],
+    "availability": {
+      "module": "Acceptance Sampling",
+      "sourceVersion": "0.96.4 beta",
+      "status": "beta",
+      "note": "The official catalogue offers 0.96.4 beta builds; build numbers vary by platform. Requires the Bayesian State-Space Sampling menu in your installed module. These teaching examples have not been executed inside desktop JASP."
+    },
+    "setup": [
+      {
+        "title": "Assign one row per lot",
+        "text": "Assign Nonconforming to Defect Count, Tested to Sample Size (tested items), LotSize to Lot Size (total items), and LotOrder to Lot Number. Start with Model Type = Without predictor. With predictor adds a Scale Predictor assignment for a varying lot-level covariate."
+      },
+      {
+        "title": "Specify the quality and decision policy",
+        "text": "Under Settings, set Lower limit (AQL), Upper limit (RQL), and the two Decision Rule probability thresholds. These probabilities refer to predicted defect totals in the current lot. The model can suggest continuing inspection as well as acceptance or rejection."
+      },
+      {
+        "title": "Inspect estimation and sensitivity",
+        "text": "Review the initial defect-rate prior and State noise prior under Model. Request State time series (defect rate), Posterior predictive for current lot, and MCMC Diagnostics > Overview table. Retain multiple chains; review convergence and effective sample sizes before interpreting the latest-lot summary. Sudden jump tail correction is an optional modelling choice, not an automatic repair."
+      }
+    ],
+    "columns": [
+      {
+        "name": "LotOrder",
+        "type": "Scale or Ordinal",
+        "description": "Numeric chronological lot order; assign to Lot Number."
+      },
+      {
+        "name": "Nonconforming",
+        "type": "Scale",
+        "description": "Integer number of nonconforming sampled items, not separate flaw events; assign to Defect Count."
+      },
+      {
+        "name": "Tested",
+        "type": "Scale",
+        "description": "Integer number inspected in that lot; assign to Sample Size (tested items)."
+      },
+      {
+        "name": "LotSize",
+        "type": "Scale",
+        "description": "Integer total number of items in that lot; assign to Lot Size (total items)."
+      }
+    ],
+    "checks": [
+      "For each row require 0 ≤ Nonconforming ≤ Tested ≤ LotSize; use positive sample and lot sizes. Keep chronological order and explain missing lots or large gaps.",
+      "The model shares information across related lots; unrelated suppliers or abrupt process changes need deliberate modelling choices.",
+      "The state-space output summarizes the latest lot, with a trajectory over the sequence. It is not a classical control chart or proof of stability.",
+      "Report convergence, prior sensitivity, thresholds, and whether tail correction was used. A predictor association does not by itself establish causation."
+    ],
+    "report": [
+      "Beta module version, lot sequence, inspected/total counts, model and priors.",
+      "Latest-lot predictive probabilities and decision suggestion, state trajectory, MCMC diagnostics, and sensitivity checks."
+    ],
+    "example": {
+      "title": "Inspect a sequence of component lots",
+      "story": "Twelve synthetic ordered lots have 100 inspected components each. Nonconforming counts rise in the final lots to illustrate changing quality.",
+      "sample": "acceptance_lot_sequence",
+      "instructions": [
+        "Assign the four columns to their matching roles and choose Without predictor.",
+        "Enter AQL = 0.05 and RQL = 0.10. Leave the decision thresholds at 0.10 for acceptance and 0.05 for rejection.",
+        "Use the initial Beta(1,1) prior, State noise Half-normal SD = 1, and keep sudden jump tail correction off for this first example.",
+        "Retain the default multiple-chain MCMC settings and Seed = 1. Request the diagnostics overview and all theta[t]. Inspect the latest-lot prediction; no outcome is precomputed by this guide."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Official JASP module catalogue (checked 29 October 2026)",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Official Bayesian menu registration",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/Description.qml"
+      },
+      {
+        "title": "Bayesian State-Space Sampling interface",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/qml/BayesianSSMforAS.qml"
+      },
+      {
+        "title": "State-space sampling help",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/help/BayesianSSMforAS.md"
+      },
+      {
+        "title": "Input validation, chronological ordering, and latest-lot decisions",
+        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/R/bayesianSSMforAS.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "accept_bayesian_single",
+        "label": "Analyze a single lot with an explicit Beta prior"
+      },
+      {
+        "id": "accept_analyze_attribute",
+        "label": "Evaluate a classical attribute inspection rule"
+      }
+    ]
+  }
+}

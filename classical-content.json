@@ -1,0 +1,723 @@
+{
+  "variance_one": {
+    "id": "variance_one",
+    "family": "compare",
+    "subfamily": "Variances",
+    "title": "One variance or standard deviation versus a target",
+    "summary": "Test a process variance against a specified value and estimate its standard deviation with uncertainty.",
+    "why": "You have independent numerical observations from one process, and your question concerns the spread of individual measurements rather than their average.",
+    "path": [
+      "Classical Tests",
+      "Variances",
+      "One Variance"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Assign the individual measurements",
+        "text": "Select Raw data and move the measurement column to Variables. Keep one row per independently sampled unit. Alternatively, select Summarized data and enter Sample variance and Sample size directly; no worksheet is required for that mode."
+      },
+      {
+        "title": "Enter a variance, not an SD",
+        "text": "Test value is a population variance in squared measurement units. A target standard deviation of 0.10 mm therefore means Test value = 0.01 mm². Choose the alternative before inspecting the outcome."
+      },
+      {
+        "title": "Show the spread and its uncertainty",
+        "text": "Under Additional Statistics select Sample variance and Standard deviation, with their Confidence interval options. The χ² interval is equal-tailed and appropriate under normal sampling. Raw data also offer Bonett and Bootstrap interval methods."
+      },
+      {
+        "title": "Check the distribution",
+        "text": "With raw data request Q-Q plot residuals and, if useful, Normality. The reported hypothesis test remains the χ² variance test even when you choose Bonett or Bootstrap for the confidence interval. For a two-sided alternative, this implementation calculates a density-ordered p-value rather than doubling the smaller tail probability."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "Identifier for an independently sampled component; leave this out of Variables."
+      },
+      {
+        "name": "Diameter_mm",
+        "type": "Scale",
+        "description": "One diameter measurement per component, in millimetres."
+      }
+    ],
+    "checks": [
+      "The χ² variance test and χ² confidence interval require independent observations from a normal population. They can be sensitive to skewness and outliers; changing the interval method does not change the test assumption. The density-ordered two-sided p-value and the equal-tail χ² interval are individually valid but use different conventions, so their conclusions about the target can disagree.",
+      "A sample variance uses the n − 1 denominator. Do not enter a sample SD or the standard error of the mean in Sample variance.",
+      "Investigate drift, serial dependence, repeated measurements and mixtures of production conditions before treating the observations as one process distribution.",
+      "A nonsignificant difference does not prove that variability meets an engineering requirement. If the objective is to show that spread is below a limit, define that claim and a suitable one-sided bound in advance."
+    ],
+    "report": [
+      "Sample size, sample variance, SD, their units and the interval method with confidence level.",
+      "The target variance, chosen alternative, χ² statistic, degrees of freedom and p-value; identify the density-ordered convention when reporting a two-sided test.",
+      "Distribution and independence checks, and how the uncertainty compares with the allowed process spread."
+    ],
+    "example": {
+      "title": "Does component diameter vary more than intended?",
+      "story": "A machining process has a reference SD of 0.10 mm. The synthetic example contains 48 independent component diameters. The question concerns spread around the process mean, not whether the mean equals the nominal diameter.",
+      "sample": "variance_single",
+      "instructions": [
+        "Select Raw data and move Diameter_mm to Variables. Set Test value to 0.01.",
+        "For the prespecified question of excess variability, select > Test value. Select Standard deviation and its Confidence interval, plus Q-Q plot residuals.",
+        "The reference SD is 0.10 mm; its variance is 0.01 mm². Keep those units distinct when interpreting the output."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/singleVariance.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/singleVariance.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      }
+    ],
+    "related": [
+      {
+        "id": "variance_two",
+        "label": "Compare spread between two processes"
+      },
+      {
+        "id": "one_t",
+        "label": "Compare the process mean with a target"
+      }
+    ]
+  },
+  "variance_two": {
+    "id": "variance_two",
+    "family": "compare",
+    "subfamily": "Variances",
+    "title": "Compare the spread of two independent groups",
+    "summary": "Compare two process variances, using an F-test under normality or the available robust alternatives.",
+    "why": "You have the same numerical measurement from two independent groups and want to compare variability, rather than compare their means.",
+    "path": [
+      "Classical Tests",
+      "Variances",
+      "Multiple Variances"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Assign measurement and group",
+        "text": "Select Raw data. Move the measurement to Dependent Variable and the two-level factor to Grouping Variable. The example uses Diameter_mm and Line."
+      },
+      {
+        "title": "Choose the test for your setting",
+        "text": "Levene's test is selected by default and uses group medians (the Brown–Forsythe variant). Bonett's test is also available from raw observations. Select F-test (2 groups) when independent normal populations are a defensible model; it tests equality of the two variances."
+      },
+      {
+        "title": "Estimate the size of the difference in spread",
+        "text": "Request Descriptives and Variance ratio (2 groups). Its interval method can be F-test or Bonett with raw data. Read the output footnote for the numerator and denominator groups. A variance ratio of 4 corresponds to an SD ratio of 2."
+      },
+      {
+        "title": "If only summaries are available",
+        "text": "Select Summarized data and enter one row per group with its name, sample variance and N. Select F-test (2 groups); median-based Levene and Bonett methods require raw data. The summary-input variance-ratio interval uses the F distribution."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "Unique component identifier; each component belongs to one line."
+      },
+      {
+        "name": "Line",
+        "type": "Nominal",
+        "description": "Exactly two groups, Line_A and Line_B in the example."
+      },
+      {
+        "name": "Diameter_mm",
+        "type": "Scale",
+        "description": "Diameter in millimetres, measured on the same scale in both groups."
+      }
+    ],
+    "checks": [
+      "The groups and observations must be independent. Measurements of the same units before and after a change are paired and do not fit this independent-group route.",
+      "The F-test and F-based interval are sensitive to departures from normality. Inspect each group with the Q-Q plots and the demeaned raincloud plot; do not choose solely from a normality-test p-value.",
+      "Robust alternatives still need an appropriate sampling model and enough observations. Very small groups, severe outliers or dependent data can undermine the inference.",
+      "This interface tests equal variances; it does not expose a variance-equivalence test or a configurable non-unit null ratio. A large p-value cannot establish practically equal variation."
+    ],
+    "report": [
+      "Group sample sizes, variances and SDs, together with their measurement units.",
+      "The variance ratio and interval, clearly stating the numerator group, denominator group and interval method.",
+      "The selected test, p-value and the practical amount of spread reduction or increase that would matter."
+    ],
+    "example": {
+      "title": "Do two machining lines have the same consistency?",
+      "story": "The synthetic data contain 40 independent component diameters from each of two lines. Both lines have similar average diameters, but the simulated spreads differ.",
+      "sample": "variance_pair",
+      "instructions": [
+        "Assign Diameter_mm to Dependent Variable and Line to Grouping Variable.",
+        "Inspect the group distributions. For this normally simulated example, select F-test (2 groups), Descriptives and Variance ratio (2 groups); you can also compare the result with Levene's test.",
+        "Use the variance-ratio footnote to establish the group order. The analysis compares spread even when the group means are nearly equal."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/multipleVariances.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/multipleVariances.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "R documentation: F-test assumptions and variance ratio",
+        "url": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/var.test.html"
+      }
+    ],
+    "related": [
+      {
+        "id": "variance_multiple",
+        "label": "Compare more than two group variances"
+      },
+      {
+        "id": "ind_t",
+        "label": "Compare the means of two independent groups"
+      }
+    ]
+  },
+  "variance_multiple": {
+    "id": "variance_multiple",
+    "family": "compare",
+    "subfamily": "Variances",
+    "title": "Compare variability across several groups",
+    "summary": "Assess whether independent machines, suppliers or process settings have the same population variance.",
+    "why": "One numerical measurement is recorded for three or more independent groups and you want an overall comparison of spread.",
+    "path": [
+      "Classical Tests",
+      "Variances",
+      "Multiple Variances"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Assign the long-format data",
+        "text": "Select Raw data. Move the numerical measurement to Dependent Variable and the group column to Grouping Variable. Each row represents one unit from one group."
+      },
+      {
+        "title": "Select an overall variance test",
+        "text": "The default Levene's test is centred on the group median. Bonett's test is another raw-data option. Bartlett's test is available when normal sampling within every group is defensible. Do not select F-test (2 groups) for three or more groups."
+      },
+      {
+        "title": "Describe the group spreads",
+        "text": "Request Descriptives with Confidence interval for the standard deviation, and a Variance estimate plot or Raincloud plot (demeaned). Set the per-group interval method deliberately: χ² assumes normality; Bonett and Bootstrap require raw values."
+      },
+      {
+        "title": "Use summaries when appropriate",
+        "text": "Summarized data accepts a group name, sample variance and N for each group. Select Bartlett's test for this normal-theory route. Raw-data diagnostics, Levene and Bonett tests are unavailable from summaries alone."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Item",
+        "type": "Nominal",
+        "description": "Unique sampled component identifier."
+      },
+      {
+        "name": "Machine",
+        "type": "Nominal",
+        "description": "Three or more independent groups; the example has Machine_A, Machine_B and Machine_C."
+      },
+      {
+        "name": "Diameter_mm",
+        "type": "Scale",
+        "description": "Diameter measured in millimetres for each component."
+      }
+    ],
+    "checks": [
+      "Within-group observations and the groups themselves must be independent; repeated units or clustered lots need an analysis that represents their dependence.",
+      "Bartlett's test is sensitive to nonnormal distributions. Use group plots and process knowledge to assess whether its assumptions are reasonable.",
+      "An overall rejection says that at least one population variance differs. It does not identify every differing pair or automatically adjust a series of follow-up comparisons.",
+      "Per-group intervals are not simultaneous comparison intervals. Visual overlap is not a substitute for an appropriate comparison, and a large p-value does not prove equal spread."
+    ],
+    "report": [
+      "Each group’s sample size, variance, SD and confidence interval, naming the interval method.",
+      "The overall test, statistic, degrees of freedom and p-value.",
+      "Distribution checks and any planned follow-up comparisons, with their multiplicity strategy."
+    ],
+    "example": {
+      "title": "Which machines warrant closer investigation?",
+      "story": "Forty independently sampled component diameters are simulated for each of three machines. The aim is an overall comparison of process consistency.",
+      "sample": "variance_groups",
+      "instructions": [
+        "Move Diameter_mm to Dependent Variable and Machine to Grouping Variable.",
+        "Retain Levene's test. Request Descriptives, a demeaned raincloud plot and a variance estimate plot.",
+        "If the overall test indicates differences, use the group estimates to plan follow-up work; do not read the result as proof that every pair differs."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/multipleVariances.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/multipleVariances.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      }
+    ],
+    "related": [
+      {
+        "id": "variance_two",
+        "label": "Compare two independent group variances"
+      },
+      {
+        "id": "one_anova",
+        "label": "Compare the group means"
+      }
+    ]
+  },
+  "poisson_one": {
+    "id": "poisson_one",
+    "family": "compare",
+    "subfamily": "Poisson rates",
+    "title": "One Poisson event rate versus a target",
+    "summary": "Compare an event count per unit of exposure with a specified reference rate.",
+    "why": "You count events such as stoppages or defects over known exposure, and multiple events can occur during one observation period or on one inspected area.",
+    "path": [
+      "Classical Tests",
+      "Rates",
+      "One Rate"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Supply counts and exposure",
+        "text": "For Raw data move Events to Count/Occurrences and Exposure_hours to Interval (optional). Each row supplies an event count and its corresponding exposure. If you leave Interval empty, JASP treats every row as one exposure unit."
+      },
+      {
+        "title": "Or enter a total directly",
+        "text": "Choose Summarized data and enter Number of occurrences and Interval as the total event count and total exposure. Enter the observed count, not a rate or percentage. No worksheet is required in summarized mode."
+      },
+      {
+        "title": "Keep the rate units consistent",
+        "text": "Hypothesized rate is events per one exposure unit. With hours as the interval, a reference of 10 events per 100 hours becomes 0.10. Choose the alternative before looking at results."
+      },
+      {
+        "title": "Request the exact analysis",
+        "text": "Retain Exact and select Confidence interval. The exact Poisson method handles small counts, including zero. Normal approximation is an optional large-sample method and can be unreliable for sparse counts."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Period",
+        "type": "Nominal",
+        "description": "Identifier for a non-overlapping observation period."
+      },
+      {
+        "name": "Events",
+        "type": "Scale",
+        "description": "Nonnegative integer count of events in that period."
+      },
+      {
+        "name": "Exposure_hours",
+        "type": "Scale",
+        "description": "Positive monitored operating hours for the same period; use one consistent unit."
+      }
+    ],
+    "checks": [
+      "The Poisson model assumes independent event occurrence with a constant rate over the exposure being pooled. Clustering, recurring bursts, changes in operating conditions or excess variation can invalidate its uncertainty estimates.",
+      "Use complete, matched count/exposure rows and reconcile the totals before analysis. Missing counts and missing exposure must not lead to different sets of periods being summed.",
+      "Include zero-event periods and their exposure. Omitting them overestimates the rate. Supply integer counts even though the input column has Scale measurement level.",
+      "A count of nonconforming items out of a fixed number inspected is usually a binomial proportion. A lifetime analysis with right censoring addresses a different question from this pooled Poisson event-rate test."
+    ],
+    "report": [
+      "Total events, total exposure, exposure units and estimated events per unit exposure with a confidence interval.",
+      "The reference rate, alternative, exact or approximate method and p-value.",
+      "How event counting and exposure were defined, including evidence concerning event independence and rate stability."
+    ],
+    "example": {
+      "title": "Is the stoppage rate below the reference?",
+      "story": "The synthetic example records 42 stoppages over 600 monitored machine-hours in 12 observation periods. The prespecified reference is 0.10 stoppages per hour.",
+      "sample": "poisson_single",
+      "instructions": [
+        "Assign Events to Count/Occurrences and Exposure_hours to Interval (optional). Set Hypothesized rate to 0.10.",
+        "For a prespecified reduction question, select < Hypothesized rate. Retain Exact and request Confidence interval.",
+        "The same analysis can be run without the CSV: choose Summarized data, Number of occurrences = 42 and Interval = 600. The observed rate is 42/600 = 0.07 per hour."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/oneSamplePoissonRate.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/oneSamplePoissonRate.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "R documentation: exact Poisson rate tests",
+        "url": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/poisson.test.html"
+      }
+    ],
+    "related": [
+      {
+        "id": "poisson_two",
+        "label": "Compare two independent event rates"
+      },
+      {
+        "id": "binomial",
+        "label": "Test a proportion of nonconforming items"
+      }
+    ]
+  },
+  "poisson_two": {
+    "id": "poisson_two",
+    "family": "compare",
+    "subfamily": "Poisson rates",
+    "title": "Compare two independent Poisson event rates",
+    "summary": "Compare counts per exposure using a rate ratio or a rate difference, allowing unequal exposure totals.",
+    "why": "Two independent processes have counts of the same type of event and known observation exposure. Their observation durations or inspected areas may differ.",
+    "path": [
+      "Classical Tests",
+      "Rates",
+      "Two Rates"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Supply matched counts, exposure and group",
+        "text": "With Raw data, assign Events to Count/Occurrences, Process to Group and Exposure_hours to Interval (optional). Group must have exactly two levels. Without an interval column each row contributes one exposure unit."
+      },
+      {
+        "title": "Alternatively enter group totals",
+        "text": "With Summarized data enter a Name, Occurrences and Interval separately for Group 1 and Group 2. These are total counts and total exposure, not already calculated rates. No worksheet is needed."
+      },
+      {
+        "title": "Choose the effect and its direction",
+        "text": "Test Target offers Ratio (Rate 1 / Rate 2) and Difference (Rate 1 − Rate 2). For equal rates, use Hypothesized ratio = 1 or Hypothesized difference = 0. Confirm the actual group order in the output footnote."
+      },
+      {
+        "title": "Request an interval and the exact test",
+        "text": "Select Exact, Confidence interval and Method: Exact, plus Descriptive statistics. The exact difference test only supports a null difference of 0. Its difference interval is a MOVER combination of exact single-rate intervals; the ratio uses the exact conditional Poisson interval."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Period",
+        "type": "Nominal",
+        "description": "Identifier for a non-overlapping observation period within a process."
+      },
+      {
+        "name": "Process",
+        "type": "Nominal",
+        "description": "Exactly two independent processes: Process_A and Process_B."
+      },
+      {
+        "name": "Events",
+        "type": "Scale",
+        "description": "Nonnegative integer event count for this period."
+      },
+      {
+        "name": "Exposure_hours",
+        "type": "Scale",
+        "description": "Positive monitored hours for this count, in the same units for both processes."
+      }
+    ],
+    "checks": [
+      "Counts are compared after dividing by exposure. Comparing raw counts alone can mislead when exposure differs.",
+      "Each group needs a defensible Poisson process model: independent events and a stable rate over pooled exposure. The groups must also be independent; paired periods or repeated failures with dependence need more careful modelling.",
+      "Use complete matched rows and include zero-event exposure. Reconcile each group’s total count and exposure before interpreting its rate.",
+      "For a nonzero hypothesized difference, the exact test is unavailable. The normal-approximation difference test requires an adequate sample; use an unpooled standard error for that nonzero-null case.",
+      "A confidence interval containing 1 for a ratio, or 0 for a difference, does not demonstrate practical equivalence. A rate ratio is not a survival hazard ratio from a fitted time-to-event model."
+    ],
+    "report": [
+      "Counts, exposure totals, exposure units and individual event rates for both named groups.",
+      "The rate ratio or difference and its confidence interval, with group order and interval method.",
+      "The null value, alternative, test method and p-value, together with the practical importance of the estimated change."
+    ],
+    "example": {
+      "title": "Two processes with different observation time",
+      "story": "Synthetic Process_A records 24 stoppages in 800 hours; Process_B records 42 in 600 hours. The question is whether their stoppage rates differ after allowing for unequal exposure.",
+      "sample": "poisson_pair",
+      "instructions": [
+        "Assign Events, Process and Exposure_hours to Count/Occurrences, Group and Interval (optional).",
+        "Select Test Target: Ratio, Hypothesized ratio = 1, Exact and a 95% exact confidence interval. Use a two-sided alternative for this example.",
+        "Verify the group order. If Process_A is Group 1, the observed ratio is (24/800)/(42/600), approximately 0.429.",
+        "For the same result from summaries, enter Group 1: Process_A, Occurrences = 24, Interval = 800; Group 2: Process_B, Occurrences = 42, Interval = 600."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/twoSamplePoissonRate.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/twoSamplePoissonRate.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "R documentation: exact conditional rate comparison",
+        "url": "https://stat.ethz.ch/R-manual/R-devel/library/stats/html/poisson.test.html"
+      }
+    ],
+    "related": [
+      {
+        "id": "poisson_one",
+        "label": "Compare one event rate with a reference"
+      },
+      {
+        "id": "proportion_two",
+        "label": "Compare two fractions of nonconforming items"
+      }
+    ]
+  },
+  "proportion_two": {
+    "id": "proportion_two",
+    "family": "compare",
+    "subfamily": "Proportions",
+    "title": "Compare two independent proportions",
+    "summary": "Compare the fractions of units that meet a binary event definition in two groups.",
+    "why": "Each sampled unit has one of two outcomes, such as conforming or nonconforming, and you want the difference or ratio between two population proportions.",
+    "path": [
+      "Classical Tests",
+      "Proportions",
+      "Two Proportions"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Use one summary row per group",
+        "text": "For aggregated data move Supplier to Factor, Nonconforming to Successes and Inspected to Sample Size. Successes means the event being counted; it may be an undesirable event such as a nonconforming item. Factor must have exactly two levels."
+      },
+      {
+        "title": "Or supply individual inspections",
+        "text": "Use one row per item, a two-level group column and a Scale outcome coded 0/1. Assign the outcome to Successes and leave Sample Size empty. The coded value 1 is the event of interest; verify the displayed counts."
+      },
+      {
+        "title": "Choose a test and show the effect",
+        "text": "The χ² test is available with optional Continuity correction. Select Fisher’s exact test when the 2 × 2 table is sparse; it adds an exact odds-ratio interval. Request Confidence interval; Relative risk and Odds ratio are optional effect summaries."
+      },
+      {
+        "title": "Verify the interpretation",
+        "text": "Set Display to Proportions and request the Descriptives Table with its interval. Check the reported group order: the difference is p₁ − p₂ and the relative risk is p₁ / p₂. Choose any one-sided direction in advance."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Supplier",
+        "type": "Nominal",
+        "description": "Exactly two independent supplier groups."
+      },
+      {
+        "name": "Nonconforming",
+        "type": "Scale",
+        "description": "Integer number of nonconforming items; assign to Successes."
+      },
+      {
+        "name": "Inspected",
+        "type": "Scale",
+        "description": "Total integer number inspected, including both conforming and nonconforming items."
+      }
+    ],
+    "checks": [
+      "For the aggregated input provide exactly one row per group, not repeated batch summaries. Combine compatible independent counts first, or use individual records. Do not enter percentages in the Successes field.",
+      "The event count must be between zero and the number inspected. Each item contributes one binary outcome; multiple defects on an item are counts rather than a binary proportion.",
+      "Units and groups must be independent. Paired before/after classifications or repeated inspections of the same item need a paired categorical analysis.",
+      "A fraction difference is naturally reported in percentage points. Fisher’s exact test does not make the difference or relative-risk intervals exact; those remain approximate, and some ratio intervals are undefined with zero cells. Read the effect-size labels and footnotes.",
+      "Missingness or unequal inspection definitions can distort the comparison. A nonsignificant difference is not evidence of practical equivalence."
+    ],
+    "report": [
+      "For each named group, the event count, number inspected and estimated proportion.",
+      "The difference in proportions with its interval, and a clearly labelled relative risk or odds ratio if requested.",
+      "The selected test, correction if used, alternative and p-value; define which outcome was coded as the event."
+    ],
+    "example": {
+      "title": "Do two suppliers have different nonconformance fractions?",
+      "story": "Synthetic inspection totals are 16 nonconforming items among 400 from Supplier_A and 36 among 450 from Supplier_B. These two rows summarize 850 independent item inspections.",
+      "sample": "proportions_pair",
+      "instructions": [
+        "Assign Supplier to Factor, Nonconforming to Successes and Inspected to Sample Size.",
+        "Select the χ² test and Confidence interval; request Relative risk and the descriptive proportions if useful.",
+        "Supplier_A has 4% nonconforming and Supplier_B has 8%. With A as Group 1, the observed difference is −4 percentage points and the relative risk is 0.5. Read the interval before judging the uncertainty."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/twoProportions.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/twoProportions.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Classical Tests: individual and aggregated proportion inputs",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/proportionsCommon.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "proportion_multiple",
+        "label": "Compare proportions across more groups"
+      },
+      {
+        "id": "poisson_two",
+        "label": "Compare event counts per unit of exposure"
+      },
+      {
+        "id": "contingency",
+        "label": "Analyze a general contingency table"
+      }
+    ]
+  },
+  "proportion_multiple": {
+    "id": "proportion_multiple",
+    "family": "compare",
+    "subfamily": "Proportions",
+    "title": "Compare proportions across several independent groups",
+    "summary": "Test whether the proportion of nonconforming items is the same across three or more groups.",
+    "why": "You have independent groups and a binary item outcome, and need an overall comparison of their population proportions.",
+    "path": [
+      "Classical Tests",
+      "Proportions",
+      "> 2 Proportions"
+    ],
+    "availability": {
+      "module": "Classical Tests",
+      "sourceVersion": "0.1.1-release.803",
+      "status": "released",
+      "note": "Official module-library release published 20 October 2026, listed for JASP >= 0.95.1. Menu, controls and calculation code checked against release commit 9f1c72655a33; the examples have not been run in a desktop JASP session."
+    },
+    "setup": [
+      {
+        "title": "Assign aggregated counts",
+        "text": "Use exactly one row per group. Assign the group name to Factor, the event count to Successes and the total inspected to Sample Size. Nonconforming items can be the counted event even though the field is named Successes."
+      },
+      {
+        "title": "Alternatively use individual outcomes",
+        "text": "Provide one row per item with a group column and a Scale outcome coded 0/1. Assign the outcome to Successes and leave Sample Size empty. Confirm that the value 1 corresponds to the event you want to count."
+      },
+      {
+        "title": "Read the overall test",
+        "text": "This analysis compares the binomial proportions with a χ² test. It is not a goodness-of-fit test for the relative sizes of the supplier groups."
+      },
+      {
+        "title": "Request understandable descriptions",
+        "text": "Set Display to Proportions and select the Descriptives Table and Plot with confidence intervals. These are intervals for each group proportion; they are not multiplicity-adjusted pairwise comparisons."
+      }
+    ],
+    "columns": [
+      {
+        "name": "Supplier",
+        "type": "Nominal",
+        "description": "Three or more independent groups; one summary row per supplier."
+      },
+      {
+        "name": "Nonconforming",
+        "type": "Scale",
+        "description": "Integer event count for each group; assign to Successes."
+      },
+      {
+        "name": "Inspected",
+        "type": "Scale",
+        "description": "Total integer count of sampled items in the group, including both binary outcomes."
+      }
+    ],
+    "checks": [
+      "Keep the binary outcome definition and sampling method comparable across groups. Each item must contribute once and observations must be independent.",
+      "For aggregated data, use one row per group with counts, not percentages. Repeated batch summary rows cannot be assigned directly to this input format.",
+      "Assess expected event and non-event counts under equal proportions. With sparse tables, the χ² approximation may be poor; use a suitable exact method through the contingency-table route if available for the table, or obtain statistical advice.",
+      "An overall significant result does not establish which pairs differ. Plan comparisons and account for multiple testing rather than testing every pair without adjustment.",
+      "Per-group intervals are descriptive and their overlap is not an overall test. A large p-value does not establish that supplier risks are practically the same."
+    ],
+    "report": [
+      "Each group’s event count, total inspected and proportion with its confidence interval.",
+      "The overall χ² statistic, degrees of freedom and p-value, plus a check of count adequacy.",
+      "Any planned follow-up comparisons, adjustment method and practical differences that matter."
+    ],
+    "example": {
+      "title": "Screening differences across four suppliers",
+      "story": "Four synthetic supplier samples have 16/400, 36/450, 12/300 and 33/350 nonconforming items. The question is whether the four population nonconformance proportions are all equal.",
+      "sample": "proportions_groups",
+      "instructions": [
+        "Move Supplier to Factor, Nonconforming to Successes and Inspected to Sample Size.",
+        "Request descriptive proportions and their intervals, then interpret the overall test.",
+        "Use any follow-up pairwise comparison to answer a planned question and account for the number of comparisons. The omnibus result alone does not name a best supplier."
+      ]
+    },
+    "sources": [
+      {
+        "title": "Classical Tests: released analysis interface",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/inst/qml/multipleProportions.qml"
+      },
+      {
+        "title": "Classical Tests: released calculation code",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/multipleProportions.R"
+      },
+      {
+        "title": "Official JASP module release catalog",
+        "url": "https://module-library.jasp-stats.org/index.json"
+      },
+      {
+        "title": "Classical Tests: validation of binomial count inputs",
+        "url": "https://github.com/jasp-stats-modules/jaspClassicalTests/blob/9f1c72655a3304843e7000ef7b0fdeae80c01591/R/proportionsCommon.R"
+      }
+    ],
+    "related": [
+      {
+        "id": "proportion_two",
+        "label": "Compare two independent proportions"
+      },
+      {
+        "id": "contingency",
+        "label": "Use a general contingency-table analysis"
+      }
+    ]
+  }
+}
