@@ -3,8 +3,95 @@
     "video": null,
     "jasp": null
   },
-  "analyses": {},
-  "assets": {},
+  "analyses": {
+    "one_t": {
+      "video": "one_t-video",
+      "jasp": "one_t-jasp"
+    },
+    "ind_t": {
+      "video": "ind_t-video",
+      "jasp": "ind_t-jasp"
+    },
+    "paired_t": {
+      "video": "paired_t-video",
+      "jasp": "paired_t-jasp"
+    },
+    "binomial": {
+      "video": "binomial-video",
+      "jasp": "binomial-jasp"
+    },
+    "correlation_pearson": {
+      "video": "correlation_pearson-video",
+      "jasp": "correlation_pearson-jasp"
+    }
+  },
+  "assets": {
+    "one_t-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/one_t.mp4",
+      "title": "One-sample t-test — video walkthrough",
+      "note": "Compare a numeric outcome with a reference mean: FillWeight against 500 g, using a two-sided Student t-test."
+    },
+    "one_t-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/one_t.jasp",
+      "title": "One-sample t-test — annotated JASP file",
+      "note": "Includes the FillWeight example, test settings, raincloud plot and notes on the result and its limits.",
+      "filename": "one_t.jasp"
+    },
+    "ind_t-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/ind_t.mp4",
+      "title": "Independent-samples t-test — video walkthrough",
+      "note": "Compare a numeric outcome between two independent groups with Welch’s t-test, retaining the A minus B comparison."
+    },
+    "ind_t-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/ind_t.jasp",
+      "title": "Independent-samples t-test — annotated JASP file",
+      "note": "Includes the Measurement and Group example, Welch settings, group rainclouds and interpretation notes.",
+      "filename": "ind_t.jasp"
+    },
+    "paired_t-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/paired_t.mp4",
+      "title": "Paired-samples t-test — video walkthrough",
+      "note": "Compare paired measurements with a two-sided t-test, keeping Before and After together and interpreting Before minus After."
+    },
+    "paired_t-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/paired_t.jasp",
+      "title": "Paired-samples t-test — annotated JASP file",
+      "note": "Includes the matched Before/After data, paired-test settings, difference raincloud and interpretation notes.",
+      "filename": "paired_t.jasp"
+    },
+    "binomial-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/binomial.mp4",
+      "title": "Binomial test — video walkthrough",
+      "note": "Compare a binary outcome with a benchmark probability: interpret the Fail row against 0.05 using a two-sided binomial test."
+    },
+    "binomial-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/binomial.jasp",
+      "title": "Binomial test — annotated JASP file",
+      "note": "Includes the pass/fail data, exact test and interval, Fail plot and notes distinguishing the Fail and Pass results.",
+      "filename": "binomial.jasp"
+    },
+    "correlation_pearson-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/correlation_pearson.mp4",
+      "title": "Pearson correlation — video walkthrough",
+      "note": "Examine the unadjusted linear association between Roughness_um and Bond_strength_N with Pearson’s r and a scatterplot."
+    },
+    "correlation_pearson-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/correlation_pearson.jasp",
+      "title": "Pearson correlation — annotated JASP file",
+      "note": "Includes the paired measurements, Pearson settings, coefficient interval, scatterplot and interpretation limits. Coating is not used for adjustment.",
+      "filename": "correlation_pearson.jasp"
+    }
+  },
   "videoPlaceholder": {
     "file": "assets-source/video-coming-soon.png",
     "alt": "Coming soon: a quick video guide for this feature."

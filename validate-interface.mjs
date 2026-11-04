@@ -360,6 +360,8 @@ const embeddedMedia = JSON.parse(dataText).media;
 const availableMedia = structuredClone(embeddedMedia);
 availableMedia.assets['test-video'] = videoFixture;
 availableMedia.defaults.video = 'test-video';
+// Keep the shared-video fixture independent of real per-analysis media.
+availableMedia.analyses.one_t = {...availableMedia.analyses.one_t, video: 'test-video'};
 for (const mode of ['supported', 'throws', 'absent']) {
   const mediaRuntime = boot('#/analysis/imr', 0, mode, availableMedia);
   const player = mediaRuntime.document.getElementById('analysis-video');
