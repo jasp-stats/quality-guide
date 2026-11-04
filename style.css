@@ -261,10 +261,8 @@ summary::marker { color: var(--teal-mid); }
 .setup-list p { margin-top: 11px; font-size: 17px; line-height: 1.65; }
 .minor-heading { font-size: 26px; margin: 34px 0 15px; }
 .learning-section { margin: 0; padding: 0 0 30px; border-bottom: 1px solid var(--line); }
-.learning-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 21px; }
-.learning-heading .eyebrow { margin-bottom: 0; }
+.learning-heading { margin-bottom: 24px; }
 .learning-heading h2 { font-size: 30px; }
-.learning-heading > p:not(.eyebrow) { margin-top: 14px; font-size: 18px; }
 .learning-grid { display: grid; grid-template-columns: minmax(0,1.6fr) minmax(260px,1fr); align-items: start; gap: 34px; }
 .video-card { min-width: 0; margin: 0; }
 .video-frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px; background: #063f48; object-fit: contain; }

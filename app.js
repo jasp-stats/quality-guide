@@ -221,7 +221,7 @@ function learningSection(a) {
   const {video,jasp}=analysisMedia(a);
   const placeholder=DATA.media.videoPlaceholder;
   return `<section class="learning-section" aria-labelledby="learning-title">
-    <div class="learning-heading"><p class="eyebrow">Watch &amp; try</p><h2 id="learning-title">See it in JASP</h2></div>
+    <div class="learning-heading"><h2 id="learning-title">See it in JASP</h2></div>
     <div class="learning-grid"><figure class="video-card">
       ${video?`<video id="analysis-video" class="video-frame" controls playsinline preload="metadata" aria-label="${e(video.title)}" aria-describedby="video-note">Your browser does not support embedded video. <a href="${e(video.src)}">Open the video</a>.</video>`:`<img class="video-frame video-placeholder" src="${e(placeholder.src)}" alt="${e(placeholder.alt)}" width="1328" height="712" aria-describedby="video-note">`}
       <figcaption id="video-note">${video?e(video.note):'A video walkthrough for this analysis is coming soon.'}</figcaption>
