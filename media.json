@@ -23,6 +23,10 @@
     "correlation_pearson": {
       "video": "correlation_pearson-video",
       "jasp": "correlation_pearson-jasp"
+    },
+    "correlation_rank": {
+      "video": "correlation_rank-video",
+      "jasp": "correlation_rank-jasp"
     }
   },
   "assets": {
@@ -90,6 +94,19 @@
       "title": "Pearson correlation — annotated JASP file",
       "note": "Includes the paired measurements, Pearson settings, coefficient interval, scatterplot and interpretation limits. Coating is not used for adjustment.",
       "filename": "correlation_pearson.jasp"
+    },
+    "correlation_rank-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/correlation_rank.mp4",
+      "title": "Spearman rank correlation — video walkthrough",
+      "note": "Use ordered numeric ratings with ties: select Spearman’s rho, inspect its approximate 95% interval and the scatterplot of 72 synthetic parts."
+    },
+    "correlation_rank-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/correlation_rank.jasp",
+      "title": "Spearman rank correlation — annotated JASP file",
+      "note": "Includes Roughness_um and Severity_score, Spearman settings, sample size, scatterplot and notes on ties, the Fisher-z interval and interpretation limits.",
+      "filename": "correlation_rank.jasp"
     }
   },
   "videoPlaceholder": {
