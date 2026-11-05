@@ -31,6 +31,62 @@
     "contingency": {
       "video": "contingency-video",
       "jasp": "contingency-jasp"
+    },
+    "correlation_partial": {
+      "video": "correlation_partial-video",
+      "jasp": "correlation_partial-jasp"
+    },
+    "eq_ind": {
+      "video": "eq_ind-video",
+      "jasp": "eq_ind-jasp"
+    },
+    "eq_paired": {
+      "video": "eq_paired-video",
+      "jasp": "eq_paired-jasp"
+    },
+    "linear_regression": {
+      "video": "linear_regression-video",
+      "jasp": "linear_regression-jasp"
+    },
+    "logistic_regression": {
+      "video": "logistic_regression-video",
+      "jasp": "logistic_regression-jasp"
+    },
+    "one_anova": {
+      "video": "one_anova-video",
+      "jasp": "one_anova-jasp"
+    },
+    "poisson_one": {
+      "video": "poisson_one-video",
+      "jasp": "poisson_one-jasp"
+    },
+    "poisson_two": {
+      "video": "poisson_two-video",
+      "jasp": "poisson_two-jasp"
+    },
+    "proportion_multiple": {
+      "video": "proportion_multiple-video",
+      "jasp": "proportion_multiple-jasp"
+    },
+    "proportion_two": {
+      "video": "proportion_two-video",
+      "jasp": "proportion_two-jasp"
+    },
+    "rm_anova": {
+      "video": "rm_anova-video",
+      "jasp": "rm_anova-jasp"
+    },
+    "variance_multiple": {
+      "video": "variance_multiple-video",
+      "jasp": "variance_multiple-jasp"
+    },
+    "variance_one": {
+      "video": "variance_one-video",
+      "jasp": "variance_one-jasp"
+    },
+    "variance_two": {
+      "video": "variance_two-video",
+      "jasp": "variance_two-jasp"
     }
   },
   "assets": {
@@ -124,6 +180,188 @@
       "title": "Contingency tables for independent groups — annotated JASP file",
       "note": "Includes six Supplier × Result cells representing 300 synthetic inspections, expected counts, row percentages, the chi-squared test and interpretation notes. This dialog has no native association plot.",
       "filename": "contingency.jasp"
+    },
+    "correlation_partial-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/correlation_partial.mp4",
+      "title": "Partial Pearson correlation — video walkthrough",
+      "note": "Configure the synthetic correlation_pairs example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "correlation_partial-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/correlation_partial.jasp",
+      "title": "Partial Pearson correlation — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "correlation_partial.jasp"
+    },
+    "eq_ind-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/eq_ind.mp4",
+      "title": "Equivalence test for independent groups — video walkthrough",
+      "note": "Configure the synthetic compare_ind example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "eq_ind-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/eq_ind.jasp",
+      "title": "Equivalence test for independent groups — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "eq_ind.jasp"
+    },
+    "eq_paired-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/eq_paired.mp4",
+      "title": "Paired equivalence test — video walkthrough",
+      "note": "Configure the synthetic compare_paired example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "eq_paired-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/eq_paired.jasp",
+      "title": "Paired equivalence test — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "eq_paired.jasp"
+    },
+    "linear_regression-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/linear_regression.mp4",
+      "title": "Linear regression — video walkthrough",
+      "note": "Configure the synthetic drivers example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "linear_regression-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/linear_regression.jasp",
+      "title": "Linear regression — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "linear_regression.jasp"
+    },
+    "logistic_regression-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/logistic_regression.mp4",
+      "title": "Logistic regression — video walkthrough",
+      "note": "Configure the synthetic binary_drivers example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "logistic_regression-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/logistic_regression.jasp",
+      "title": "Logistic regression — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "logistic_regression.jasp"
+    },
+    "one_anova-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/one_anova.mp4",
+      "title": "One-way ANOVA · Welch option — video walkthrough",
+      "note": "Configure the synthetic compare_three example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "one_anova-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/one_anova.jasp",
+      "title": "One-way ANOVA · Welch option — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "one_anova.jasp"
+    },
+    "poisson_one-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/poisson_one.mp4",
+      "title": "One Poisson event rate versus a target — video walkthrough",
+      "note": "Configure the synthetic poisson_single example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "poisson_one-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/poisson_one.jasp",
+      "title": "One Poisson event rate versus a target — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "poisson_one.jasp"
+    },
+    "poisson_two-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/poisson_two.mp4",
+      "title": "Compare two independent Poisson event rates — video walkthrough",
+      "note": "Configure the synthetic poisson_pair example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "poisson_two-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/poisson_two.jasp",
+      "title": "Compare two independent Poisson event rates — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "poisson_two.jasp"
+    },
+    "proportion_multiple-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/proportion_multiple.mp4",
+      "title": "Compare proportions across several independent groups — video walkthrough",
+      "note": "Configure the synthetic proportions_groups example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "proportion_multiple-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/proportion_multiple.jasp",
+      "title": "Compare proportions across several independent groups — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "proportion_multiple.jasp"
+    },
+    "proportion_two-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/proportion_two.mp4",
+      "title": "Compare two independent proportions — video walkthrough",
+      "note": "Configure the synthetic proportions_pair example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "proportion_two-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/proportion_two.jasp",
+      "title": "Compare two independent proportions — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "proportion_two.jasp"
+    },
+    "rm_anova-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/rm_anova.mp4",
+      "title": "Repeated-measures ANOVA — video walkthrough",
+      "note": "Configure the synthetic repeated_three example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "rm_anova-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/rm_anova.jasp",
+      "title": "Repeated-measures ANOVA — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "rm_anova.jasp"
+    },
+    "variance_multiple-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/variance_multiple.mp4",
+      "title": "Compare variability across several groups — video walkthrough",
+      "note": "Configure the synthetic variance_groups example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "variance_multiple-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/variance_multiple.jasp",
+      "title": "Compare variability across several groups — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "variance_multiple.jasp"
+    },
+    "variance_one-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/variance_one.mp4",
+      "title": "One variance or standard deviation versus a target — video walkthrough",
+      "note": "Configure the synthetic variance_single example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "variance_one-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/variance_one.jasp",
+      "title": "One variance or standard deviation versus a target — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "variance_one.jasp"
+    },
+    "variance_two-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/variance_two.mp4",
+      "title": "Compare the spread of two independent groups — video walkthrough",
+      "note": "Configure the synthetic variance_pair example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "variance_two-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/variance_two.jasp",
+      "title": "Compare the spread of two independent groups — annotated JASP file",
+      "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "variance_two.jasp"
     }
   },
   "videoPlaceholder": {
