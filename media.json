@@ -87,6 +87,26 @@
     "variance_two": {
       "video": "variance_two-video",
       "jasp": "variance_two-jasp"
+    },
+    "imr": {
+      "video": "imr-video",
+      "jasp": "imr-jasp"
+    },
+    "np_chart": {
+      "video": "np_chart-video",
+      "jasp": "np_chart-jasp"
+    },
+    "p_chart": {
+      "video": "p_chart-video",
+      "jasp": "p_chart-jasp"
+    },
+    "xbar_r": {
+      "video": "xbar_r-video",
+      "jasp": "xbar_r-jasp"
+    },
+    "xbar_s": {
+      "video": "xbar_s-video",
+      "jasp": "xbar_s-jasp"
     }
   },
   "assets": {
@@ -362,6 +382,71 @@
       "title": "Compare the spread of two independent groups — annotated JASP file",
       "note": "Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
       "filename": "variance_two.jasp"
+    },
+    "imr-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/imr.mp4",
+      "title": "Individuals and moving range chart — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure the synthetic individuals example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "imr-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/imr.jasp",
+      "title": "Individuals and moving range chart — annotated JASP file",
+      "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "imr.jasp"
+    },
+    "np_chart-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/np_chart.mp4",
+      "title": "np chart — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure the synthetic passfail example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "np_chart-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/np_chart.jasp",
+      "title": "np chart — annotated JASP file",
+      "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "np_chart.jasp"
+    },
+    "p_chart-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/p_chart.mp4",
+      "title": "p chart — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure the synthetic passfail_varying example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "p_chart-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/p_chart.jasp",
+      "title": "p chart — annotated JASP file",
+      "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "p_chart.jasp"
+    },
+    "xbar_r-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/xbar_r.mp4",
+      "title": "X-bar and R charts — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure the synthetic subgroups example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "xbar_r-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/xbar_r.jasp",
+      "title": "X-bar and R charts — annotated JASP file",
+      "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "xbar_r.jasp"
+    },
+    "xbar_s-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/xbar_s.mp4",
+      "title": "X-bar and s charts — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure the synthetic subgroups_large example in JASP, inspect the checked result and interpret its uncertainty and limits."
+    },
+    "xbar_s-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/xbar_s.jasp",
+      "title": "X-bar and s charts — annotated JASP file",
+      "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
+      "filename": "xbar_s.jasp"
     }
   },
   "videoPlaceholder": {
