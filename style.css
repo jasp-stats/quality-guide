@@ -64,6 +64,16 @@ img, video, svg { max-width: 100%; }
 .container { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 40px; }
 .content-section { padding-top: 44px; padding-bottom: 32px; }
 #app { overflow-anchor: none; }
+.guide-loading { min-height: 430px; padding-top: 65px; padding-bottom: 65px; }
+.loading-eyebrow { display: block; margin-bottom: 16px; color: var(--teal-mid); font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.guide-loading h1 { font-size: clamp(30px, 5vw, 44px); }
+.guide-loading-status { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+.loading-spinner { display: inline-block; width: 21px; height: 21px; flex-shrink: 0; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: loading-spin .8s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+.loading-preview { display: grid; gap: 13px; max-width: 490px; margin-top: 37px; }
+.loading-preview span { height: 12px; border-radius: 6px; background: var(--mint); }
+.loading-preview span:nth-child(2) { width: 87%; }
+.loading-preview span:nth-child(3) { width: 62%; }
 
 /* The main website's two-level header, generous logo and plain navigation. */
 .utility-bar { background: var(--teal-dark); color: white; font-size: 13px; }
@@ -266,6 +276,18 @@ summary::marker { color: var(--teal-mid); }
 .learning-grid { display: grid; grid-template-columns: minmax(0,1.6fr) minmax(260px,1fr); align-items: start; gap: 34px; }
 .video-card { min-width: 0; margin: 0; }
 .video-frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px; background: #063f48; object-fit: contain; }
+.video-stage { position: relative; border-radius: 4px; }
+.video-play-overlay { position: absolute; inset: 0; width: 100%; border: 0; border-radius: 4px; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white; background: linear-gradient(145deg, var(--teal-dark), var(--teal-mid)); font-size: 20px; font-weight: 400; }
+.video-play-overlay:hover { background: var(--teal-dark); }
+.video-play-icon { display: grid; place-items: center; width: 60px; height: 60px; border: 1px solid #ffffff80; border-radius: 50%; }
+.video-play-icon .icon { width: 30px; height: 30px; }
+.video-play-hint { font-size: 14px; font-weight: 300; opacity: .9; }
+.video-loading { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 90%; padding: 10px 15px; border-radius: 5px; background: #063f48ed; color: white; font-size: 14px; pointer-events: none; }
+.video-loading .loading-spinner { width: 18px; height: 18px; }
+.video-error { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: var(--teal-dark); color: white; text-align: center; border-radius: 4px; }
+.video-error-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; font-size: 14px; }
+.video-error-actions a { color: white; }
+.video-error-actions .button { padding: 9px 15px; font-size: 14px; }
 .video-placeholder { height: auto; background: white; border: 1px solid var(--line); }
 .video-card figcaption { margin-top: 14px; font-size: 14px; line-height: 1.6; }
 .download-card { min-width: 0; padding: 28px; border-left: 3px solid var(--teal); background: #f7f7f7; }

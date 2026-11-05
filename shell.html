@@ -23,7 +23,10 @@
     </div>
   </header>
   <main id="main-content" tabindex="-1">
-    <div id="app"><noscript><div class="empty-state"><h1>Enable JavaScript to use this guide</h1><p>The guide runs entirely in your browser. It needs JavaScript to show the questions, recommendations, and example downloads.</p></div></noscript></div>
+    <div id="app" aria-busy="true">
+      <div class="guide-loading container"><span class="loading-eyebrow">JASP Quality Guide</span><h1>Preparing your guide</h1><p class="guide-loading-status" role="status"><span class="loading-spinner" aria-hidden="true"></span>Loading analyses and examples…</p><div class="loading-preview" aria-hidden="true"><span></span><span></span><span></span></div></div>
+      <noscript><style>.guide-loading{display:none}</style><div class="empty-state"><h1>Enable JavaScript to use this guide</h1><p>The guide runs entirely in your browser. It needs JavaScript to show the questions, recommendations, and example downloads.</p></div></noscript>
+    </div>
   </main>
   <footer class="site-footer">
     <div class="footer-main container"><div class="footer-identity"><img class="footer-logo" src="__FOOTER_LOGO__" alt="JASP Services B.V." width="186" height="64"><p>Quality Guide</p></div><div class="footer-links"><a href="#/about">Scope &amp; sources</a></div></div>

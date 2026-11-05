@@ -1,9 +1,11 @@
-"""Build the complete offline guide into one dependency-free HTML file."""
+"""Build a lightweight online guide and a complete standalone offline copy."""
 from pathlib import Path
 import base64
+import hashlib
 import html as html_text
 import json
 import re
+import shutil
 
 root = Path(__file__).resolve().parent
 
@@ -25,7 +27,9 @@ def build_media(analysis_ids):
         raise ValueError("media.json requires defaults, analyses, assets, and videoPlaceholder objects.")
     if not all(isinstance(manifest[key], dict) for key in manifest):
         raise ValueError("media.json defaults, analyses, assets, and videoPlaceholder must be objects.")
-    assets = {}
+    online_assets = {}
+    offline_assets = {}
+    media_files = {}
     asset_root = (root / "assets-source").resolve()
     placeholder = manifest["videoPlaceholder"]
     for field in ("file", "alt"):
@@ -60,8 +64,12 @@ def build_media(analysis_ids):
             if not isinstance(filename, str) or Path(filename).name != filename or "\\" in filename or not filename.endswith(".jasp"):
                 raise ValueError(f"Media asset {asset_id}: filename must be a plain .jasp download name.")
             output["filename"] = filename
-        output["src"] = f"data:{mime};base64," + base64.b64encode(file.read_bytes()).decode("ascii")
-        assets[asset_id] = output
+        contents = file.read_bytes()
+        media_name = hashlib.sha256(contents).hexdigest() + suffix
+        online_assets[asset_id] = {**output, "src": "media/" + media_name}
+        offline_assets[asset_id] = {**output, "src": f"data:{mime};base64," +
+                                  base64.b64encode(contents).decode("ascii")}
+        media_files[media_name] = file
 
     def validate_selection(selection, label, complete=False):
         if not isinstance(selection, dict) or not set(selection).issubset(formats):
@@ -71,7 +79,7 @@ def build_media(analysis_ids):
         for kind, asset_id in selection.items():
             if asset_id is None:
                 continue
-            if not isinstance(asset_id, str) or asset_id not in assets or manifest["assets"][asset_id]["kind"] != kind:
+            if not isinstance(asset_id, str) or asset_id not in online_assets or manifest["assets"][asset_id]["kind"] != kind:
                 raise ValueError(f"{label}: {kind} must be null or reference an existing {kind} asset.")
 
     validate_selection(manifest["defaults"], "Media defaults", complete=True)
@@ -79,8 +87,9 @@ def build_media(analysis_ids):
         if analysis_id not in analysis_ids:
             raise ValueError(f"Media override references unknown analysis: {analysis_id}")
         validate_selection(selection, f"Media override {analysis_id}")
-    return {"defaults": manifest["defaults"], "analyses": manifest["analyses"], "assets": assets,
-            "videoPlaceholder": video_placeholder}
+    common = {"defaults": manifest["defaults"], "analyses": manifest["analyses"],
+              "videoPlaceholder": video_placeholder}
+    return ({**common, "assets": online_assets}, {**common, "assets": offline_assets}, media_files)
 
 
 analyses = {}
@@ -93,9 +102,9 @@ for name in ("examples.json", "correlation-examples.json", "classical-examples.j
     addition = json.loads((root / name).read_text(encoding="utf-8"))
     assert not examples.keys() & addition.keys(), f"Duplicate sample ID in {name}"
     examples.update(addition)
-media = build_media(analyses)
-payload = json.dumps({"analyses": analyses, "examples": examples, "media": media}, ensure_ascii=False, separators=(",", ":"))
-payload = payload.replace("<", "\\u003c").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+online_media, offline_media, media_files = build_media(analyses)
+
+
 def embedded_asset(name, mime):
     return f"data:{mime};base64," + base64.b64encode((root / "assets-source" / name).read_bytes()).decode("ascii")
 
@@ -118,25 +127,62 @@ for token, (name, mime) in style_assets.items():
         styles = styles.replace(token, embedded_asset(name, mime))
 scripts = "\n".join((root / name).read_text(encoding="utf-8") for name in ("flow.js", "extensions-flow.js", "app.js"))
 assert "</script" not in scripts.lower(), "Inline script end tag requires escaping."
-html = (root / "shell.html").read_text(encoding="utf-8")
+page_template = (root / "shell.html").read_text(encoding="utf-8")
 for key, value in {
     "__STYLES__": styles,
     "__LOGO__": logo,
     "__FOOTER_LOGO__": logo,
     "__LOGO_COLOUR__": embedded_asset("brand/logo-colour.png", "image/png"),
-    "__DATA__": payload,
     "__APP__": scripts,
 }.items():
-    assert html.count(key) == 1, key
-    html = html.replace(key, value)
-unresolved = re.findall(r"__[A-Z][A-Z0-9_]*__", html)
-if unresolved:
-    raise ValueError(f"Unresolved build placeholders: {', '.join(sorted(set(unresolved)))}")
+    assert page_template.count(key) == 1, key
+    page_template = page_template.replace(key, value)
+assert page_template.count("__DATA__") == 1, "__DATA__"
 font_license = (root / "assets-source" / "fonts" / "OFL.txt").read_text(encoding="utf-8")
-if html.count("</body>") != 1:
+if page_template.count("</body>") != 1:
     raise ValueError("Expected one closing body tag for the embedded font license.")
-html = html.replace("</body>", '<template id="font-license"><pre>' + html_text.escape(font_license) + '</pre></template>\n</body>')
-out = root / "dist" / "index.html"
-out.parent.mkdir(exist_ok=True)
-out.write_text(html, encoding="utf-8")
-print(json.dumps({"file": str(out), "bytes": out.stat().st_size, "analyses": len(analyses), "datasets": len(examples)}))
+page_template = page_template.replace("</body>", '<template id="font-license"><pre>' + html_text.escape(font_license) + '</pre></template>\n</body>')
+
+
+def render_page(media, delivery):
+    payload = json.dumps({"analyses": analyses, "examples": examples, "media": media,
+                          "delivery": delivery}, ensure_ascii=False, separators=(",", ":"))
+    payload = payload.replace("<", "\\u003c").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    html = page_template.replace("__DATA__", payload)
+    unresolved = re.findall(r"__[A-Z][A-Z0-9_]*__", html)
+    if unresolved:
+        raise ValueError(f"Unresolved build placeholders: {', '.join(sorted(set(unresolved)))}")
+    return html
+
+
+out_dir = root / "dist"
+media_dir = out_dir / "media"
+offline_name = "JASP-Quality-Guide.html"
+for directory in (out_dir, media_dir):
+    if directory.is_symlink():
+        raise ValueError(f"Generated directory must not be a symlink: {directory}")
+    directory.mkdir(exist_ok=True)
+
+# Own only content-hashed media files. Leave unrelated files and source assets alone.
+for name, source in media_files.items():
+    destination = media_dir / name
+    if destination.is_symlink():
+        raise ValueError(f"Generated media must not be a symlink: {destination}")
+    shutil.copyfile(source, destination)
+for candidate in media_dir.iterdir():
+    if (re.fullmatch(r"[0-9a-f]{64}\.(mp4|jasp)", candidate.name)
+            and candidate.name not in media_files and (candidate.is_file() or candidate.is_symlink())):
+        candidate.unlink()
+
+for name, media, delivery in (
+    ("index.html", online_media, {"mode": "online", "offlineFile": offline_name}),
+    (offline_name, offline_media, {"mode": "offline"}),
+):
+    out = out_dir / name
+    if out.is_symlink():
+        raise ValueError(f"Generated HTML must not be a symlink: {out}")
+    out.write_text(render_page(media, delivery), encoding="utf-8")
+    print(json.dumps({"file": str(out), "mode": delivery["mode"], "bytes": out.stat().st_size,
+                      "analyses": len(analyses), "datasets": len(examples)}))
+print(json.dumps({"media_files": len(media_files),
+                  "media_bytes": sum(source.stat().st_size for source in media_files.values())}))

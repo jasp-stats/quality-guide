@@ -1,4 +1,4 @@
-/* Rendering, navigation, and local exports. No network requests or third-party scripts. */
+/* Guide content and exports run locally. Online media is requested only on demand. */
 const DATA = JSON.parse(document.getElementById('guide-data').textContent);
 const ANALYSES = DATA.analyses;
 const SAMPLES = DATA.examples;
@@ -19,6 +19,7 @@ const iconPaths = {
   chevron:'<path d="m9 5 7 7-7 7"/>',
   check:'<path d="m5 12 4 4L19 6"/>',
   download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
+  play:'<path d="m9 5 11 7-11 7Z" fill="currentColor" stroke="none"/>',
   print:'<path d="M6 9V3h12v6M6 17H3V9h18v8h-3M6 14h12v7H6Z"/><path d="M17 11h1"/>',
   copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>',
   book:'<path d="M12 5v16M3 4h5a4 4 0 0 1 4 3 4 4 0 0 1 4-3h5v15h-5a4 4 0 0 0-4 2 4 4 0 0 0-4-2H3Z"/>',
@@ -187,6 +188,7 @@ function analysisMedia(a) {
 }
 let cachedVideoSource=null;
 let cachedVideoBlob=null;
+let releaseVideoListeners=null;
 function embeddedVideoBlob(source) {
   if(cachedVideoSource!==source){
     const raw=atob(source.slice(source.indexOf(',')+1));
@@ -198,6 +200,7 @@ function embeddedVideoBlob(source) {
   return cachedVideoBlob;
 }
 function releaseAnalysisVideo() {
+  if(releaseVideoListeners){releaseVideoListeners();releaseVideoListeners=null;}
   const player=document.getElementById('analysis-video');
   if(!player)return;
   player.pause();
@@ -208,14 +211,60 @@ function releaseAnalysisVideo() {
 function attachAnalysisVideo() {
   const player=document.getElementById('analysis-video');
   if(!player||!lastAnalysis)return;
+  const status=document.getElementById('analysis-video-status');
+  const error=document.getElementById('analysis-video-error');
+  const listeners={
+    loadstart:()=>{if(player.dataset.started)status.hidden=false;},
+    waiting:()=>{if(player.dataset.started&&!player.error)status.hidden=false;},
+    stalled:()=>{if(player.dataset.started&&!player.paused&&!player.error)status.hidden=false;},
+    canplay:()=>{status.hidden=true;},
+    playing:()=>{status.hidden=true;error.hidden=true;},
+    pause:()=>{status.hidden=true;},
+    ended:()=>{status.hidden=true;},
+    error:()=>{if(player.dataset.started){status.hidden=true;error.hidden=false;}}
+  };
+  for(const [name,handler] of Object.entries(listeners))player.addEventListener(name,handler);
+  releaseVideoListeners=()=>{
+    for(const [name,handler] of Object.entries(listeners))player.removeEventListener(name,handler);
+  };
+}
+function startAnalysisVideo(retry=false) {
+  const player=document.getElementById('analysis-video');
+  if(!player||!lastAnalysis)return;
   const {video}=analysisMedia(lastAnalysis.a);
   if(!video)return;
-  // Safari supports Blob sources directly, avoiding its data-URL media path.
-  // Browsers that only accept MediaStreams retain the existing data-URL source.
-  if('srcObject' in player){
-    try{player.srcObject=embeddedVideoBlob(video.src);return;}catch{}
-  }
-  player.src=video.src;
+  const status=document.getElementById('analysis-video-status');
+  const error=document.getElementById('analysis-video-error');
+  document.getElementById('analysis-video-play').hidden=true;
+  error.hidden=true;status.hidden=false;
+  player.focus({preventScroll:true});
+  const request=String(Number(player.dataset.request||0)+1);
+  player.dataset.request=request;
+  const failed=()=>{
+    // Navigation may have replaced this player while play() was pending.
+    if(document.getElementById('analysis-video')!==player||player.dataset.request!==request)return;
+    status.hidden=true;error.hidden=false;
+  };
+  try{
+    if(!player.dataset.started||retry){
+      player.dataset.started='true';
+      if(retry){
+        player.pause();
+        if('srcObject' in player)player.srcObject=null;
+        player.removeAttribute('src');
+        player.load();
+        status.hidden=false;
+      }
+      // Decode only a requested offline video. Online URLs use native streaming.
+      let attached=false;
+      if(video.src.startsWith('data:')&&'srcObject' in player){
+        try{player.srcObject=embeddedVideoBlob(video.src);attached=true;}catch{}
+      }
+      if(!attached)player.src=video.src;
+    }
+    const playback=player.play();
+    if(playback&&typeof playback.catch==='function')playback.catch(failed);
+  }catch{failed();}
 }
 function learningSection(a) {
   const {video,jasp}=analysisMedia(a);
@@ -223,7 +272,12 @@ function learningSection(a) {
   return `<section class="learning-section" aria-labelledby="learning-title">
     <div class="learning-heading"><h2 id="learning-title">See it in JASP</h2></div>
     <div class="learning-grid"><figure class="video-card">
-      ${video?`<video id="analysis-video" class="video-frame" controls muted playsinline preload="metadata" aria-label="${e(video.title)}" aria-describedby="video-note">Your browser does not support embedded video. <a href="${e(video.src)}">Open the video</a>.</video>`:`<img class="video-frame video-placeholder" src="${e(placeholder.src)}" alt="${e(placeholder.alt)}" width="1328" height="712" aria-describedby="video-note">`}
+      ${video?`<div id="analysis-video-stage" class="video-stage">
+        <video id="analysis-video" class="video-frame" controls muted playsinline preload="none" tabindex="0" aria-label="${e(video.title)}" aria-describedby="video-note">Your browser does not support this video. <a href="${e(video.src)}">Open the video</a>.</video>
+        <button id="analysis-video-play" class="video-play-overlay" type="button" data-action="video-play" aria-label="${e('Play '+video.title)}" aria-describedby="video-note"><span class="video-play-icon">${icon('play')}</span><span>Watch walkthrough</span><span class="video-play-hint">Step by step in JASP</span></button>
+        <div id="analysis-video-status" class="video-loading" role="status" hidden><span class="loading-spinner" aria-hidden="true"></span><span>Loading video…</span></div>
+        <div id="analysis-video-error" class="video-error" role="status" hidden><p>We couldn’t play this video.</p><div class="video-error-actions"><button class="button" type="button" data-action="video-play" data-value="retry">Try again</button><a href="${e(video.src)}" target="_blank" rel="noopener noreferrer">Open video separately</a></div></div>
+      </div>`:`<img class="video-frame video-placeholder" src="${e(placeholder.src)}" alt="${e(placeholder.alt)}" width="1328" height="712" aria-describedby="video-note">`}
       <figcaption id="video-note">${video?e(video.note):'A video walkthrough for this analysis is coming soon.'}</figcaption>
     </figure><aside class="download-card" aria-labelledby="download-title"><span class="icon-wrap">${icon('folder')}</span><h3 id="download-title">Annotated JASP file</h3><p>Explore a saved analysis with notes on its data, settings, and results.</p>
       ${jasp?`<a class="button" href="${e(jasp.src)}" download="${e(jasp.filename)}" aria-describedby="jasp-note">${icon('download')}Download annotated JASP file</a>`:`<button type="button" class="button secondary" data-action="jasp-unavailable" data-value="${e(a.id)}" aria-describedby="jasp-note">${icon('download')}Download annotated JASP file</button>`}<p class="resource-note" id="jasp-note">${jasp?e(jasp.note):'Coming soon'}</p>
@@ -376,7 +430,7 @@ function renderAbout() {
     </div><div>
     <section class="about-section"><div class="logo-bg"><img src="${e(logo)}" alt="JASP Services B.V."></div><h2>Made for a practical workflow</h2><p>The guide recommends a next analysis and explains how to prepare it. Calculations, diagnostic assessment, and statistical output are performed in JASP.</p><p>Recommendations depend on the answers you select. The guide does not inspect your dataset or certify that the assumptions have been met.</p><p>Examples are explicitly synthetic. They illustrate study designs and layouts; they are not evidence about any real production process.</p><a class="button secondary" href="https://www.jasp-services.com/" target="_blank" rel="noopener noreferrer">JASP Services ${icon('external')}</a></section>
     <section class="about-section"><h2>Verification and its limits</h2><p>The decision tree is checked for complete, reachable routes. Methodological test cases check key distinctions; dataset checks cover counts, exposure, pairing, and other study structures.</p><p><strong>The teaching examples have not been executed inside desktop JASP.</strong> Source verification establishes the named menus and controls; it is not an end-to-end numerical validation. Practitioner review in the intended installed modules remains part of preparing a production release.</p></section>
-    <section class="about-section"><h2>Using the guide</h2><p>Follow the questions, explore practical examples, and save an analysis plan to use in JASP. You do not need to upload your data or create an account.</p><p>Share a page link to revisit a decision path. Documentation links open external websites when you choose them.</p>${button('Save a copy of the guide','html','','','download')}<p class="module-hint">Downloads, copying, and printing use your browser. If clipboard access is unavailable, the guide downloads the requested text instead.</p></section>
+    <section class="about-section"><h2>Using the guide</h2><p>Follow the questions, explore practical examples, and save an analysis plan to use in JASP. You do not need to upload your data or create an account.</p><p>Share a page link to revisit a decision path. Documentation links open external websites when you choose them.</p>${DATA.delivery.mode==='online'?`<p>Videos load when you press play. You can also save a complete offline copy, including all available videos and JASP files.</p><a class="button" href="${e(DATA.delivery.offlineFile)}" download="JASP-Quality-Guide.html">${icon('download')}Save complete offline guide</a><p class="module-hint">This is a large download. Once saved, open the HTML file in your browser without an internet connection.</p>`:button('Save a copy of the guide','html','','','download')}<p class="module-hint">Downloads, copying, and printing use your browser. If clipboard access is unavailable, the guide downloads the requested text instead.</p></section>
     <section class="about-section"><h2>Prototype ${APP_VERSION}</h2><p>A simpler layout with a place to watch a walkthrough and explore an annotated JASP file alongside each analysis.</p><p>Analysis-specific videos and annotated JASP files are being prepared. Missing videos show a coming-soon image; unavailable JASP downloads show a short notification. The analysis-specific CSV data and setup instructions remain available in the Example &amp; inputs tab.</p><p>Useful feedback concerns unclear wording, missing steps, and practical examples. Save the analysis plan to identify the route and its reviewed module version.</p></section>
     </div></div></div>`;
 }
@@ -398,6 +452,7 @@ function render() {
   }
   releaseAnalysisVideo();
   app.innerHTML=html||'<div class="container"><div class="empty-state"><h1 id="page-title" tabindex="-1">This route is not available</h1><p style="margin-top:15px">Start from a goal or browse the analyses included in this version.</p><div class="action-row">'+button('Find an analysis','home','','','arrow')+'</div></div></div>';
+  app.setAttribute('aria-busy','false');
   attachAnalysisVideo();
   const current=route.view==='examples'?'examples':route.view==='about'?'about':route.view==='analyses'||route.view==='analysis'?'analyses':'guide';
   document.querySelectorAll('[data-nav]').forEach(n=>{n.classList.toggle('active',n.dataset.nav===current);if(n.dataset.nav===current)n.setAttribute('aria-current','page');else n.removeAttribute('aria-current');});
@@ -468,7 +523,8 @@ function planText() {
 }
 function saveHtml() {
   const copy=document.documentElement.cloneNode(true);
-  copy.querySelector('#app').innerHTML='<p style="padding:40px">Loading JASP Quality Guide…</p>';
+  copy.querySelector('#app').innerHTML='<div class="guide-loading container"><span class="loading-eyebrow">JASP Quality Guide</span><h1>Preparing your guide</h1><p class="guide-loading-status" role="status"><span class="loading-spinner" aria-hidden="true"></span>Loading analyses and examples…</p></div>';
+  copy.querySelector('#app').setAttribute('aria-busy','true');
   copy.querySelector('#toast').textContent='';copy.querySelector('#toast').className='toast';
   copy.querySelector('title').textContent='JASP Quality Guide · JASP Services B.V.';
   downloadFile('JASP-Quality-Guide.html','<!DOCTYPE html>\n'+copy.outerHTML,'text/html;charset=utf-8');
@@ -478,7 +534,8 @@ document.addEventListener('click',async event=>{
   if(event.target.closest('.skip-link')){event.preventDefault();document.getElementById('main-content').focus();return;}
   const b=event.target.closest('[data-action]');if(!b)return;
   const action=b.dataset.action,value=b.dataset.value;
-  if(action==='start'&&GOALS[value])navigate('#/guide/'+value);
+  if(action==='video-play')startAnalysisVideo(value==='retry');
+  else if(action==='start'&&GOALS[value])navigate('#/guide/'+value);
   else if(action==='home')navigate('#/');
   else if(action==='answer'&&activeContext){
     const q=NODES[activeContext.current];if(!q||!q.options.some(o=>o.value===value))return;

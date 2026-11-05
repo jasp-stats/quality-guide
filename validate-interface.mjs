@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Source-render integration checks for the built offline guide.
+ * Source-render integration checks for both built guide delivery formats.
  * Run after `python3 build.py`. Uses Node's standard library only.
  *
  * This deliberately small element model captures generated markup, attributes,
@@ -11,10 +11,20 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
-const html = fs.readFileSync(path.join(directory, 'dist/index.html'), 'utf8');
+const artifacts = ['index.html', 'JASP-Quality-Guide.html'];
+if (process.argv[2] !== '--artifact') {
+  for (const artifact of artifacts) {
+    execFileSync(process.execPath, [fileURLToPath(import.meta.url), '--artifact', artifact], {stdio: 'inherit'});
+  }
+  process.exit(0);
+}
+const artifact = process.argv[3];
+assert.ok(artifacts.includes(artifact), 'Unknown guide artifact.');
+const html = fs.readFileSync(path.join(directory, 'dist', artifact), 'utf8');
 const decode = text => text.replace(/&(amp|lt|gt|quot|#39);/g,
   (_, name) => ({amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'"})[name]);
 const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
@@ -25,6 +35,8 @@ class Element {
     this.attrs = attrs;
     this.parent = parent;
     this.children = [];
+    this.listeners = new Map();
+    this.paused = true;
     if (tag === 'video') {
       this.markupSrc = attrs.src;
       if (this.runtime?.videoMode !== 'absent') Object.defineProperty(this, 'srcObject', {
@@ -66,6 +78,17 @@ class Element {
   getAttribute(name) { return this.attrs[name] ?? null; }
   setAttribute(name, value) { this.attrs[name] = String(value); }
   removeAttribute(name) { if (name === 'src') this.recordMedia('removeSrc'); delete this.attrs[name]; }
+  addEventListener(name, callback) {
+    if (!this.listeners.has(name)) this.listeners.set(name, new Set());
+    this.listeners.get(name).add(callback);
+  }
+  removeEventListener(name, callback) { this.listeners.get(name)?.delete(callback); }
+  dispatchEvent(event) {
+    event.target ??= this;
+    for (const callback of this.listeners.get(event.type) || []) callback.call(this, event);
+    return true;
+  }
+  get isConnected() { return descendants(this.runtime.documentRoot).includes(this); }
   get runtime() {
     let root = this;
     while (root.parent) root = root.parent;
@@ -75,9 +98,17 @@ class Element {
     if (this.tagName !== 'video') return;
     const runtime = this.runtime;
     runtime.mediaEvents.push({element: this, type, value,
+      userGesture: Boolean(runtime.inUserGesture),
       mounted: runtime.document.getElementById('analysis-video') === this});
   }
-  pause() { this.recordMedia('pause'); }
+  pause() { this.paused = true; this.recordMedia('pause'); }
+  play() {
+    this.recordMedia('play');
+    if (this.runtime.playMode === 'reject') return Promise.reject(new Error('Synthetic playback rejection.'));
+    if (this.runtime.playMode === 'pending') return new Promise((resolve, reject) => this.runtime.pendingPlays.push({resolve, reject}));
+    this.paused = false;
+    return Promise.resolve();
+  }
   load() { this.recordMedia('load'); }
   focus(options) {
     this.focused = true;
@@ -137,14 +168,17 @@ function matches(node, selector) {
 
 const dataText = html.match(/<script id="guide-data" type="application\/json">([^]*?)<\/script>/)?.[1];
 assert.ok(dataText, 'Built HTML is missing its embedded guide data.');
+assert.equal(JSON.parse(dataText).delivery?.mode, artifact === 'index.html' ? 'online' : 'offline',
+  `${artifact}: wrong delivery mode.`);
 // Synthetic bytes exercise Blob transfer and fallback, not video decoding.
 const videoFixture = {src: 'data:video/mp4;base64,' + Buffer.from([0, 255, 128, 10, 13, 42]).toString('base64'),
   title: 'Test video walkthrough', note: 'Test video availability.'};
 const jaspFixture = {src: 'data:application/octet-stream;base64,UEs=', filename: 'Specific-example.jasp',
   title: 'Specific example', note: 'Specific example note.'};
-function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', mediaOverride = null) {
+function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', mediaOverride = null, deliveryOverride = null) {
   const bootData = JSON.parse(dataText);
   if (mediaOverride) bootData.media = mediaOverride;
+  if (deliveryOverride) bootData.delivery = deliveryOverride;
   const documentRoot = new Element('document');
   documentRoot.innerHTML = html.replace(/<script\b[^>]*>[^]*?<\/script>/g, '').replace(/<style\b[^>]*>[^]*?<\/style>/g, '');
   const queryAll = selector => descendants(documentRoot).filter(node => selector.split(',').some(part => {
@@ -170,14 +204,21 @@ function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', medi
     addEventListener: (name, callback) => { windowEvents[name] = callback; },
   };
   const runtime = {documentRoot, document, window, location, queryAll,
-    documentEvents, windowEvents, focusEvents, scrollEvents, geometry, mediaEvents, videoMode};
+    documentEvents, windowEvents, focusEvents, scrollEvents, geometry, mediaEvents, videoMode,
+    atobCalls: 0, blobCreations: 0, fetchCalls: [], playMode: 'resolve', pendingPlays: [], inUserGesture: false};
   documentRoot.runtimeState = runtime;
-  const sandbox = vm.createContext({document, window, location, navigator: {}, Blob, atob,
+  class TrackedBlob extends Blob {
+    constructor(...args) { super(...args); runtime.blobCreations++; }
+  }
+  const sandbox = vm.createContext({document, window, location, navigator: {}, Blob: TrackedBlob,
+    atob: value => { runtime.atobCalls++; return atob(value); },
+    fetch: (...args) => { runtime.fetchCalls.push(args); throw new Error('Unexpected eager fetch.'); },
     setTimeout: () => 0, clearTimeout() {}});
   for (const script of html.matchAll(/<script([^>]*)>([^]*?)<\/script>/g)) {
     if (!script[1].includes('type="application/json"')) new vm.Script(script[2], {filename: 'built-guide.js'}).runInContext(sandbox, {timeout: 5000});
   }
-  return {...runtime, sandbox};
+  runtime.sandbox = sandbox;
+  return runtime;
 }
 const runtime = boot();
 const {documentRoot, document, window, location, queryAll, documentEvents,
@@ -193,8 +234,17 @@ function go(hash) { location.hash = hash; windowEvents.hashchange(); uniqueIds(h
 async function click(node) {
   assert.ok(node, 'Expected a rendered action element.');
   const previous = location.hash;
-  await documentEvents.click({target: node, preventDefault() {}});
+  await clickIn(runtime, node);
   if (previous !== location.hash) windowEvents.hashchange();
+}
+async function clickIn(targetRuntime, node) {
+  assert.ok(node, 'Expected a rendered action element.');
+  targetRuntime.inUserGesture = true;
+  const completion = targetRuntime.documentEvents.click({target: node, preventDefault() {}});
+  targetRuntime.inUserGesture = false;
+  await completion;
+  // Browser media events remain explicit; flush promise-based play rejection handlers.
+  await Promise.resolve();
 }
 function exposed(node) {
   for (let current = node; current; current = current.parent) {
@@ -260,7 +310,12 @@ function checkAnalysisPage(analysisId, scenario = null) {
     assert.ok(Object.hasOwn(visual.attrs, 'controls'), `${analysisId}: video needs controls.`);
     assert.ok(!Object.hasOwn(visual.attrs, 'autoplay'), `${analysisId}: video must not autoplay.`);
     assert.equal(visual.markupSrc, undefined, `${analysisId}: video markup must wait for source attachment.`);
-    assert.equal(visual.src, selected.video.src, `${analysisId}: wrong video source.`);
+    assert.equal(visual.attrs.preload, 'none', `${analysisId}: video must not preload before playback.`);
+    assert.ok(Object.hasOwn(visual.attrs, 'muted'), `${analysisId}: video should retain muted playback.`);
+    assert.ok(Object.hasOwn(visual.attrs, 'playsinline'), `${analysisId}: video should retain inline playback.`);
+    assert.equal(visual.src, undefined, `${analysisId}: rendering a route must not assign its video source.`);
+    assert.equal(visual.srcObject ?? null, null, `${analysisId}: rendering a route must not decode its video.`);
+    assert.ok(action('video-play'), `${analysisId}: an available video needs an explicit playback action.`);
   } else {
     assert.equal(videos.length, 0, `${analysisId}: a missing video must not create an empty player.`);
     assert.equal(placeholders.length, 1, `${analysisId}: a missing video needs one coming-soon picture.`);
@@ -363,9 +418,42 @@ availableMedia.defaults.video = 'test-video';
 // Keep both shared-video routes independent of real per-analysis media.
 availableMedia.analyses.imr = {...availableMedia.analyses.imr, video: 'test-video'};
 availableMedia.analyses.one_t = {...availableMedia.analyses.one_t, video: 'test-video'};
+const mediaAction = (targetRuntime, value) => targetRuntime.queryAll('[data-action="video-play"]')
+  .find(node => value === undefined ? node.id === 'analysis-video-play' : node.dataset.value === value);
+function deferredVideo(targetRuntime, context) {
+  const player = targetRuntime.document.getElementById('analysis-video');
+  assert.ok(player, `${context}: expected a player.`);
+  assert.equal(player.markupSrc, undefined, `${context}: video markup must omit src.`);
+  assert.equal(player.src, undefined, `${context}: video must wait for explicit playback.`);
+  assert.equal(player.srcObject ?? null, null, `${context}: video must wait before attaching a Blob.`);
+  assert.equal(player.attrs.preload, 'none', `${context}: video preload must be disabled.`);
+  assert.ok(!targetRuntime.document.getElementById('analysis-video-play').hidden,
+    `${context}: initial playback control must be visible.`);
+  for (const id of ['analysis-video-status', 'analysis-video-error']) {
+    const feedback = targetRuntime.document.getElementById(id);
+    assert.ok(feedback?.hidden, `${context}: ${id} must begin hidden.`);
+    assert.equal(feedback.attrs.role, 'status', `${context}: media feedback must be announced.`);
+  }
+  player.dispatchEvent({type: 'waiting'});
+  player.dispatchEvent({type: 'error'});
+  assert.ok(targetRuntime.document.getElementById('analysis-video-status').hidden &&
+    targetRuntime.document.getElementById('analysis-video-error').hidden,
+  `${context}: media events before playback must not expose misleading feedback.`);
+  assert.equal(targetRuntime.atobCalls, 0, `${context}: deferred playback must not decode media.`);
+  assert.equal(targetRuntime.blobCreations, 0, `${context}: deferred playback must not allocate media Blobs.`);
+  assert.equal(targetRuntime.fetchCalls.length, 0, `${context}: deferred playback must not fetch media.`);
+  return player;
+}
+function assertPlaybackGesture(targetRuntime, context) {
+  const plays = targetRuntime.mediaEvents.filter(event => event.type === 'play');
+  assert.ok(plays.length > 0 && plays.every(event => event.userGesture),
+    `${context}: play() must be invoked directly from an explicit user action.`);
+}
 for (const mode of ['supported', 'throws', 'absent']) {
-  const mediaRuntime = boot('#/analysis/imr', 0, mode, availableMedia);
-  const player = mediaRuntime.document.getElementById('analysis-video');
+  const mediaRuntime = boot('#/analysis/imr', 0, mode, availableMedia, {mode: 'offline'});
+  const player = deferredVideo(mediaRuntime, 'Offline ' + mode);
+  await clickIn(mediaRuntime, mediaAction(mediaRuntime));
+  assertPlaybackGesture(mediaRuntime, 'Offline ' + mode);
   const selected = videoFixture;
   const assignedBlob = player.srcObject;
   assert.equal(player.markupSrc, undefined, `${mode}: video must start without a markup source.`);
@@ -395,8 +483,19 @@ for (const mode of ['supported', 'throws', 'absent']) {
   assert.ok(released.every(event => event.mounted), `${mode}: release the old video before replacing its DOM.`);
   assert.equal(player.src, undefined, `${mode}: release must clear the old source.`);
   if (mode !== 'absent') assert.equal(player.srcObject, null, `${mode}: release must clear srcObject.`);
+  assert.ok([...player.listeners.values()].every(listeners => listeners.size === 0),
+    `${mode}: leaving an analysis must remove its media event listeners.`);
+  const nextPlayer = mediaRuntime.document.getElementById('analysis-video');
+  assert.equal(nextPlayer.src, undefined, `${mode}: navigating to another video must not start it.`);
+  assert.equal(nextPlayer.srcObject ?? null, null, `${mode}: navigating must not attach even a cached Blob.`);
+  const nextStatus = mediaRuntime.document.getElementById('analysis-video-status');
+  const nextError = mediaRuntime.document.getElementById('analysis-video-error');
+  player.dispatchEvent({type: 'waiting'});
+  player.dispatchEvent({type: 'error'});
+  assert.ok(nextStatus.hidden && nextError.hidden, `${mode}: detached video events must not affect the new page.`);
 
   if (mode === 'supported') {
+    await clickIn(mediaRuntime, mediaAction(mediaRuntime));
     assert.equal(mediaRuntime.document.getElementById('analysis-video').srcObject, assignedBlob,
       'Analyses sharing a video should reuse its decoded Blob.');
     const media = vm.runInContext('DATA.media', mediaRuntime.sandbox);
@@ -404,6 +503,9 @@ for (const mode of ['supported', 'throws', 'absent']) {
     media.analyses.imr = {...media.analyses.imr, video: 'interface-video'};
     mediaRuntime.location.hash = '#/analysis/imr';
     mediaRuntime.windowEvents.hashchange();
+    assert.equal(mediaRuntime.document.getElementById('analysis-video').srcObject, null,
+      'A replacement video must still wait for its explicit playback action.');
+    await clickIn(mediaRuntime, mediaAction(mediaRuntime));
     const replacement = mediaRuntime.document.getElementById('analysis-video').srcObject;
     assert.notEqual(replacement, assignedBlob, 'A video override must replace the cached Blob.');
     assert.equal(replacement.type, 'video/mp4');
@@ -419,6 +521,87 @@ for (const mode of ['supported', 'throws', 'absent']) {
   assert.equal(mediaRuntime.document.getElementById('analysis-video'), null,
     `${mode}: explicit null must replace an inherited video with the placeholder.`);
   assert.equal(mediaRuntime.queryAll('.video-placeholder').length, 1);
+}
+
+// URL playback must bypass base64 conversion, including on Safari-like browsers.
+// The DOM mock records source/fetch attempts; real browser network behavior is
+// verified separately. Explicit event delivery checks feedback and cleanup.
+const onlineMedia = structuredClone(availableMedia);
+onlineMedia.assets['test-video'] = {...videoFixture, src: 'media/interface-walkthrough.mp4'};
+for (const mode of ['supported', 'throws', 'absent']) {
+  const online = boot('#/analysis/imr', 0, mode, onlineMedia,
+    {mode: 'online', offlineFile: 'JASP-Quality-Guide.html'});
+  const player = deferredVideo(online, 'Online ' + mode);
+  await clickIn(online, mediaAction(online));
+  assert.equal(player.src, onlineMedia.assets['test-video'].src, `${mode}: online playback must use its media URL.`);
+  assert.equal(player.srcObject ?? null, null, `${mode}: URL playback must not attach a Blob.`);
+  assert.equal(online.atobCalls, 0, `${mode}: URL playback must bypass base64 decoding.`);
+  assert.equal(online.blobCreations, 0, `${mode}: URL playback must bypass Blob allocation.`);
+  assert.equal(online.fetchCalls.length, 0, `${mode}: URL playback must leave retrieval to the media element.`);
+  assertPlaybackGesture(online, 'Online ' + mode);
+  const status = online.document.getElementById('analysis-video-status');
+  const error = online.document.getElementById('analysis-video-error');
+  for (const event of ['loadstart', 'waiting', 'stalled']) {
+    player.dispatchEvent({type: event});
+    assert.ok(!status.hidden, `${event}: loading feedback must be visible.`);
+    assert.match(status.textContent, /Loading video/i, `${event}: loading feedback must describe the wait.`);
+    for (const settled of ['canplay', 'playing', 'pause', 'ended']) {
+      player.dispatchEvent({type: settled});
+      assert.ok(status.hidden, `${settled}: stale loading feedback must clear.`);
+      player.dispatchEvent({type: event});
+    }
+  }
+  player.error = {code: 2};
+  player.dispatchEvent({type: 'error'});
+  assert.ok(!error.hidden && status.hidden, `${mode}: playback failure must replace the loading state.`);
+  const retry = mediaAction(online, 'retry');
+  assert.ok(retry && exposed(retry), `${mode}: media errors must offer an exposed retry control.`);
+  assert.ok(descendants(error).some(node => node.tagName === 'a' && node.attrs.href === player.src),
+    `${mode}: media errors must link directly to the same video.`);
+  const playCount = online.mediaEvents.filter(event => event.type === 'play').length;
+  player.error = null;
+  await clickIn(online, retry);
+  assert.equal(online.mediaEvents.filter(event => event.type === 'play').length, playCount + 1,
+    `${mode}: retry must make a fresh playback attempt.`);
+  assert.ok(error.hidden, `${mode}: retry must clear the old error.`);
+  player.dispatchEvent({type: 'playing'});
+  assert.ok(status.hidden && error.hidden, `${mode}: resumed playback must clear feedback.`);
+  player.paused = true;
+  player.dispatchEvent({type: 'stalled'});
+  assert.ok(status.hidden, `${mode}: a paused player must not show a stalled-playback spinner.`);
+  player.paused = false;
+
+  player.dispatchEvent({type: 'error'});
+  online.playMode = 'pending';
+  await clickIn(online, mediaAction(online, 'retry'));
+  const supersededPlay = online.pendingPlays.at(-1);
+  player.dispatchEvent({type: 'error'});
+  online.playMode = 'resolve';
+  await clickIn(online, mediaAction(online, 'retry'));
+  player.dispatchEvent({type: 'playing'});
+  supersededPlay.reject(new Error('Late rejection from the previous playback attempt.'));
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.ok(status.hidden && error.hidden, `${mode}: a superseded play() rejection must not interrupt a successful retry.`);
+
+  player.dispatchEvent({type: 'error'});
+  online.playMode = 'reject';
+  await clickIn(online, mediaAction(online, 'retry'));
+  assert.ok(!error.hidden, `${mode}: a rejected play() promise must display recoverable feedback.`);
+  online.playMode = 'pending';
+  await clickIn(online, mediaAction(online, 'retry'));
+  online.location.hash = '#/analysis/one_t';
+  online.windowEvents.hashchange();
+  const newStatus = online.document.getElementById('analysis-video-status');
+  const newError = online.document.getElementById('analysis-video-error');
+  player.dispatchEvent({type: 'waiting'});
+  player.dispatchEvent({type: 'error'});
+  for (const pending of online.pendingPlays) pending.reject(new Error('Late playback failure after navigation.'));
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.ok(newStatus.hidden && newError.hidden, `${mode}: old events/promises must not affect a new analysis.`);
+  assert.equal(online.document.getElementById('analysis-video').src, undefined,
+    `${mode}: navigating after failure must leave the next video deferred.`);
 }
 
 // Collect one reachable route per question/prerequisite. Full route semantics
@@ -684,5 +867,20 @@ delete api.media.assets['test-specific-jasp'];
 delete api.media.assets['test-specific-video'];
 
 for (const route of ['#/', '#/examples', '#/about']) { go(route); uniqueIds(route); }
-console.log(`PASS: Source-render preservation checks for ${Object.keys(api.analyses).length} analysis pages, ${Object.keys(api.scenarios).length} scenarios, ${questionRoutes.size} questions, and ${guardRoutes.size} prerequisites; media placement, links, tabs, scroll/focus intent, navigation, search, plans, missing-resource notices, and resource overrides.`);
+const delivery = vm.runInContext('DATA.delivery', sandbox);
+assert.equal(runtime.atobCalls, 0, 'Browsing all routes and media combinations must not decode an unplayed video.');
+assert.equal(runtime.blobCreations, 0, 'Browsing all routes must not allocate an unplayed video Blob.');
+assert.equal(runtime.fetchCalls.length, 0, 'Browsing all routes must not issue an eager media fetch.');
+if (delivery.mode === 'online') {
+  assert.equal(delivery.offlineFile, 'JASP-Quality-Guide.html', 'Online guide must identify the full offline export.');
+  const exportLinks = queryAll('[download]').filter(node => node.attrs.href === delivery.offlineFile);
+  assert.equal(exportLinks.length, 1, 'Online About page must offer one direct full-guide download.');
+  assert.equal(exportLinks[0].attrs.download, 'JASP-Quality-Guide.html', 'Offline export filename must remain stable.');
+  assert.equal(action('html'), undefined, 'Online export must not save a lightweight page with external media.');
+  assert.ok(fs.statSync(path.join(directory, 'dist', delivery.offlineFile)).isFile(),
+    'The linked offline export must be present in the distribution.');
+} else {
+  assert.ok(action('html'), 'The offline guide must preserve its self-contained save-copy action.');
+}
+console.log(`PASS (${artifact}): Source-render preservation checks for ${Object.keys(api.analyses).length} analysis pages, ${Object.keys(api.scenarios).length} scenarios, ${questionRoutes.size} questions, and ${guardRoutes.size} prerequisites; media placement, links, tabs, scroll/focus intent, navigation, search, plans, missing-resource notices, resource overrides, deferred playback, loading/error/retry cleanup, and export contracts.`);
 console.log('NOT browser QA: layout, playback, download behavior, accessibility interaction, and desktop JASP remain unverified.');
