@@ -107,6 +107,34 @@
     "xbar_s": {
       "video": "xbar_s-video",
       "jasp": "xbar_s-jasp"
+    },
+    "gage_type1": {
+      "video": "gage_type1-video",
+      "jasp": "gage_type1-jasp"
+    },
+    "gage_linearity": {
+      "video": "gage_linearity-video",
+      "jasp": "gage_linearity-jasp"
+    },
+    "gage_crossed": {
+      "video": "gage_crossed-video",
+      "jasp": "gage_crossed-jasp"
+    },
+    "cusum": {
+      "video": "cusum-video",
+      "jasp": "cusum-jasp"
+    },
+    "survival_km": {
+      "video": "survival_km-video",
+      "jasp": "survival_km-jasp"
+    },
+    "survival_cox": {
+      "video": "survival_cox-video",
+      "jasp": "survival_cox-jasp"
+    },
+    "survival_parametric": {
+      "video": "survival_parametric-video",
+      "jasp": "survival_parametric-jasp"
     }
   },
   "assets": {
@@ -447,6 +475,123 @@
       "title": "X-bar and s charts — annotated JASP file",
       "note": "Local review companion. Matching saved tutorial analysis with learner-facing notes, checked settings and results, and the demonstrated plots where available.",
       "filename": "xbar_s.jasp"
+    },
+    "gage_type1-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/gage_type1.mp4",
+      "title": "Type 1 instrument capability study — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Configure repeated measurements of one reference, inspect bias and capability, and compare the run chart and histogram."
+    },
+    "gage_type1-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/gage_type1.jasp",
+      "title": "Type 1 instrument capability study — annotated JASP file",
+      "note": "Matching native saved analysis with checked bias, confidence interval and Cg/Cgk, run chart, histogram and learner notes. Saved and reopened in JASP 0.99.",
+      "filename": "gage_type1.jasp"
+    },
+    "gage_linearity-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/gage_linearity.mp4",
+      "title": "Gauge linearity study — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Assign repeated reference parts, inspect bias coefficients and the linearity graph; the printed equation rounds the small slope to zero."
+    },
+    "gage_linearity-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/gage_linearity.jasp",
+      "title": "Gauge linearity study — annotated JASP file",
+      "note": "Matching native saved analysis with checked bias regression and graph, setup and interpretation notes. Saved and reopened in JASP 0.99.",
+      "filename": "gage_linearity.jasp"
+    },
+    "gage_crossed-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/gage_crossed.mp4",
+      "title": "Crossed gauge R&R study — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Assign the balanced crossed study, select the justified random-effects model, and interpret components and interaction plots."
+    },
+    "gage_crossed-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/gage_crossed.jasp",
+      "title": "Crossed gauge R&R study — annotated JASP file",
+      "note": "Matching native saved full-interaction analysis with checked ANOVA, variance components and learner notes. Saved and reopened in JASP 0.99.",
+      "filename": "gage_crossed.jasp"
+    },
+    "cap_normal-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/cap_normal.mp4",
+      "title": "Normal process capability study — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Inspect stability and normal fit, then interpret within-process capability point estimates against the specifications. Capability intervals are not yet verified."
+    },
+    "cap_normal-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/cap_normal.jasp",
+      "title": "Normal process capability study — annotated JASP file",
+      "note": "Matching native saved analysis with checked within/overall point estimates, stability flags, probability plot, capability overlay and learner notes. Saved and reopened in JASP 0.99.",
+      "filename": "cap_normal.jasp"
+    },
+    "cap_nonnormal-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/cap_nonnormal.mp4",
+      "title": "Non-normal process capability study — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Fit the illustrative log-normal candidate, inspect stability and fit, and distinguish percentile performance from observed and fitted upper-tail exceedances."
+    },
+    "cap_nonnormal-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/cap_nonnormal.jasp",
+      "title": "Non-normal process capability study — annotated JASP file",
+      "note": "Matching native saved analysis with checked sample-log-SD convention, single upper requirement, percentile index, fitted tail and learner notes. Saved and reopened in JASP 0.99.",
+      "filename": "cap_nonnormal.jasp"
+    },
+    "cusum-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/cusum.mp4",
+      "title": "Cumulative sum chart — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Set target 500 mL, k=0.5 and h=5, then interpret the independently checked upward accumulation."
+    },
+    "cusum-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/cusum.jasp",
+      "title": "Cumulative sum chart — annotated JASP file",
+      "note": "Matching native saved analysis with all recurrences and signal colours checked, explicit sensitivity units and retrospective limitations. Saved and reopened in JASP 0.99.",
+      "filename": "cusum.jasp"
+    },
+    "survival_km-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_km.mp4",
+      "title": "Kaplan–Meier survival — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Retain censoring, compare both coatings and interpret checked survival estimates and risk sets."
+    },
+    "survival_km-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_km.jasp",
+      "title": "Kaplan–Meier survival — annotated JASP file",
+      "note": "Matching native analysis with independently checked survival estimates, confidence bounds, risk sets and log-rank result. Saved and reopened in JASP 0.99.",
+      "filename": "survival_km.jasp"
+    },
+    "survival_cox-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_cox.mp4",
+      "title": "Cox proportional hazards — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Fit coating and load main effects, identify Improved as the reference, and inspect the proportional-hazards diagnostics."
+    },
+    "survival_cox-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_cox.jasp",
+      "title": "Cox proportional hazards — annotated JASP file",
+      "note": "Matching native analysis with independently checked adjusted hazard ratios, intervals and diagnostic points; time-pattern caveat retained. Saved and reopened in JASP 0.99.",
+      "filename": "survival_cox.jasp"
+    },
+    "survival_parametric-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_parametric.mp4",
+      "title": "Weibull lifetime and B10 — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Set right censoring, request B10 with uncertainty, and compare the fitted survival curve with Kaplan–Meier."
+    },
+    "survival_parametric-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_parametric.jasp",
+      "title": "Weibull lifetime and B10 — annotated JASP file",
+      "note": "Matching native analysis with independently checked B10, interval method and plotted values; alternative-family sensitivity and extrapolation caveats retained. Saved and reopened in JASP 0.99.",
+      "filename": "survival_parametric.jasp"
     }
   },
   "videoPlaceholder": {
