@@ -143,6 +143,30 @@
     "cap_nonnormal": {
       "video": "cap_nonnormal-video",
       "jasp": "cap_nonnormal-jasp"
+    },
+    "accept_create_attribute": {
+      "video": "accept_create_attribute-video",
+      "jasp": "accept_create_attribute-jasp"
+    },
+    "accept_create_variable": {
+      "video": "accept_create_variable-video",
+      "jasp": "accept_create_variable-jasp"
+    },
+    "accept_analyze_variable": {
+      "video": "accept_analyze_variable-video",
+      "jasp": "accept_analyze_variable-jasp"
+    },
+    "accept_analyze_attribute": {
+      "video": "accept_analyze_attribute-video",
+      "jasp": "accept_analyze_attribute-jasp"
+    },
+    "doe_surface": {
+      "video": "doe_surface-video",
+      "jasp": "doe_surface-jasp"
+    },
+    "doe_analyze": {
+      "video": "doe_analyze-video",
+      "jasp": "doe_analyze-jasp"
     }
   },
   "assets": {
@@ -600,6 +624,84 @@
       "title": "Weibull lifetime and B10 — annotated JASP file",
       "note": "Matching native analysis with independently checked B10, interval method and plotted values; alternative-family sensitivity and extrapolation caveats retained. Saved and reopened in JASP 0.99.",
       "filename": "survival_parametric.jasp"
+    },
+    "accept_create_attribute-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_create_attribute.mp4",
+      "title": "Create an attribute acceptance plan — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Create a finite-lot hypergeometric plan; inspect n = 85, c = 2 and achieved risks."
+    },
+    "accept_create_attribute-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_create_attribute.jasp",
+      "title": "Create an attribute acceptance plan — annotated JASP file",
+      "note": "Matching native analysis with independently checked calculations and explanatory notes. Saved, closed and reopened in JASP 0.99.",
+      "filename": "accept_create_attribute.jasp"
+    },
+    "accept_create_variable-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_create_variable.mp4",
+      "title": "Create a variable acceptance plan — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Create a normal known-historical-SD plan, inspect n = 24 and k, and read the OC curve."
+    },
+    "accept_create_variable-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_create_variable.jasp",
+      "title": "Create a variable acceptance plan — annotated JASP file",
+      "note": "Matching native analysis with independently checked calculations and explanatory notes. Saved, closed and reopened in JASP 0.99.",
+      "filename": "accept_create_variable.jasp"
+    },
+    "accept_analyze_variable-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_analyze_variable.mp4",
+      "title": "Evaluate a variable acceptance plan — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Assess the supplied n = 24, k = 1.309 known-SD rule and inspect achieved risks and the OC curve."
+    },
+    "accept_analyze_variable-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_analyze_variable.jasp",
+      "title": "Evaluate a variable acceptance plan — annotated JASP file",
+      "note": "Matching native analysis with independently checked calculations and explanatory notes. Saved, closed and reopened in JASP 0.99.",
+      "filename": "accept_analyze_variable.jasp"
+    },
+    "accept_analyze_attribute-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_analyze_attribute.mp4",
+      "title": "Evaluate an attribute acceptance plan — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Assess a two-stage binomial plan, inspect cumulative decision limits, achieved risks, OC and ASN curves."
+    },
+    "accept_analyze_attribute-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_analyze_attribute.jasp",
+      "title": "Evaluate an attribute acceptance plan — annotated JASP file",
+      "note": "Matching native two-stage analysis with independently checked probabilities, ASN and explanatory notes. Saved, closed and reopened in JASP 0.99.",
+      "filename": "accept_analyze_attribute.jasp"
+    },
+    "doe_surface-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/doe_surface.mp4",
+      "title": "Create a response-surface design — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Create and export a two-factor face-centred central-composite worksheet with 13 runs and seed 1106; collect responses afterwards."
+    },
+    "doe_surface-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/doe_surface.jasp",
+      "title": "Create a response-surface design — annotated JASP file",
+      "note": "Matching settings-only design with checked run composition, seed and explanatory notes. Saved, closed and reopened in JASP 0.99. Exported CSV columns x1 and x2 represent Temperature and Time.",
+      "filename": "doe_surface.jasp"
+    },
+    "doe_analyze-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/doe_analyze.mp4",
+      "title": "Analyse a designed experiment — video walkthrough",
+      "note": "Local review draft: listening and continuous presentation review pending. Fit the factorial model with all main effects and two-factor interactions, inspect standardized Pareto effects and all four residual panels."
+    },
+    "doe_analyze-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/doe_analyze.jasp",
+      "title": "Analyse a designed experiment — annotated JASP file",
+      "note": "Matching 16-run example with coded factors, hierarchical model and checked diagnostics. Saved, closed and reopened in JASP 0.99; annotations explain effect signs, replication and limits.",
+      "filename": "doe_analyze.jasp"
     }
   },
   "videoPlaceholder": {
