@@ -45,7 +45,10 @@ filenames. The build removes obsolete generated content-hashed files from
 Suggestions and corrections are welcome through
 [issues](https://github.com/jasp-stats/quality-guide/issues) or pull requests.
 Guide text and examples live in the JSON files; videos and annotated JASP files
-are configured in `media.json`. Run the checks above after making changes.
+are configured in `media.json`. Connect each listed asset to an analysis through
+its override or an effective default; validation rejects unused assets so a
+finished tutorial cannot silently remain hidden behind a placeholder. Run the
+checks above after making changes.
 
 ## Publishing
 

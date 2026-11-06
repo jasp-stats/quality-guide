@@ -12,6 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
@@ -97,6 +98,11 @@ class Element {
   recordMedia(type, value) {
     if (this.tagName !== 'video') return;
     const runtime = this.runtime;
+    runtime.mediaCounts[type] = (runtime.mediaCounts[type] || 0) + 1;
+    // Whole-guide route checks only need counts. Keeping their detached players
+    // would also keep every old DOM tree and its full offline media URLs alive.
+    // Focused playback fixtures opt into the detailed records used below.
+    if (!runtime.captureMediaEvents) return;
     runtime.mediaEvents.push({element: this, type, value,
       userGesture: Boolean(runtime.inUserGesture),
       mounted: runtime.document.getElementById('analysis-video') === this});
@@ -168,31 +174,39 @@ function matches(node, selector) {
 
 const dataText = html.match(/<script id="guide-data" type="application\/json">([^]*?)<\/script>/)?.[1];
 assert.ok(dataText, 'Built HTML is missing its embedded guide data.');
-assert.equal(JSON.parse(dataText).delivery?.mode, artifact === 'index.html' ? 'online' : 'offline',
-  `${artifact}: wrong delivery mode.`);
+// Extract the shell and compile the actual built application once. Secondary
+// boot scenarios must not rescan/reparse the large standalone media payload.
+const documentMarkup = html.replace(/<script\b[^>]*>[^]*?<\/script>/g, '').replace(/<style\b[^>]*>[^]*?<\/style>/g, '');
+const applicationScripts = [...html.matchAll(/<script([^>]*)>([^]*?)<\/script>/g)]
+  .filter(script => !script[1].includes('type="application/json"'))
+  .map(script => new vm.Script(script[2], {filename: 'built-guide.js'}));
+let fixtureGuideData;
 // Synthetic bytes exercise Blob transfer and fallback, not video decoding.
 const videoFixture = {src: 'data:video/mp4;base64,' + Buffer.from([0, 255, 128, 10, 13, 42]).toString('base64'),
   title: 'Test video walkthrough', note: 'Test video availability.'};
 const jaspFixture = {src: 'data:application/octet-stream;base64,UEs=', filename: 'Specific-example.jasp',
   title: 'Specific example', note: 'Specific example note.'};
 function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', mediaOverride = null, deliveryOverride = null) {
-  const bootData = JSON.parse(dataText);
-  if (mediaOverride) bootData.media = mediaOverride;
-  if (deliveryOverride) bootData.delivery = deliveryOverride;
+  // The primary runtime parses the original artifact directly. Playback mocks
+  // retain the actual guide content but carry only their small media fixtures.
+  const bootText = mediaOverride ? JSON.stringify({...fixtureGuideData, media: mediaOverride,
+    ...(deliveryOverride ? {delivery: deliveryOverride} : {})}) : dataText;
   const documentRoot = new Element('document');
-  documentRoot.innerHTML = html.replace(/<script\b[^>]*>[^]*?<\/script>/g, '').replace(/<style\b[^>]*>[^]*?<\/style>/g, '');
-  const queryAll = selector => descendants(documentRoot).filter(node => selector.split(',').some(part => {
-    const pieces = part.trim().split(/\s+/);
-    if (!matches(node, pieces.at(-1))) return false;
-    return pieces.length === 1 || Boolean(node.parent?.closest(pieces[0]));
-  }));
+  documentRoot.innerHTML = documentMarkup;
+  const queryAll = selector => {
+    const alternatives = selector.split(',').map(part => part.trim().split(/\s+/));
+    return descendants(documentRoot).filter(node => alternatives.some(pieces => {
+      if (!matches(node, pieces.at(-1))) return false;
+      return pieces.length === 1 || Boolean(node.parent?.closest(pieces[0]));
+    }));
+  };
   const documentEvents = {}, windowEvents = {}, focusEvents = [], scrollEvents = [], mediaEvents = [];
   // Explicitly synthetic geometry: these tests verify scroll/focus decisions,
   // not the pixel position or size of content in a real browser.
   const geometry = {titleY: 220, titleHeight: 70};
   const document = {
     title: '', activeElement: null,
-    getElementById: id => id === 'guide-data' ? {textContent: JSON.stringify(bootData)} : queryAll('#' + id)[0] || null,
+    getElementById: id => id === 'guide-data' ? {textContent: bootText} : queryAll('#' + id)[0] || null,
     querySelectorAll: queryAll,
     querySelector: selector => queryAll(selector)[0] || null,
     addEventListener: (name, callback) => { documentEvents[name] = callback; },
@@ -205,6 +219,7 @@ function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', medi
   };
   const runtime = {documentRoot, document, window, location, queryAll,
     documentEvents, windowEvents, focusEvents, scrollEvents, geometry, mediaEvents, videoMode,
+    captureMediaEvents: mediaOverride !== null, mediaCounts: {},
     atobCalls: 0, blobCreations: 0, fetchCalls: [], playMode: 'resolve', pendingPlays: [], inUserGesture: false};
   documentRoot.runtimeState = runtime;
   class TrackedBlob extends Blob {
@@ -214,9 +229,7 @@ function boot(initialHash = '#/', initialScrollY = 0, videoMode = 'throws', medi
     atob: value => { runtime.atobCalls++; return atob(value); },
     fetch: (...args) => { runtime.fetchCalls.push(args); throw new Error('Unexpected eager fetch.'); },
     setTimeout: () => 0, clearTimeout() {}});
-  for (const script of html.matchAll(/<script([^>]*)>([^]*?)<\/script>/g)) {
-    if (!script[1].includes('type="application/json"')) new vm.Script(script[2], {filename: 'built-guide.js'}).runInContext(sandbox, {timeout: 5000});
-  }
+  for (const script of applicationScripts) script.runInContext(sandbox, {timeout: 5000});
   runtime.sandbox = sandbox;
   return runtime;
 }
@@ -227,10 +240,21 @@ assert.equal(scrollEvents.length, 0, 'Initial home rendering must not force a sc
 assert.equal(focusEvents.length, 0, 'Initial home rendering must not steal focus.');
 vm.runInContext('globalThis.interfaceTest = {analyses: ANALYSES, scenarios: SCENARIOS, goals: GOALS, questions: NODES, guards: GUARDS, references: REFERENCES, samples: SAMPLES, media: DATA.media, planText, analysisMedia, walk};', sandbox);
 const api = sandbox.interfaceTest;
+assert.equal(vm.runInContext('DATA.delivery.mode', sandbox), artifact === 'index.html' ? 'online' : 'offline',
+  `${artifact}: wrong delivery mode.`);
+fixtureGuideData = vm.runInContext('(({media, ...guide}) => guide)(DATA)', sandbox);
 const app = document.getElementById('app');
 const count = selector => queryAll(selector).length;
 const action = (name, value) => queryAll('[data-action]').find(node => node.dataset.action === name && (value === undefined || node.dataset.value === value));
-function go(hash) { location.hash = hash; windowEvents.hashchange(); uniqueIds(hash); }
+function go(hash) {
+  // Previous route observations are not needed by the next route's assertions.
+  // The focused navigation tests inspect these arrays after each transition.
+  focusEvents.length = 0;
+  scrollEvents.length = 0;
+  location.hash = hash;
+  windowEvents.hashchange();
+  uniqueIds(hash);
+}
 async function click(node) {
   assert.ok(node, 'Expected a rendered action element.');
   const previous = location.hash;
@@ -411,13 +435,27 @@ for (const [scenarioId, scenario] of Object.entries(api.scenarios)) {
 
 // Exercise the browser source-selection contracts with real Blob bytes. This
 // models acceptance/rejection only; it cannot establish browser video playback.
-const embeddedMedia = JSON.parse(dataText).media;
-const availableMedia = structuredClone(embeddedMedia);
-availableMedia.assets['test-video'] = videoFixture;
-availableMedia.defaults.video = 'test-video';
-// Keep both shared-video routes independent of real per-analysis media.
-availableMedia.analyses.imr = {...availableMedia.analyses.imr, video: 'test-video'};
-availableMedia.analyses.one_t = {...availableMedia.analyses.one_t, video: 'test-video'};
+// Fingerprint the complete original media without allocating another copy of
+// every embedded video. The real routes above retain their actual asset URLs;
+// validate-media.mjs separately checks every original file byte in both builds.
+function mediaFingerprint(media) {
+  const hash = createHash('sha256');
+  const {assets, ...metadata} = media;
+  hash.update(JSON.stringify(metadata));
+  for (const id of Object.keys(assets).sort()) {
+    const {src, ...assetMetadata} = assets[id];
+    hash.update(JSON.stringify([id, assetMetadata, src.length]));
+    hash.update(src);
+  }
+  return hash.digest('hex');
+}
+const originalMediaFingerprint = mediaFingerprint(api.media);
+const availableMedia = {
+  defaults: {video: 'test-video', jasp: 'test-jasp'},
+  analyses: {imr: {video: 'test-video'}, one_t: {video: 'test-video'}},
+  assets: {'test-video': videoFixture, 'test-jasp': jaspFixture},
+  videoPlaceholder: {...api.media.videoPlaceholder},
+};
 const mediaAction = (targetRuntime, value) => targetRuntime.queryAll('[data-action="video-play"]')
   .find(node => value === undefined ? node.id === 'analysis-video-play' : node.dataset.value === value);
 function deferredVideo(targetRuntime, context) {
@@ -511,7 +549,7 @@ for (const mode of ['supported', 'throws', 'absent']) {
     assert.equal(replacement.type, 'video/mp4');
     assert.deepEqual(Buffer.from(await replacement.arrayBuffer()), Buffer.from([0, 255, 128, 13]),
       'A selected video override must supply its own bytes.');
-    assert.equal(JSON.stringify(api.media), JSON.stringify(embeddedMedia),
+    assert.equal(mediaFingerprint(api.media), originalMediaFingerprint,
       'An isolated video fixture must not alter the main test data.');
   }
   const media = vm.runInContext('DATA.media', mediaRuntime.sandbox);
@@ -671,7 +709,7 @@ for (const [id, scenario] of Object.entries(api.scenarios)) {
 // Starting from a deep link must respect the browser's own initial position
 // and focus, just as the home page does. Later navigation is tested below.
 for (const hash of ['#/guide/monitor/continuous', '#/analysis/imr']) {
-  const initial = boot(hash, 375);
+  const initial = boot(hash, 375, 'throws', availableMedia);
   assert.equal(initial.scrollEvents.length, 0, `${hash}: initial load must not override restored scroll.`);
   assert.equal(initial.window.scrollY, 375);
   assert.equal(initial.focusEvents.length, 0, `${hash}: initial load must not steal focus.`);
@@ -871,6 +909,10 @@ const delivery = vm.runInContext('DATA.delivery', sandbox);
 assert.equal(runtime.atobCalls, 0, 'Browsing all routes and media combinations must not decode an unplayed video.');
 assert.equal(runtime.blobCreations, 0, 'Browsing all routes must not allocate an unplayed video Blob.');
 assert.equal(runtime.fetchCalls.length, 0, 'Browsing all routes must not issue an eager media fetch.');
+assert.equal(runtime.mediaCounts.src || 0, 0, 'Browsing all routes must not assign an unplayed video source.');
+assert.equal(runtime.mediaCounts.play || 0, 0, 'Browsing all routes must not start an unrequested video.');
+assert.equal(mediaFingerprint(api.media), originalMediaFingerprint,
+  'Resource override tests must restore the complete original media content and selection.');
 if (delivery.mode === 'online') {
   assert.equal(delivery.offlineFile, 'JASP-Quality-Guide.html', 'Online guide must identify the full offline export.');
   const exportLinks = queryAll('[download]').filter(node => node.attrs.href === delivery.offlineFile);

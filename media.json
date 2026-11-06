@@ -135,6 +135,14 @@
     "survival_parametric": {
       "video": "survival_parametric-video",
       "jasp": "survival_parametric-jasp"
+    },
+    "cap_normal": {
+      "video": "cap_normal-video",
+      "jasp": "cap_normal-jasp"
+    },
+    "cap_nonnormal": {
+      "video": "cap_nonnormal-video",
+      "jasp": "cap_nonnormal-jasp"
     }
   },
   "assets": {

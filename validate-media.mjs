@@ -101,6 +101,7 @@ const generatedMediaFiles = fs.readdirSync(path.join(dist, 'media'))
 assert.deepEqual(generatedMediaFiles.sort(), [...expectedMediaFiles].sort(), 'Stale generated media files remain.');
 
 let missingVideos = 0, missingJaspFiles = 0;
+const selectedAssetIds = new Set();
 for (const analysisId of Object.keys(analyses)) {
   const selections = {...manifest.defaults, ...manifest.analyses[analysisId]};
   for (const kind of ['video', 'jasp']) {
@@ -112,11 +113,14 @@ for (const analysisId of Object.keys(analyses)) {
     assert.equal(typeof selected, 'string', `${analysisId}: resource must be a known ID or explicit null.`);
     assert.ok(manifest.assets[selected], `${analysisId}: unknown ${kind} resource.`);
     assert.equal(manifest.assets[selected].kind, kind, `${analysisId}: wrong resource kind for ${kind}.`);
+    selectedAssetIds.add(selected);
   }
 }
 for (const analysisId of Object.keys(manifest.analyses)) {
   assert.ok(analyses[analysisId], `Unknown analysis media override: ${analysisId}.`);
 }
+assert.deepEqual([...selectedAssetIds].sort(), Object.keys(manifest.assets).sort(),
+  'Every media asset must be reachable from an analysis. Connect unused assets or remove them from media.json.');
 
 console.log(`PASS: online ${online.bytes} bytes / standalone ${offline.bytes} bytes; ` +
   `${Object.keys(analyses).length} guides and ${Object.keys(examples).length} datasets match source in both modes.`);
