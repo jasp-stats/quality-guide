@@ -3,7 +3,7 @@
 **[Open the guide](https://jasp-stats.github.io/quality-guide/)**
 
 An interactive guide to choosing and preparing analyses in JASP, with 54 analysis
-guides and 42 practical example datasets. Videos and annotated JASP files are
+guides and 47 practical example datasets. Videos and annotated JASP files are
 being added.
 
 **Maintainer:** [Henrik Godmann (@hrgodmann)](https://github.com/hrgodmann)
@@ -59,3 +59,9 @@ The existing workflow publishes the complete `dist/` directory, including the
 online media files and optional standalone download; no deployment setting needs
 to change. Publish these outputs together so every media URL and the offline
 download resolve to the matching build.
+
+## Colleague previews — 7 November 2026
+
+Ten new narrated MP4/annotated JASP pairs are integrated using the existing on-demand media convention. Their guides disclose the authorized data adaptations and known module limitations. Original datasets remain separately available; the eight-run factorial worksheet is distinct from the completed 16-run example. These are initial, unlistened previews for colleague feedback.
+
+The two Bayesian sampling previews require the isolated repaired development build from `hrgodmann/jaspAcceptanceSampling`, branch `revision/mixture-state-space-model`, revision `9d08972b6b10b8d04b9650ecce4b1560f811b629`. Activate that build in the JASP process before recomputing their companions. A package version label alone does not identify the implementation.

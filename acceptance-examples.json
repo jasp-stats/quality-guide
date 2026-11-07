@@ -189,5 +189,120 @@
       "Tested": "items",
       "LotSize": "items"
     }
+  },
+  "acceptance_measurements_cm_preview": {
+    "id": "acceptance_measurements_cm_preview",
+    "family": "acceptance",
+    "title": "Shaft diameter in centimetres — preview",
+    "description": "Synthetic teaching data: all 24 original shaft measurements with an equivalent centimetre column.",
+    "columns": [
+      "Diameter_mm",
+      "Diameter_cm"
+    ],
+    "rows": [
+      [
+        9.97,
+        0.9970000000000001
+      ],
+      [
+        10.0,
+        1.0
+      ],
+      [
+        10.025,
+        1.0025
+      ],
+      [
+        10.04,
+        1.004
+      ],
+      [
+        10.03,
+        1.003
+      ],
+      [
+        10.065,
+        1.0065
+      ],
+      [
+        10.015,
+        1.0015
+      ],
+      [
+        9.99,
+        0.999
+      ],
+      [
+        10.055,
+        1.0055
+      ],
+      [
+        10.02,
+        1.002
+      ],
+      [
+        10.01,
+        1.001
+      ],
+      [
+        10.045,
+        1.0045
+      ],
+      [
+        10.005,
+        1.0005000000000002
+      ],
+      [
+        10.035,
+        1.0035
+      ],
+      [
+        9.985,
+        0.9984999999999999
+      ],
+      [
+        10.05,
+        1.0050000000000001
+      ],
+      [
+        10.01,
+        1.001
+      ],
+      [
+        10.025,
+        1.0025
+      ],
+      [
+        10.0,
+        1.0
+      ],
+      [
+        10.06,
+        1.006
+      ],
+      [
+        10.02,
+        1.002
+      ],
+      [
+        9.995,
+        0.9994999999999999
+      ],
+      [
+        10.03,
+        1.003
+      ],
+      [
+        10.005,
+        1.0005000000000002
+      ]
+    ],
+    "notes": [
+      "All 24 original measurements are preserved with Diameter_cm = Diameter_mm / 10. Use Measurement = Diameter_cm, LSL .995 cm, historical SD .004 cm, k=1.309 and USL off. Equivalent units avoid the inactive-upper-limit validation problem. Mean 1.002020833 cm; standardized lower distance 1.755208333 gives Accept under this illustrative prespecified rule. The raincloud displays the same 24 values."
+    ],
+    "units": {
+      "Diameter_mm": "mm",
+      "Diameter_cm": "cm"
+    }
   }
 }

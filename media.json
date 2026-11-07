@@ -167,6 +167,46 @@
     "doe_analyze": {
       "video": "doe_analyze-video",
       "jasp": "doe_analyze-jasp"
+    },
+    "c_chart": {
+      "video": "c_chart-video",
+      "jasp": "c_chart-jasp"
+    },
+    "u_chart": {
+      "video": "u_chart-video",
+      "jasp": "u_chart-jasp"
+    },
+    "ewma": {
+      "video": "ewma-video",
+      "jasp": "ewma-jasp"
+    },
+    "gage_nested": {
+      "video": "gage_nested-video",
+      "jasp": "gage_nested-jasp"
+    },
+    "attribute_agreement": {
+      "video": "attribute_agreement-video",
+      "jasp": "attribute_agreement-jasp"
+    },
+    "eq_one": {
+      "video": "eq_one-video",
+      "jasp": "eq_one-jasp"
+    },
+    "doe_factorial": {
+      "video": "doe_factorial-video",
+      "jasp": "doe_factorial-jasp"
+    },
+    "accept_decide_variable": {
+      "video": "accept_decide_variable-video",
+      "jasp": "accept_decide_variable-jasp"
+    },
+    "accept_bayesian_single": {
+      "video": "accept_bayesian_single-video",
+      "jasp": "accept_bayesian_single-jasp"
+    },
+    "accept_bayesian_sequence": {
+      "video": "accept_bayesian_sequence-video",
+      "jasp": "accept_bayesian_sequence-jasp"
     }
   },
   "assets": {
@@ -702,6 +742,136 @@
       "title": "Analyse a designed experiment — annotated JASP file",
       "note": "Matching 16-run example with coded factors, hierarchical model and checked diagnostics. Saved, closed and reopened in JASP 0.99; annotations explain effect signs, replication and limits.",
       "filename": "doe_analyze.jasp"
+    },
+    "c_chart-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/c_chart.mp4",
+      "title": "c chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Preview workaround: start a fresh analysis, keep the inactive Defectives selection at np, then choose Defects → c. This avoids the audited count-versus-exposure guard. All 30 original counts remain. Center 8.2, LCL 0, UCL 16.790693; batch 21 exceeds its upper limit."
+    },
+    "c_chart-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/c_chart.jasp",
+      "title": "c chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Preview workaround: start a fresh analysis, keep the inactive Defectives selection at np, then choose Defects → c. This avoids the audited count-versus-exposure guard. All 30 original counts remain. Center 8.2, LCL 0, UCL 16.790693; batch 21 exceeds its upper limit.",
+      "filename": "c_chart.jasp"
+    },
+    "u_chart-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/u_chart.mp4",
+      "title": "u chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Ordinary u preview: exposure_half_panel_units = 2 × units_inspected. One exposure unit is half a panel’s area, not an additional inspected panel. All 30 counts remain; rates and limits halve. Center .383333 defects per half-panel area. The current axis may say Proportion and the rule table misses batch 27. Compare each point with its own limits: batch 27 has .7 against UCL .677017 and is the sole beyond-limit point."
+    },
+    "u_chart-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/u_chart.jasp",
+      "title": "u chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Ordinary u preview: exposure_half_panel_units = 2 × units_inspected. One exposure unit is half a panel’s area, not an additional inspected panel. All 30 counts remain; rates and limits halve. Center .383333 defects per half-panel area. The current axis may say Proportion and the rule table misses batch 27. Compare each point with its own limits: batch 27 has .7 against UCL .677017 and is the sole beyond-limit point.",
+      "filename": "u_chart.jasp"
+    },
+    "ewma-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/ewma.mp4",
+      "title": "Exponentially weighted moving average chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Retrospective faster-weighting preview: all 60 original observations, no subgroups, moving-range SD of length 2, lambda .5 and three-sigma limits. Center 501.8645 mL; 19 of 60 points exceed their limits and have red markers. No pooled SD is used. Historical SD would not freeze the mean or make this prospective monitoring."
+    },
+    "ewma-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/ewma.jasp",
+      "title": "Exponentially weighted moving average chart — colleague preview",
+      "note": "Initial preview for colleague feedback. Retrospective faster-weighting preview: all 60 original observations, no subgroups, moving-range SD of length 2, lambda .5 and three-sigma limits. Center 501.8645 mL; 19 of 60 points exceed their limits and have red markers. No pooled SD is used. Historical SD would not freeze the mean or make this prospective monitoring.",
+      "filename": "ewma.jasp"
+    },
+    "gage_nested-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/gage_nested.mp4",
+      "title": "Nested gauge r&R for non-replicable measurements — colleague preview",
+      "note": "Initial preview for colleague feedback. This exact balanced, globally unique-part example gives repeatability variance .5684717, operator 0 and part 17.2412365. The module has an operator denominator defect; both correct and defective estimates truncate to zero here. Zero estimated operator variance does not establish operator equivalence. Do not generalize this preview to positive operator components or other designs."
+    },
+    "gage_nested-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/gage_nested.jasp",
+      "title": "Nested gauge r&R for non-replicable measurements — colleague preview",
+      "note": "Initial preview for colleague feedback. This exact balanced, globally unique-part example gives repeatability variance .5684717, operator 0 and part 17.2412365. The module has an operator denominator defect; both correct and defective estimates truncate to zero here. Zero estimated operator variance does not establish operator equivalence. Do not generalize this preview to positive operator components or other designs.",
+      "filename": "gage_nested.jasp"
+    },
+    "attribute_agreement-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/attribute_agreement.mp4",
+      "title": "Attributes agreement analysis — colleague preview",
+      "note": "Initial preview for colleague feedback. Explicit two-appraiser A/B demonstration: 48 original ratings, all 12 parts and both trials; Positive reference = Pass. Appraiser C is excluded because perfect agreement triggers a confidence-interval failure. The full original 72-rating dataset remains separately available in the example library. For each appraiser, 10/12 parts agree across trials, 22/24 ratings agree with the standard, kappa .828571; missed failures 1/10 and false alarms 1/14."
+    },
+    "attribute_agreement-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/attribute_agreement.jasp",
+      "title": "Attributes agreement analysis — colleague preview",
+      "note": "Initial preview for colleague feedback. Explicit two-appraiser A/B demonstration: 48 original ratings, all 12 parts and both trials; Positive reference = Pass. Appraiser C is excluded because perfect agreement triggers a confidence-interval failure. The full original 72-rating dataset remains separately available in the example library. For each appraiser, 10/12 parts agree across trials, 22/24 ratings agree with the standard, kappa .828571; missed failures 1/10 and false alarms 1/14.",
+      "filename": "attribute_agreement.jasp"
+    },
+    "eq_one-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/eq_one.mp4",
+      "title": "One-sample equivalence test — colleague preview",
+      "note": "Initial preview for colleague feedback. Preserve all 60 measurements and derive FillWeight_deviation_g = FillWeight − 500. Test against 0 with raw bounds −1/+1 g, alpha .05. This avoids the ignored nonzero-reference problem. Mean deviation .3776667 g, 90% CI [−.0679096,.8232429]. Both tests reject: lower-bound hypothesis t=5.166813, p=.000001480; upper-bound hypothesis t=−2.334004, p=.0115105. The current lower/upper test-row labels are interchanged; interpret the hypotheses and interval, not those row labels."
+    },
+    "eq_one-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/eq_one.jasp",
+      "title": "One-sample equivalence test — colleague preview",
+      "note": "Initial preview for colleague feedback. Preserve all 60 measurements and derive FillWeight_deviation_g = FillWeight − 500. Test against 0 with raw bounds −1/+1 g, alpha .05. This avoids the ignored nonzero-reference problem. Mean deviation .3776667 g, 90% CI [−.0679096,.8232429]. Both tests reject: lower-bound hypothesis t=5.166813, p=.000001480; upper-bound hypothesis t=−2.334004, p=.0115105. The current lower/upper test-row labels are interchanged; interpret the hypotheses and interval, not those row labels.",
+      "filename": "eq_one.jasp"
+    },
+    "doe_factorial-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/doe_factorial.mp4",
+      "title": "Create a factorial design — colleague preview",
+      "note": "Initial preview for colleague feedback. Create one unreplicated full 2³ design: eight randomized runs, Temperature 160/180 °C, Pressure 2/4 bar, Speed 40/60 rpm, one block (no blocking restriction), no center points, seed 261107. This avoids unwanted replicate blocks. All eight combinations occur once. Response is blank until data collection; replication-based error estimation is unavailable. The original completed 16-run example is preserved separately for Analyse Design."
+    },
+    "doe_factorial-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/doe_factorial.jasp",
+      "title": "Create a factorial design — colleague preview",
+      "note": "Initial preview for colleague feedback. Create one unreplicated full 2³ design: eight randomized runs, Temperature 160/180 °C, Pressure 2/4 bar, Speed 40/60 rpm, one block (no blocking restriction), no center points, seed 261107. This avoids unwanted replicate blocks. All eight combinations occur once. Response is blank until data collection; replication-based error estimation is unavailable. The original completed 16-run example is preserved separately for Analyse Design.",
+      "filename": "doe_factorial.jasp"
+    },
+    "accept_decide_variable-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_decide_variable.mp4",
+      "title": "Accept or reject a lot from measurements — colleague preview",
+      "note": "Initial preview for colleague feedback. All 24 original measurements are preserved with Diameter_cm = Diameter_mm / 10. Use Measurement = Diameter_cm, LSL .995 cm, historical SD .004 cm, k=1.309 and USL off. Equivalent units avoid the inactive-upper-limit validation problem. Mean 1.002020833 cm; standardized lower distance 1.755208333 gives Accept under this illustrative prespecified rule. The raincloud displays the same 24 values."
+    },
+    "accept_decide_variable-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_decide_variable.jasp",
+      "title": "Accept or reject a lot from measurements — colleague preview",
+      "note": "Initial preview for colleague feedback. All 24 original measurements are preserved with Diameter_cm = Diameter_mm / 10. Use Measurement = Diameter_cm, LSL .995 cm, historical SD .004 cm, k=1.309 and USL off. Equivalent units avoid the inactive-upper-limit validation problem. Mean 1.002020833 cm; standardized lower distance 1.755208333 gives Accept under this illustrative prespecified rule. The raincloud displays the same 24 values.",
+      "filename": "accept_decide_variable.jasp"
+    },
+    "accept_bayesian_single-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_bayesian_single.mp4",
+      "title": "Bayesian acceptance sampling for one lot — colleague preview",
+      "note": "Initial preview for colleague feedback. Inference preview requires Henrik’s repaired development build at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629, branch revision/mixture-state-space-model, not the bundled release. Uniform prior with n=30, d=0, N=100 gives Beta(1,31). BF for theta < .15 versus theta ≥ .15 is 867.99035; evidence and the selected target 30 are separate. This is not an automatic acceptance recommendation. Predictive total has support 0–70, mean 2.1875, P(D=0)=.3069307 and P(D≤5)=.8965424."
+    },
+    "accept_bayesian_single-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_bayesian_single.jasp",
+      "title": "Bayesian acceptance sampling for one lot — colleague preview",
+      "note": "Initial preview for colleague feedback. Inference preview requires Henrik’s repaired development build at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629, branch revision/mixture-state-space-model, not the bundled release. Uniform prior with n=30, d=0, N=100 gives Beta(1,31). BF for theta < .15 versus theta ≥ .15 is 867.99035; evidence and the selected target 30 are separate. This is not an automatic acceptance recommendation. Predictive total has support 0–70, mean 2.1875, P(D=0)=.3069307 and P(D≤5)=.8965424.",
+      "filename": "accept_bayesian_single.jasp"
+    },
+    "accept_bayesian_sequence-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/accept_bayesian_sequence.mp4",
+      "title": "Bayesian sampling across lots — colleague preview",
+      "note": "Initial preview for colleague feedback. Repaired-build preview at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629 uses all 12 chronological lots with no predictors. Three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1; Adapt Delta .99 resolves one rehearsal divergence at .97. Zero divergences/treedepth hits, maximum rank-normalized R-hat 1.001, minimum bulk/tail ESS 5597/4285, E-BFMI .959/.922/.957. The trajectory is retrospective smoothing, with latest rate about 7.81% and 95% interval [4.38%,12.70%]. Prediction is 9 + Binomial(900,theta), support 9–909; the grouped central-range plot is not the full support. No acceptance-policy claim or prior-sensitivity validation is made."
+    },
+    "accept_bayesian_sequence-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/accept_bayesian_sequence.jasp",
+      "title": "Bayesian sampling across lots — colleague preview",
+      "note": "Initial preview for colleague feedback. Repaired-build preview at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629 uses all 12 chronological lots with no predictors. Three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1; Adapt Delta .99 resolves one rehearsal divergence at .97. Zero divergences/treedepth hits, maximum rank-normalized R-hat 1.001, minimum bulk/tail ESS 5597/4285, E-BFMI .959/.922/.957. The trajectory is retrospective smoothing, with latest rate about 7.81% and 95% interval [4.38%,12.70%]. Prediction is 9 + Binomial(900,theta), support 9–909; the grouped central-range plot is not the full support. No acceptance-policy claim or prior-sensitivity validation is made.",
+      "filename": "accept_bayesian_sequence.jasp"
     }
   },
   "videoPlaceholder": {

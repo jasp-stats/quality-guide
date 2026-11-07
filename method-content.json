@@ -437,7 +437,7 @@
       },
       {
         "title": "Specify the measurement and target",
-        "text": "Assign FillWeight to Variables and enter the reference target in Test value, for example 500 g."
+        "text": "Assign FillWeight_deviation_g = FillWeight − 500 to Variables and enter Test value 0."
       },
       {
         "title": "Set meaningful bounds",
@@ -446,6 +446,10 @@
       {
         "title": "Read both one-sided tests",
         "text": "At alpha 0.05, equivalence requires both bound tests to reject non-equivalence; equivalently, the relevant 90% confidence interval must lie entirely within the bounds. Request the Equivalence bounds plot."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Preserve all 60 measurements and derive FillWeight_deviation_g = FillWeight − 500. Test against 0 with raw bounds −1/+1 g, alpha .05. This avoids the ignored nonzero-reference problem. Mean deviation .3776667 g, 90% CI [−.0679096,.8232429]. Both tests reject: lower-bound hypothesis t=5.166813, p=.000001480; upper-bound hypothesis t=−2.334004, p=.0115105. The current lower/upper test-row labels are interchanged; interpret the hypotheses and interval, not those row labels."
       }
     ],
     "columns": [
@@ -458,13 +462,19 @@
         "name": "FillWeight",
         "type": "Scale",
         "description": "Package mass in grams."
+      },
+      {
+        "name": "FillWeight_deviation_g",
+        "type": "Scale",
+        "description": "Original package mass minus 500 g."
       }
     ],
     "checks": [
       "Bounds describe an acceptable difference in the process mean. They are not the specification limits for individual products.",
       "Use raw engineering units when those define acceptability. Do not leave the software's default equivalence bounds without justification.",
       "The independent-measurement and distribution requirements of a one-sample mean analysis still apply.",
-      "Failure to establish equivalence can reflect an imprecise sample; it does not by itself establish a practically important difference."
+      "Failure to establish equivalence can reflect an imprecise sample; it does not by itself establish a practically important difference.",
+      "Preserve all 60 measurements and derive FillWeight_deviation_g = FillWeight − 500. Test against 0 with raw bounds −1/+1 g, alpha .05. This avoids the ignored nonzero-reference problem. Mean deviation .3776667 g, 90% CI [−.0679096,.8232429]. Both tests reject: lower-bound hypothesis t=5.166813, p=.000001480; upper-bound hypothesis t=−2.334004, p=.0115105. The current lower/upper test-row labels are interchanged; interpret the hypotheses and interval, not those row labels."
     ],
     "report": [
       "The target, equivalence bounds, units and engineering justification selected before analysis.",
@@ -474,11 +484,11 @@
     "example": {
       "title": "Is mean fill within 1 g of the target?",
       "story": "Suppose engineering requirements define an acceptable mean deviation of at most 1 g from a 500 g target. This is a question about the mean; the allowable range for individual packages is a separate requirement.",
-      "sample": "compare_single",
+      "sample": "compare_single_deviation_preview",
       "instructions": [
-        "Assign FillWeight and set Test value to 500.",
-        "Select Raw bounds from −1 to +1 and request the equivalence plot.",
-        "Treat ±1 g as an illustrative prechosen tolerance, not as a universal quality standard."
+        "Assign FillWeight_deviation_g and set Test value to 0.",
+        "Choose Raw bounds −1/+1 g, alpha .05, and the equivalence plot.",
+        "Use the verified interval and both one-sided hypotheses; do not infer the hypothesis from the interchanged row labels."
       ]
     },
     "sources": [
@@ -864,33 +874,42 @@
       {
         "title": "Export and collect responses",
         "text": "Choose the CSV destination and Export design. Run the experiment in its planned order, record the response alongside factor settings, then use Analyse Design."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Create one unreplicated full 2³ design: eight randomized runs, Temperature 160/180 °C, Pressure 2/4 bar, Speed 40/60 rpm, one block (no blocking restriction), no center points, seed 261107. This avoids unwanted replicate blocks. All eight combinations occur once. Response is blank until data collection; replication-based error estimation is unavailable. The original completed 16-run example is preserved separately for Analyse Design."
       }
     ],
     "columns": [
       {
-        "name": "Run",
+        "name": "RunOrder",
         "type": "Nominal",
-        "description": "Actual execution order; keep the completed dataset in this order."
+        "description": "Randomized execution order."
+      },
+      {
+        "name": "StandardOrder",
+        "type": "Nominal",
+        "description": "Standard factorial combination order."
       },
       {
         "name": "Temperature",
         "type": "Scale",
-        "description": "Controlled temperature in degrees Celsius, with two planned levels."
+        "description": "160/180 °C."
       },
       {
         "name": "Pressure",
         "type": "Scale",
-        "description": "Controlled pressure in bar, with two planned levels."
+        "description": "2/4 bar."
       },
       {
         "name": "Speed",
         "type": "Scale",
-        "description": "Controlled speed in rpm, with two planned levels."
+        "description": "40/60 rpm."
       },
       {
-        "name": "Strength",
+        "name": "Response",
         "type": "Scale",
-        "description": "Measured response in MPa, entered after each experimental run."
+        "description": "Blank until experimental collection."
       }
     ],
     "checks": [
@@ -898,7 +917,8 @@
       "Repeated measurements of one experimental run are not independent run replications.",
       "For continuous factors, center points can help reveal curvature, but a two-level design with centers does not separately estimate every quadratic effect.",
       "Hard-to-change factors require restricted randomization and an analysis with the correct error structure. JASP offers split-plot worksheet creation, but the ordinary factorial analysis should not be assumed to solve every split-plot design.",
-      "Blocks represent planned nuisance variation such as day or raw-material batch. Decide how blocking and randomization will work before collecting data."
+      "Blocks represent planned nuisance variation such as day or raw-material batch. Decide how blocking and randomization will work before collecting data.",
+      "Create one unreplicated full 2³ design: eight randomized runs, Temperature 160/180 °C, Pressure 2/4 bar, Speed 40/60 rpm, one block (no blocking restriction), no center points, seed 261107. This avoids unwanted replicate blocks. All eight combinations occur once. Response is blank until data collection; replication-based error estimation is unavailable. The original completed 16-run example is preserved separately for Analyse Design."
     ],
     "report": [
       "Factor definitions, natural levels, response, run order, independent replications and blocking.",
@@ -906,13 +926,14 @@
       "Execution deviations and the planned model and follow-up confirmation runs."
     ],
     "example": {
-      "title": "Find the drivers of bond strength",
-      "story": "A process team varies temperature (160/180 °C), pressure (2/4 bar) and speed (40/60 rpm) in two independent replicates of a 2³ factorial experiment to study bond strength. The example CSV contains 16 randomized runs with synthetic responses.",
-      "sample": "factorial",
+      "title": "Create an eight-run factorial preview",
+      "story": "Synthetic teaching design generated natively in JASP with seed 261107; eight randomized runs and no collected responses.",
+      "sample": "factorial_preview_eight",
       "instructions": [
-        "To create a new design, specify three factors and their feasible low/high settings, select a candidate row, and show the design.",
-        "For practice with completed results, open the supplied CSV and choose Analyse Design > Factorial design.",
-        "Assign Strength as the response and the three controlled variables as continuous factors."
+        "Create three two-level factors: Temperature 160/180, Pressure 2/4, Speed 40/60.",
+        "Select the full 2³ candidate; use one replicate, one block, zero centers, randomization and seed 261107. Enable Display design.",
+        "Export the eight-run worksheet. Keep Response blank until collection; this design has no replication-based pure-error estimate.",
+        "The separate factorial example contains the original 16 completed runs for Analyse Design."
       ]
     },
     "sources": [

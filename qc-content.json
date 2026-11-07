@@ -420,11 +420,15 @@
       },
       {
         "title": "Choose the Poisson count chart",
-        "text": "Select Defects, then c chart."
+        "text": "Start fresh with the inactive Defectives selection at np, then choose Defects and c chart."
       },
       {
         "title": "Check the operational context",
         "text": "The reviewed interface estimates the reference count from the plotted data, rather than a fixed earlier baseline. Interpret changes alongside inspection coverage, product mix, and changes in how defects are detected."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Preview workaround: start a fresh analysis, keep the inactive Defectives selection at np, then choose Defects → c. This avoids the audited count-versus-exposure guard. All 30 original counts remain. Center 8.2, LCL 0, UCL 16.790693; batch 21 exceeds its upper limit."
       }
     ],
     "columns": [
@@ -448,7 +452,8 @@
       "Inspection opportunities must be comparable. Equal unit counts are insufficient if unit size or inspection coverage changes.",
       "A c chart uses Poisson variation; clusters of defects or different underlying rates may violate this model.",
       "Use a u chart for variable inspection exposure.",
-      "These are defect counts, not counts of units with at least one defect."
+      "These are defect counts, not counts of units with at least one defect.",
+      "Preview workaround: start a fresh analysis, keep the inactive Defectives selection at np, then choose Defects → c. This avoids the audited count-versus-exposure guard. All 30 original counts remain. Center 8.2, LCL 0, UCL 16.790693; batch 21 exceeds its upper limit."
     ],
     "report": [
       "Report the count per fixed inspection sample and define the sample size or area.",
@@ -460,7 +465,7 @@
       "sample": "defects",
       "instructions": [
         "Assign defects to Defectives/Defects and units_inspected to Total.",
-        "Select Defects and c chart. The plotted quantity is defects per ten-panel sample."
+        "Start fresh with the inactive Defectives selection at np, then choose Defects and c chart."
       ]
     },
     "sources": [
@@ -502,11 +507,15 @@
       },
       {
         "title": "Assign the variables",
-        "text": "Put defects in Defectives/Defects, units_inspected in Total, and batch in Timestamp (optional)."
+        "text": "Assign defects to Defectives/Defects, exposure_half_panel_units to Total, and batch to Timestamp."
       },
       {
         "title": "Select the rate chart",
         "text": "Choose Defects, then u chart. Review the varying control limits together with the denominators; the reference rate is estimated from the plotted data rather than a fixed earlier baseline."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Ordinary u preview: exposure_half_panel_units = 2 × units_inspected. One exposure unit is half a panel’s area, not an additional inspected panel. All 30 counts remain; rates and limits halve. Center .383333 defects per half-panel area. The current axis may say Proportion and the rule table misses batch 27. Compare each point with its own limits: batch 27 has .7 against UCL .677017 and is the sole beyond-limit point."
       }
     ],
     "columns": [
@@ -524,25 +533,31 @@
         "name": "units_inspected",
         "type": "Scale",
         "description": "Positive inspection exposure in a consistent unit."
+      },
+      {
+        "name": "exposure_half_panel_units",
+        "type": "Scale",
+        "description": "Twice units_inspected, expressed as half-panel area; not extra inspected panels."
       }
     ],
     "checks": [
       "A Poisson rate model requires comparable opportunity per exposure unit and approximately independent occurrences.",
       "Defect counts can exceed the number of units; a u value is a rate, not a probability.",
       "Investigate clustering, mix changes, and overdispersion before considering the available Laney u-prime chart.",
-      "A denominator of zero is invalid and should be resolved before analysis."
+      "A denominator of zero is invalid and should be resolved before analysis.",
+      "Ordinary u preview: exposure_half_panel_units = 2 × units_inspected. One exposure unit is half a panel’s area, not an additional inspected panel. All 30 counts remain; rates and limits halve. Center .383333 defects per half-panel area. The current axis may say Proportion and the rule table misses batch 27. Compare each point with its own limits: batch 27 has .7 against UCL .677017 and is the sole beyond-limit point."
     ],
     "report": [
       "Report the rate with its exposure unit, baseline, and sample denominators.",
       "Describe signals and assess whether changing inspection opportunity explains them."
     ],
     "example": {
-      "title": "Flaws per panel",
-      "story": "Inspect varying numbers of comparable panels each shift and count all surface flaws.",
-      "sample": "defects_varying",
+      "title": "Flaws per half-panel area — ordinary u preview",
+      "story": "Synthetic teaching data: all original varying-exposure observations and counts, with an equivalent half-panel area denominator.",
+      "sample": "defects_half_panel_preview",
       "instructions": [
-        "Assign defects to Defectives/Defects and units_inspected to Total.",
-        "Select Defects and u chart. Interpret the vertical axis as defects per panel."
+        "Assign defects to Defectives/Defects, exposure_half_panel_units to Total, and batch to Timestamp.",
+        "Choose ordinary Defects → u, not Laney. Interpret rates per half-panel area and independently compare each point with its own limits."
       ]
     },
     "sources": [
@@ -588,11 +603,15 @@
       },
       {
         "title": "Select EWMA",
-        "text": "Select Exponentially weighted moving average chart. Specify Lambda (smoothing parameter), control-limit settings, and the in-control standard deviation source."
+        "text": "Select Exponentially weighted moving average chart, lambda .5, three-sigma limits and moving-range SD with length 2."
       },
       {
         "title": "Understand the reference used",
         "text": "Use a justified estimate of in-control SD, or enter an independently established historical SD. The reviewed implementation still uses the current stage’s mean for the center and initial EWMA value; historical SD does not fix a historical mean."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Retrospective faster-weighting preview: all 60 original observations, no subgroups, moving-range SD of length 2, lambda .5 and three-sigma limits. Center 501.8645 mL; 19 of 60 points exceed their limits and have red markers. No pooled SD is used. Historical SD would not freeze the mean or make this prospective monitoring."
       }
     ],
     "columns": [
@@ -611,7 +630,8 @@
       "Small lambda values retain a longer memory; sensitivity and false-alarm behaviour depend jointly on lambda and limit settings.",
       "Serial dependence can create spurious signals; an EWMA does not automatically correct autocorrelation.",
       "This implementation supports retrospective assessment, not monitoring against a frozen historical mean. Stage estimates separate means; adding later observations can change earlier EWMA values. Do not treat a period containing a known change as an established in-control baseline.",
-      "Use a standard individuals or subgroup chart to understand gross instability and variation first."
+      "Use a standard individuals or subgroup chart to understand gross instability and variation first.",
+      "Retrospective faster-weighting preview: all 60 original observations, no subgroups, moving-range SD of length 2, lambda .5 and three-sigma limits. Center 501.8645 mL; 19 of 60 points exceed their limits and have red markers. No pooled SD is used. Historical SD would not freeze the mean or make this prospective monitoring."
     ],
     "report": [
       "Report lambda, limit settings, the period used to estimate the center, the SD source and value, and the sampling interval.",
@@ -622,8 +642,9 @@
       "story": "Use the fill-volume series to inspect a possible sustained small shift retrospectively. The center is estimated from the plotted period; this example is not a calibrated prospective alarm design.",
       "sample": "individuals",
       "instructions": [
-        "Select No subgroups (n = 1), then Exponentially weighted moving average chart.",
-        "Compare the view with an individuals chart and document the settings used."
+        "Assign fill_ml and sequence; retain all 60 observations with No subgroups (n=1).",
+        "Select Exponentially weighted moving average chart, lambda .5, three-sigma limits and moving-range SD with length 2.",
+        "Interpret this as retrospective faster weighting; verify center 501.8645 mL and 19 beyond-limit points."
       ]
     },
     "sources": [
@@ -1014,6 +1035,10 @@
       {
         "title": "Examine the nested components",
         "text": "Read the nested ANOVA and gauge evaluation alongside the measurements-by-part and operator plots."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "This exact balanced, globally unique-part example gives repeatability variance .5684717, operator 0 and part 17.2412365. The module has an operator denominator defect; both correct and defective estimates truncate to zero here. Zero estimated operator variance does not establish operator equivalence. Do not generalize this preview to positive operator components or other designs."
       }
     ],
     "columns": [
@@ -1042,7 +1067,8 @@
       "A destructive test does not automatically justify this design: the assumed within-group specimen homogeneity must be defensible.",
       "One observation per operator–part group cannot identify a separate repeatability component.",
       "Use the same number of replicates per part group and the same number of part groups per operator for this baseline implementation.",
-      "Residual specimen differences can be confounded with repeatability; document that practical limitation."
+      "Residual specimen differences can be confounded with repeatability; document that practical limitation.",
+      "This exact balanced, globally unique-part example gives repeatability variance .5684717, operator 0 and part 17.2412365. The module has an operator denominator defect; both correct and defective estimates truncate to zero here. Zero estimated operator variance does not establish operator equivalence. Do not generalize this preview to positive operator components or other designs."
     ],
     "report": [
       "Report the nesting, replicate construction, homogeneity assumption, and variance comparison basis.",
@@ -1259,11 +1285,15 @@
       },
       {
         "title": "Choose the binary study",
-        "text": "For the pass/fail example use Kappa study. Enter Pass as Positive reference: this setting uses the acceptable category, such as Pass or Good. Review Cohen’s and Fleiss’ kappa options."
+        "text": "Use Kappa study with Positive reference = Pass. In this A/B demonstration request Cohen’s kappa; leave Fleiss’ kappa off."
       },
       {
         "title": "Inspect agreement components",
         "text": "Review within-appraiser, between-appraiser, and standard-comparison output. With Pass as Positive reference, the miss rate is the fraction of reference-Fail ratings called Pass; the false-alarm rate is the fraction of reference-Pass ratings called Fail."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Explicit two-appraiser A/B demonstration: 48 original ratings, all 12 parts and both trials; Positive reference = Pass. Appraiser C is excluded because perfect agreement triggers a confidence-interval failure. The full original 72-rating dataset remains separately available in the example library. For each appraiser, 10/12 parts agree across trials, 22/24 ratings agree with the standard, kappa .828571; missed failures 1/10 and false alarms 1/14."
       }
     ],
     "columns": [
@@ -1297,16 +1327,17 @@
       "Use blind, randomised repeats and representative cases, including difficult or borderline examples.",
       "Kappa depends on category prevalence and marginal rating frequencies; inspect raw agreement and error patterns too.",
       "Kendall’s tau is available for ordered ratings, but association is not the same as exact agreement.",
-      "This worked path uses binary labels. More complex category structures need the appropriate agreement model and coding."
+      "This worked path uses binary labels. More complex category structures need the appropriate agreement model and coding.",
+      "Explicit two-appraiser A/B demonstration: 48 original ratings, all 12 parts and both trials; Positive reference = Pass. Appraiser C is excluded because perfect agreement triggers a confidence-interval failure. The full original 72-rating dataset remains separately available in the example library. For each appraiser, 10/12 parts agree across trials, 22/24 ratings agree with the standard, kappa .828571; missed failures 1/10 and false alarms 1/14."
     ],
     "report": [
       "Report study design, the acceptable category used as Positive reference, reference construction, agreement percentages, and kappa with available uncertainty.",
       "Separate repeatability of the same operator, reproducibility between operators, and accuracy against a standard."
     ],
     "example": {
-      "title": "Pass/fail visual inspection",
-      "story": "Several inspectors classify the same parts twice. A reference decision allows consistent mistakes to be distinguished from correct agreement.",
-      "sample": "agreement",
+      "title": "A/B attribute agreement — two-appraiser preview",
+      "story": "Synthetic two-appraiser demonstration: retain the original 48 A/B ratings of 12 parts across two trials; C is outside this preview.",
+      "sample": "agreement_ab_preview",
       "instructions": [
         "Assign rating, operator, part, and standard to their corresponding roles.",
         "Enter Pass as Positive reference. Inspect agreement and distinguish missed failures (Fail rated Pass) from false alarms (Pass rated Fail)."

@@ -354,6 +354,10 @@
       {
         "title": "Read the decision in its context",
         "text": "Inspect the sample statistics, standardized distance(s), and decision. For a one-sided rule, accept when the mean's distance from the limit, divided by the applicable SD, is at least k. Two-sided rules depend on the SD assumption and both tail areas; when both limits and historical SD are selected, enter AQL and RQL as requested."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "All 24 original measurements are preserved with Diameter_cm = Diameter_mm / 10. Use Measurement = Diameter_cm, LSL .995 cm, historical SD .004 cm, k=1.309 and USL off. Equivalent units avoid the inactive-upper-limit validation problem. Mean 1.002020833 cm; standardized lower distance 1.755208333 gives Accept under this illustrative prespecified rule. The raincloud displays the same 24 values."
       }
     ],
     "columns": [
@@ -361,13 +365,19 @@
         "name": "Diameter_mm",
         "type": "Scale",
         "description": "One diameter per randomly sampled component from a single lot; assign to Measurement."
+      },
+      {
+        "name": "Diameter_cm",
+        "type": "Scale",
+        "description": "Original Diameter_mm divided by ten, in cm."
       }
     ],
     "checks": [
       "Use the planned sample size. This screen applies the supplied k; it does not verify that the sample size and k satisfy your target risks.",
       "Keep lots separate: there is no lot-grouping assignment box. Filter or prepare one lot at a time.",
       "Check measurement quality, normal-model plausibility, and positive sample SD. Prespecify the rule and limits before seeing the sample.",
-      "Acceptance is a sampling-policy decision; it does not establish zero nonconforming items or process stability."
+      "Acceptance is a sampling-policy decision; it does not establish zero nonconforming items or process stability.",
+      "All 24 original measurements are preserved with Diameter_cm = Diameter_mm / 10. Use Measurement = Diameter_cm, LSL .995 cm, historical SD .004 cm, k=1.309 and USL off. Equivalent units avoid the inactive-upper-limit validation problem. Mean 1.002020833 cm; standardized lower distance 1.755208333 gives Accept under this illustrative prespecified rule. The raincloud displays the same 24 values."
     ],
     "report": [
       "Lot identity, actual n, mean, SD, historical SD if used, limits, and k.",
@@ -376,11 +386,11 @@
     "example": {
       "title": "Inspect a lot of machined shafts",
       "story": "Twenty-four synthetic diameter measurements from one lot demonstrate a lower-limit decision; the settings are for teaching.",
-      "sample": "acceptance_measurements",
+      "sample": "acceptance_measurements_cm_preview",
       "instructions": [
-        "Assign Diameter_mm to Measurement. Set k = 1.309 and select LSL = 9.95 mm; leave USL off.",
-        "Select Standard deviation (historical) and enter 0.04 mm.",
-        "Inspect the decision and standardized lower-limit distance. As a teaching comparison, change LSL to 9.98 mm and observe the result; in real inspection the limit must be fixed beforehand."
+        "Assign Diameter_cm; set k=1.309, LSL=.995 cm, historical SD=.004 cm, USL off.",
+        "Check mean 1.002020833 cm and standardized distance 1.755208333; Accept follows only the specified illustrative rule.",
+        "The raincloud uses the same 24 measurements in cm."
       ]
     },
     "sources": [
@@ -425,9 +435,9 @@
     ],
     "availability": {
       "module": "Acceptance Sampling",
-      "sourceVersion": "0.96.4 beta",
+      "sourceVersion": "0.96.4 development, pinned 9d08972b6b10b8d04b9650ecce4b1560f811b629",
       "status": "beta",
-      "note": "The official catalogue offers 0.96.4 beta builds; build numbers vary by platform. Requires the Bayesian Sampling menu in your installed module. These teaching examples have not been executed inside desktop JASP."
+      "note": "Executed in JASP 0.99.0.0 with an isolated repaired build from hrgodmann/jaspAcceptanceSampling, branch revision/mixture-state-space-model. Activate this exact revision before recomputation; the bundled release and a version label alone are insufficient."
     },
     "setup": [
       {
@@ -435,12 +445,16 @@
         "text": "In 1. Planning, enter AQL and RQL. Under Prior Distribution (Beta), choose Impartial (Around the RQL), Uniform, Custom, or Impartial (Three-region). Custom α and β here are Beta shape parameters; they are not producer's and consumer's error risks."
       },
       {
-        "title": "Design an evidence-based plan",
-        "text": "Set (Max) Sample size (n) and Bayes factor (min), then select Plans table and Prior plot. Candidate n,c pairs target evidence for a defect proportion below RQL versus above RQL. Three-hypothesis BF table adds comparisons among the good, middle, and bad quality regions defined by AQL and RQL."
+        "title": "Separate evidence from the selected target",
+        "text": "For this inference-focused preview use Uniform prior, AQL .05, RQL .15, maximum planning n=40 and minimum BF=30. Planning tables are outside the clip. A Bayes-factor evidence label does not automatically prescribe acceptance."
       },
       {
         "title": "Update using inspected items",
         "text": "In 2. Inference, select Use data to create posterior distribution. Enter Sample size (n), Observed number of defects (d), and Lot size (N). Select Inference decision table, Posterior plot, and Posterior predictive distribution plot. Counts are typed directly; no CSV assignment is needed."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Inference preview requires Henrik’s repaired development build at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629, branch revision/mixture-state-space-model, not the bundled release. Uniform prior with n=30, d=0, N=100 gives Beta(1,31). BF for theta < .15 versus theta ≥ .15 is 867.99035; evidence and the selected target 30 are separate. This is not an automatic acceptance recommendation. Predictive total has support 0–70, mean 2.1875, P(D=0)=.3069307 and P(D≤5)=.8965424."
       }
     ],
     "columns": [],
@@ -448,7 +462,8 @@
       "The Beta-Binomial model counts nonconforming items: use 0 ≤ d ≤ n ≤ N. Do not enter multiple flaws per item as d.",
       "With prior Beta(a,b), the posterior is Beta(a+d,b+n−d). The prediction for total lot defects includes those already observed and uncertainty about the uninspected items.",
       "A Bayes-factor threshold is an evidence requirement, not the α/β protection of a classical plan. Report prior choices and check sensitivity.",
-      "The standard planning target is below versus above RQL; AQL influences region summaries and some prior specifications. Read the selected hypothesis definitions."
+      "The standard planning target is below versus above RQL; AQL influences region summaries and some prior specifications. Read the selected hypothesis definitions.",
+      "Inference preview requires Henrik’s repaired development build at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629, branch revision/mixture-state-space-model, not the bundled release. Uniform prior with n=30, d=0, N=100 gives Beta(1,31). BF for theta < .15 versus theta ≥ .15 is 867.99035; evidence and the selected target 30 are separate. This is not an automatic acceptance recommendation. Predictive total has support 0–70, mean 2.1875, P(D=0)=.3069307 and P(D≤5)=.8965424."
     ],
     "report": [
       "Module beta version, AQL/RQL, prior, planning limit and Bayes-factor target.",
@@ -459,32 +474,15 @@
       "story": "A synthetic example illustrates that observing zero nonconforming items still leaves uncertainty about the rest of the lot.",
       "sample": null,
       "instructions": [
-        "Set AQL = 0.05, RQL = 0.15, prior Uniform, maximum n = 40, and minimum Bayes factor = 30.",
-        "Select Plans table and Prior plot.",
-        "Enable inference; enter n = 30, d = 0, N = 100. Request the inference table, posterior, and posterior predictive plot.",
-        "The chosen prior and counts imply Beta(1,31) for the posterior defect proportion. Compare with Impartial (Around the RQL) to see the effect of the prior."
+        "Set AQL=.05, RQL=.15, Uniform prior, maximum planning n=40, minimum BF=30.",
+        "Enable inference with n=30, d=0, N=100; show posterior and posterior predictive plots.",
+        "Check Beta(1,31), Bayes-factor evidence and the selected target separately. Do not convert an evidence label into an acceptance recommendation."
       ]
     },
     "sources": [
       {
-        "title": "Official JASP module catalogue (checked 29 October 2026)",
-        "url": "https://module-library.jasp-stats.org/index.json"
-      },
-      {
-        "title": "Official Bayesian menu registration",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/Description.qml"
-      },
-      {
-        "title": "Bayesian Sampling interface",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/qml/BayesianSampling.qml"
-      },
-      {
-        "title": "Bayesian Sampling help",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/help/BayesianSampling.md"
-      },
-      {
-        "title": "Beta-Binomial planning and posterior prediction",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/R/bayesianSampling.R"
+        "title": "Pinned repaired module and current interface help",
+        "url": "https://github.com/hrgodmann/jaspAcceptanceSampling/blob/9d08972b6b10b8d04b9650ecce4b1560f811b629/inst/qml/BayesianSampling.qml"
       }
     ],
     "related": [
@@ -502,8 +500,8 @@
     "id": "accept_bayesian_sequence",
     "family": "acceptance",
     "title": "Bayesian acceptance sampling across lots",
-    "summary": "Model a changing nonconforming rate and support a decision for the latest lot.",
-    "why": "You inspect an ordered series of related lots and want to carry information forward while allowing quality to change. Bayesian State-Space Sampling is available in the Acceptance Sampling beta.",
+    "summary": "Explore defect-rate changes and predictive uncertainty for the latest lot.",
+    "why": "Twelve related chronological lots illustrate a changing defect rate under the pinned repaired development model. This preview focuses on retrospective smoothing and latest-lot prediction.",
     "path": [
       "Acceptance Sampling",
       "Bayesian Sampling",
@@ -511,22 +509,26 @@
     ],
     "availability": {
       "module": "Acceptance Sampling",
-      "sourceVersion": "0.96.4 beta",
+      "sourceVersion": "0.96.4 development, pinned 9d08972b6b10b8d04b9650ecce4b1560f811b629",
       "status": "beta",
-      "note": "The official catalogue offers 0.96.4 beta builds; build numbers vary by platform. Requires the Bayesian State-Space Sampling menu in your installed module. These teaching examples have not been executed inside desktop JASP."
+      "note": "Executed in JASP 0.99.0.0 with an isolated repaired build from hrgodmann/jaspAcceptanceSampling, branch revision/mixture-state-space-model. Activate this exact revision before recomputation; the bundled release and a version label alone are insufficient."
     },
     "setup": [
       {
-        "title": "Assign one row per lot",
-        "text": "Assign Nonconforming to Defect Count, Tested to Sample Size (tested items), LotSize to Lot Size (total items), and LotOrder to Lot Number. Start with Model Type = Without predictor. With predictor adds a Scale Predictor assignment for a varying lot-level covariate."
+        "title": "Assign the chronological data",
+        "text": "Assign Nonconforming, Tested, LotSize and LotOrder to Defect Count, Sample Size, Lot Size and Lot Number. Leave Covariates empty; one row per unique numeric lot."
       },
       {
-        "title": "Specify the quality and decision policy",
-        "text": "Under Settings, set Lower limit (AQL), Upper limit (RQL), and the two Decision Rule probability thresholds. These probabilities refer to predicted defect totals in the current lot. The model can suggest continuing inspection as well as acceptance or rejection."
+        "title": "Specify the model",
+        "text": "Use initial Beta(1,1) and half-normal baseline innovation scale 1. The repaired model has symmetric mixture innovations; the old post-fit jump correction instruction is obsolete."
       },
       {
-        "title": "Inspect estimation and sensitivity",
-        "text": "Review the initial defect-rate prior and State noise prior under Model. Request State time series (defect rate), Posterior predictive for current lot, and MCMC Diagnostics > Overview table. Retain multiple chains; review convergence and effective sample sizes before interpreting the latest-lot summary. Sudden jump tail correction is an optional modelling choice, not an automatic repair."
+        "title": "Inspect diagnostics before interpretation",
+        "text": "Use three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1, Adapt Delta .99 and maximum treedepth 15. Select MCMC Diagnostics → Print Diagnostics. Inspect divergences, treedepth, rank-normalized R-hat, bulk/tail ESS and per-chain E-BFMI."
+      },
+      {
+        "title": "Colleague preview — 7 November 2026",
+        "text": "Repaired-build preview at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629 uses all 12 chronological lots with no predictors. Three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1; Adapt Delta .99 resolves one rehearsal divergence at .97. Zero divergences/treedepth hits, maximum rank-normalized R-hat 1.001, minimum bulk/tail ESS 5597/4285, E-BFMI .959/.922/.957. The trajectory is retrospective smoothing, with latest rate about 7.81% and 95% interval [4.38%,12.70%]. Prediction is 9 + Binomial(900,theta), support 9–909; the grouped central-range plot is not the full support. No acceptance-policy claim or prior-sensitivity validation is made."
       }
     ],
     "columns": [
@@ -555,43 +557,27 @@
       "For each row require 0 ≤ Nonconforming ≤ Tested ≤ LotSize; use positive sample and lot sizes. Keep chronological order and explain missing lots or large gaps.",
       "The model shares information across related lots; unrelated suppliers or abrupt process changes need deliberate modelling choices.",
       "The state-space output summarizes the latest lot, with a trajectory over the sequence. It is not a classical control chart or proof of stability.",
-      "Report convergence, prior sensitivity, thresholds, and whether tail correction was used. A predictor association does not by itself establish causation."
+      "Repaired-build preview at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629 uses all 12 chronological lots with no predictors. Three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1; Adapt Delta .99 resolves one rehearsal divergence at .97. Zero divergences/treedepth hits, maximum rank-normalized R-hat 1.001, minimum bulk/tail ESS 5597/4285, E-BFMI .959/.922/.957. The trajectory is retrospective smoothing, with latest rate about 7.81% and 95% interval [4.38%,12.70%]. Prediction is 9 + Binomial(900,theta), support 9–909; the grouped central-range plot is not the full support. No acceptance-policy claim or prior-sensitivity validation is made.",
+      "All rows must satisfy 0 ≤ defects ≤ inspected ≤ lot size. Numeric lot order determines ordering, not transition spacing. Earlier rates use later observations; these are smoothed estimates. Prior sensitivity and predictive calibration remain outside this preview."
     ],
     "report": [
-      "Beta module version, lot sequence, inspected/total counts, model and priors.",
-      "Latest-lot predictive probabilities and decision suggestion, state trajectory, MCMC diagnostics, and sensitivity checks."
+      "Exact development revision, chronological data, no-predictor model, priors and sampler settings.",
+      "Trajectory, latest-lot predictive support and uncertainty, computational diagnostics and limits; do not claim a validated acceptance policy."
     ],
     "example": {
       "title": "Inspect a sequence of component lots",
       "story": "Twelve synthetic ordered lots have 100 inspected components each. Nonconforming counts rise in the final lots to illustrate changing quality.",
       "sample": "acceptance_lot_sequence",
       "instructions": [
-        "Assign the four columns to their matching roles and choose Without predictor.",
-        "Enter AQL = 0.05 and RQL = 0.10. Leave the decision thresholds at 0.10 for acceptance and 0.05 for rejection.",
-        "Use the initial Beta(1,1) prior, State noise Half-normal SD = 1, and keep sudden jump tail correction off for this first example.",
-        "Retain the default multiple-chain MCMC settings and Seed = 1. Request the diagnostics overview and all theta[t]. Inspect the latest-lot prediction; no outcome is precomputed by this guide."
+        "Assign the four original columns to matching roles; leave Covariates empty.",
+        "Use the model and MCMC settings above, including Adapt Delta .99. Print the complete diagnostic report before interpreting plots.",
+        "Retain AQL .05/RQL .10 and illustrative thresholds .10/.05 only as context. Focus on the smoothed trajectory and latest-lot prediction; no automatic policy is taught."
       ]
     },
     "sources": [
       {
-        "title": "Official JASP module catalogue (checked 29 October 2026)",
-        "url": "https://module-library.jasp-stats.org/index.json"
-      },
-      {
-        "title": "Official Bayesian menu registration",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/Description.qml"
-      },
-      {
-        "title": "Bayesian State-Space Sampling interface",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/qml/BayesianSSMforAS.qml"
-      },
-      {
-        "title": "State-space sampling help",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/inst/help/BayesianSSMforAS.md"
-      },
-      {
-        "title": "Input validation, chronological ordering, and latest-lot decisions",
-        "url": "https://github.com/jasp-stats/jaspAcceptanceSampling/blob/178f3c82937d3632110f6761a642d0de1a169cd2/R/bayesianSSMforAS.R"
+        "title": "Pinned repaired module and current interface help",
+        "url": "https://github.com/hrgodmann/jaspAcceptanceSampling/blob/9d08972b6b10b8d04b9650ecce4b1560f811b629/inst/qml/BayesianSSMforAS.qml"
       }
     ],
     "related": [
