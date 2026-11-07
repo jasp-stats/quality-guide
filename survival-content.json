@@ -371,9 +371,9 @@
     ],
     "availability": {
       "module": "Survival",
-      "sourceVersion": "0.98.2-beta.0",
+      "sourceVersion": "0.98.2 (d3550d8)",
       "status": "beta",
-      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+      "note": "Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows. The paired files were saved, reopened and recomputed natively on disposable copies on 7 November 2026."
     },
     "setup": [
       {
@@ -496,9 +496,9 @@
     ],
     "availability": {
       "module": "Survival",
-      "sourceVersion": "0.98.2-beta.0",
+      "sourceVersion": "0.98.2 (d3550d8)",
       "status": "beta",
-      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+      "note": "Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows. The paired files were saved, reopened and recomputed natively on disposable copies on 7 November 2026."
     },
     "setup": [
       {
@@ -616,9 +616,9 @@
     ],
     "availability": {
       "module": "Survival",
-      "sourceVersion": "0.98.2-beta.0",
+      "sourceVersion": "0.98.2 (d3550d8)",
       "status": "beta",
-      "note": "Requires the recent Survival beta with the named menus or advanced controls. Official 0.98.2-beta.0 builds were reviewed on 29 October 2026; the module catalogue may lag newly published packages."
+      "note": "Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows. The paired files were saved, reopened and recomputed natively on disposable copies on 7 November 2026."
     },
     "setup": [
       {

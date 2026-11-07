@@ -207,6 +207,18 @@
     "accept_bayesian_sequence": {
       "video": "accept_bayesian_sequence-video",
       "jasp": "accept_bayesian_sequence-jasp"
+    },
+    "survival_accelerated": {
+      "video": "survival_accelerated-video",
+      "jasp": "survival_accelerated-jasp"
+    },
+    "survival_mixture": {
+      "video": "survival_mixture-video",
+      "jasp": "survival_mixture-jasp"
+    },
+    "survival_recurrent": {
+      "video": "survival_recurrent-video",
+      "jasp": "survival_recurrent-jasp"
     }
   },
   "assets": {
@@ -872,6 +884,45 @@
       "title": "Bayesian sampling across lots — colleague preview",
       "note": "Initial preview for colleague feedback. Repaired-build preview at revision 9d08972b6b10b8d04b9650ecce4b1560f811b629 uses all 12 chronological lots with no predictors. Three chains, 2000 warmup, 5000 retained draws per chain, thin 1, seed 1; Adapt Delta .99 resolves one rehearsal divergence at .97. Zero divergences/treedepth hits, maximum rank-normalized R-hat 1.001, minimum bulk/tail ESS 5597/4285, E-BFMI .959/.922/.957. The trajectory is retrospective smoothing, with latest rate about 7.81% and 95% interval [4.38%,12.70%]. Prediction is 9 + Binomial(900,theta), support 9–909; the grouped central-range plot is not the full support. No acceptance-policy claim or prior-sensitivity validation is made.",
       "filename": "accept_bayesian_sequence.jasp"
+    },
+    "survival_accelerated-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_accelerated.mp4",
+      "title": "Accelerated life and temperature models — video walkthrough",
+      "note": "Use Weibull and Arrhenius with Celsius converted internally to Kelvin. Compare B10 and 95% intervals at 45, 60, 75 and 90 °C; no service-temperature extrapolation or established physical mechanism is claimed. Colleague preview: narration has not yet been listened to; method-name pronunciation needs a listening check. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows."
+    },
+    "survival_accelerated-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_accelerated.jasp",
+      "title": "Accelerated life and temperature models — annotated JASP file",
+      "note": "Includes the original 120 units, common-shape Arrhenius fit, four tested B10 conditions, simulation intervals and interpretation notes. The plot labels conditions 1–4; the table maps them to temperatures. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows.",
+      "filename": "survival_accelerated.jasp"
+    },
+    "survival_mixture-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_mixture.mp4",
+      "title": "Finite mixtures of lifetime distributions — video walkthrough",
+      "note": "Fit two latent Weibull components to the original censored lifetimes and show the combined and weighted component density curves on a logarithmic time axis. Components are statistical descriptions, not proven physical causes. Colleague preview: narration has not yet been listened to; method-name pronunciation needs a listening check. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows."
+    },
+    "survival_mixture-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_mixture.jasp",
+      "title": "Finite mixtures of lifetime distributions — annotated JASP file",
+      "note": "Includes the original 200 units, converged two-component fit, finite uncertainty estimates, starting-value diagnostics and a labelled one-component comparison. Density is per unit of log time; no global-optimum proof is claimed. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows.",
+      "filename": "survival_mixture.jasp"
+    },
+    "survival_recurrent-video": {
+      "kind": "video",
+      "file": "assets-source/tutorials/survival_recurrent.mp4",
+      "title": "Recurrent failures and reliability growth — video walkthrough",
+      "note": "Retain all 24 interval counts and cumulative endpoints; fit Crow–AMSAA by maximum likelihood and inspect cumulative events and event intensity over the observed period. Confidence bands concern fitted quantities, not future realized counts. Colleague preview: narration has not yet been listened to; method-name pronunciation needs a listening check. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows."
+    },
+    "survival_recurrent-jasp": {
+      "kind": "jasp",
+      "file": "assets-source/tutorials/survival_recurrent.jasp",
+      "title": "Recurrent failures and reliability growth — annotated JASP file",
+      "note": "Includes every original exposure interval, 399 events, model and likelihood notes, both plots, and independently checked predictions. The wide prediction tables require horizontal scrolling. Supplied counts are positive; the current implementation rejects zero-count intervals, which must never be discarded to make a fit work. Tutorial checked in JASP 0.99.0 with isolated jaspSurvival 0.98.2 at revision d3550d881f302762b35050a4c86e037378ab9179. Activate this development build before recomputing the companion; stable Survival 0.96.6 lacks these workflows.",
+      "filename": "survival_recurrent.jasp"
     }
   },
   "videoPlaceholder": {
